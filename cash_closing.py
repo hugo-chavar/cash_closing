@@ -12,7 +12,6 @@ class JsonSerializable:
             sort_keys=True, indent=4)
 
     def get_dict(self):
-        built_dict={}
         if not hasattr(self, "__dict__"):
             return self
         new_subdic = vars(self)
@@ -66,18 +65,10 @@ class AmountPerVat(JsonSerializable):
 
         
         self.incl_vat = amount
-        vat_rate = 19.0 if self.is_normal() else 7.0
+        vat_rate = 19.0 if self.is_normal() else 7.0 # TODO get the vat_rate from the product
         self.vat = round(self.incl_vat * vat_rate / 100.0, 2)
         self.excl_vat = round(self.incl_vat - self.vat, 2)
 
-    # @property
-    # def vat(self):
-    #     vat_rate = 19.0 if self.is_normal() else 7.0
-    #     return round(self.incl_vat * vat_rate / 100.0, 2)
-    
-    # @property
-    # def excl_vat(self):
-    #     return round(self.incl_vat - self.vat, 2)
     
     def is_normal(self):
         return self.vat_definition_export_id == 1
@@ -147,37 +138,6 @@ def get_business_case(receipts):
     if amount2 > 0:
         bc.amounts_per_vat_id.append(AmountPerVat(REDUCED_VAT_RATE, amount2))
 
-
-    # for receipt in receipts:
-    #     receipt.schema.standard_v1.receipt.amounts_per_vat_id
-    
-    # total_amount1 = 0.0
-    # total_amount2 = 0.0
-    # for receipt in receipts:
-    #     # amounts_per_vat_rate = receipt.schema.standard_v1.receipt.amounts_per_vat_rate
-    #     amounts_per_vat_rate = receipt.amounts_per_vat_rate
-    #     for amount_per_vat_rate in amounts_per_vat_rate:
-    #         if amount_per_vat_rate.vat_rate == "NORMAL":
-    #             total_amount1 += float(amount_per_vat_rate.amount)
-    #         elif amount_per_vat_rate.vat_rate == "REDUCED_1":
-    #             total_amount2 += float(amount_per_vat_rate.amount)
-
-    # if total_amount1 > 0:
-    #     apv = AmountPerVat()
-    #     apv.vat = round(total_amount1 * 19.0 / 100.0, 2)
-    #     apv.incl_vat = total_amount1
-    #     apv.excl_vat = round(total_amount1 - apv.vat, 2)
-    #     apv.vat_definition_export_id = 1
-    #     bc.amounts_per_vat_id.append(apv)
-
-    # if total_amount2 > 0:
-    #     apv = AmountPerVat()
-    #     apv.vat = round(total_amount2 * 7.0 / 100.0, 2)
-    #     apv.incl_vat = total_amount2
-    #     apv.excl_vat = round(total_amount2 - apv.vat, 2)
-    #     apv.vat_definition_export_id = 2
-    #     bc.amounts_per_vat_id.append(apv)
-
     return bc
 
 def get_payment(receipts):
@@ -196,7 +156,6 @@ def get_payment(receipts):
         a = AmountByCurrency()
         a.currency_code = key
         c = list(group)
-        # print('group: ' + key + ' val: ' + str(c))
         a.amount = reduce(sum, [float(a.amount) for a in c], 0.0)
         p.cash_amounts_by_currency.append(a)
             
@@ -206,22 +165,9 @@ def get_payment(receipts):
         a.currency_code = key[0]
         a.type = key[1]
         c = list(group)
-        # print('group: ' + str(key) + ' val: ' + str(c))
         a.amount = reduce(sum, [float(a.amount) for a in c], 0.0)
         p.payment_types.append(a)
             
-            
-
-    # print('test')
-    # print(str([r for r in all_amounts_per_payment_type]))
-    # # print(str(list(all_amounts_per_payment_type)))
-    # # p.full_amount = reduce(sum_amount, [r for r in receipts])
-    
-
-    # cash_receipts = filter(lambda x: x.amounts_per_payment_type.payment_type == "CASH", receipts)
-    
-    # p.cash_amount = reduce(sum_amount, cash_receipts)
-
     return p
 
 def get_transaction_head(receipt):
@@ -261,17 +207,13 @@ def get_transaction_data(raw_receipt):
 
     td.lines = []
 
-    if hasattr(receipt, 'order'): #raw_receipt.schema.standard_v1.
-        # n = len(receipt.order.line_items)
+    if hasattr(receipt, 'order'): 
         for line in receipt.order.line_items:
-            # TODO: fix discounts!
             if not line.is_discount:
                 td.lines.append(get_line_data(line))
             else:
-                # if line.line_number == 2 and line.is_discount:
                 if line.is_discount_with_vat_calculated:
                     td.lines.append(get_line_data(line))
-
 
     else:
         print('No tiene order')
@@ -307,17 +249,12 @@ def get_cash_statement(receipts):
     return cs
 
 def get_raw_receipts(transactions):
-    # ff = lambda x: hasattr(x.schema, 'standard_v1') and hasattr(x.schema.standard_v1, 'receipt')
-    # mf = lambda x: x.schema.standard_v1.receipt
-    # receipts = map(mf, filter(ff, transactions.data))
-
     return list(filter(transaction_is_receipt, transactions.data))
 
 def get_receipt(raw_receipt):
     return raw_receipt.schema.standard_v1.receipt
 
 def get_receipts(raw_receipts):
-    # mf = lambda x: x.schema.standard_v1.receipt
     receipts = map(get_receipt, raw_receipts)
 
     return list(receipts)
@@ -326,12 +263,12 @@ def set_receipt_amounts_per_vat_id(raw_receipt):
     amounts_per_vat_id = []
     receipt = get_receipt(raw_receipt)
 
-    amounts_per_vat_rate = receipt.amounts_per_vat_rate #raw_receipt.schema.standard_v1.
+    amounts_per_vat_rate = receipt.amounts_per_vat_rate
     for amount_per_vat_rate in amounts_per_vat_rate:
         if float(amount_per_vat_rate.amount) > 0.0:
             amounts_per_vat_id.append(AmountPerVat(amount_per_vat_rate))
 
-    receipt.amounts_per_vat_id = amounts_per_vat_id # raw_receipt.schema.standard_v1.
+    receipt.amounts_per_vat_id = amounts_per_vat_id
 
 def add_amounts_per_vat_id(raw_receipts):
     for r in raw_receipts:
@@ -346,15 +283,9 @@ def build_cash_closing(transactions, options, products_provider):
     cc.head = get_head(transactions)
     add_order_to_receipt(transactions, products_provider)
 
-    # mf = lambda x: hasattr(x.schema, 'standard_v1') and hasattr(x.schema.standard_v1, 'receipt')
-    # receipts = map(lambda x: x.schema.standard_v1.receipt, filter(mf, transactions.data))
     raw_receipts = get_raw_receipts(transactions)
     add_amounts_per_vat_id(raw_receipts)
     receipts = get_receipts(raw_receipts)
-    # print(json.dumps(receipts.__dict__))
-    # print(json.dumps(list(receipts), default=lambda s: vars(s)))
-    # print(json.loads(json.dumps(list(receipts), default=lambda s: vars(s))))
-    # print(str(vars(list(receipts))))
     cc.cash_statement = get_cash_statement(receipts)
     cc.transactions = get_transactions(raw_receipts)
     return cc
@@ -390,7 +321,6 @@ def add_order_to_receipt(transactions, products_provider):
 
     for tx in txs:
         if transaction_is_order(tx):
-            # if hasattr(tx, 'schema') and hasattr(tx.schema, 'standard_v1') and hasattr(tx.schema.standard_v1, 'order'):
             order = tx.schema.standard_v1.order
             line_number = 1
             for l in order.line_items:
@@ -435,6 +365,5 @@ def add_order_to_receipt(transactions, products_provider):
 
     for tx in txs:
         if transaction_is_receipt(tx):
-            # if hasattr(tx, 'schema') and hasattr(tx.schema, 'standard_v1') and hasattr(tx.schema.standard_v1, 'receipt'):
             if hasattr(tx, 'metadata') and hasattr(tx.metadata, 'order_id'):
                 tx.schema.standard_v1.receipt.order = orders[tx.metadata.order_id]
