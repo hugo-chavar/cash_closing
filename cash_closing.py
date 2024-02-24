@@ -324,41 +324,36 @@ def add_order_to_receipt(transactions, products_provider):
             order = tx.schema.standard_v1.order
             line_number = 1
             for l in order.line_items:
-                try:
-                    l.line_number = line_number
-                    line_number += 1
-                    l.is_discount = float(l.price_per_unit) < 0
-                    if not l.is_discount:
-                        id = int(l.text.split(' - ', 1)[0])
-                        product = products_provider.get_by_id(id)
-                        l.id = product.id
-                        l.vat = product.vat
-                        l.description = product.title
-                    elif l.line_number == 2: # there are only 2 lines and the 2nd is discount
+                l.line_number = line_number
+                line_number += 1
+                l.is_discount = float(l.price_per_unit) < 0
+                if not l.is_discount:
+                    id = int(l.text.split(' - ', 1)[0])
+                    product = products_provider.get_by_id(id)
+                    l.id = product.id
+                    l.vat = product.vat
+                    l.description = product.title
+                elif l.line_number == 2: # there are only 2 lines and the 2nd is discount
+                    l.vat = order.line_items[0].vat
+                    l.description = l.text
+                    l.is_discount_with_vat_calculated = True
+                else: 
+                    first_vat = order.line_items[0].vat
+
+                    all_same_vat = reduce(lambda a, b:  a and b, [x.vat == first_vat for x in order.line_items if not x.is_discount], True )
+                    if all_same_vat: # there are many lines but all have the same VAT rate
                         l.vat = order.line_items[0].vat
                         l.description = l.text
                         l.is_discount_with_vat_calculated = True
-                    else: 
-                        first_vat = order.line_items[0].vat
+                    else: # TODO: treat all cases
+                        # TODO: throw error here we can't handle it yet
+                        l.is_discount_with_vat_calculated = False
+                        continue
 
-                        all_same_vat = reduce(lambda a, b:  a and b, [x.vat == first_vat for x in order.line_items if not x.is_discount], True )
-                        if all_same_vat: # there are many lines but all have the same VAT rate
-                            l.vat = order.line_items[0].vat
-                            l.description = l.text
-                            l.is_discount_with_vat_calculated = True
-                        else: # TODO: treat all cases
-                            l.is_discount_with_vat_calculated = False
-                            continue
-
-                    l.amount = float(l.quantity) * float(l.price_per_unit)
-                    l.vat_without_discount = l.amount * l.vat # TODO we still not need this
-                    
-                    l.business_case = get_line_business_case(l)
-                except Exception as e:
-                    txt = 'Tx: ' + str(tx.number) + ' ' + str(e) + '\n'
-                    print( txt)
-                    raise Exception(txt)
-
+                l.amount = float(l.quantity) * float(l.price_per_unit)
+                l.vat_without_discount = l.amount * l.vat # TODO we still not need this
+                
+                l.business_case = get_line_business_case(l)
 
 
             orders[tx._id] = order
