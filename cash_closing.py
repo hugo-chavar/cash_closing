@@ -15,7 +15,6 @@ class JsonSerializable:
         if not hasattr(self, "__dict__"):
             return self
         new_subdic = vars(self)
-        # new_subdic = {k: v for k, v in vars(self).items() if not k.startswith('_')}
         for key, value in new_subdic.items():
             if isinstance(value, JsonSerializable):
                 new_subdic[key] = value.get_dict()
@@ -191,7 +190,7 @@ def get_transaction_head(receipt):
 
 def get_transaction_data(raw_receipt):
     td = TransactionData()
-    receipt = get_receipt(raw_receipt) # raw_receipt.schema.standard_v1.receipt
+    receipt = get_receipt(raw_receipt)
     td.amounts_per_vat_id = receipt.amounts_per_vat_id
     sum = lambda x, y: x + y
 
