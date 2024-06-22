@@ -90,7 +90,8 @@ class TransactionData(JsonSerializable):
     pass
 
 class Reference(JsonSerializable):
-    pass
+    def __init__(self, *args):
+        self.type = "InterneTransaktion"
 
 class TransactionSecurity(JsonSerializable):
     pass
@@ -194,7 +195,7 @@ def get_transaction_head(receipt, receipt_number):
     th.references = []
     if hasattr(receipt, 'metadata') and hasattr(receipt.metadata, 'order_id'):
         r = Reference()
-        r.order_id = receipt.metadata.order_id
+        r.tx_id = receipt.metadata.order_id
         th.references.append(r)
 
     th.transaction_export_id = format_date_number(receipt.time_start, receipt.number)
@@ -220,12 +221,19 @@ def get_transaction_data(raw_receipt):
     td.lines = []
 
     if hasattr(receipt, 'order'): 
+        line_number = 0
         for line in receipt.order.line_items:
             if not line.is_discount:
-                td.lines.append(get_line_data(line))
+                line_number += 1
+                line_data = get_line_data(line)
+                line_data.lineitem_export_id = line_number
+                td.lines.append(line_data)
             else:
                 if line.is_discount_with_vat_calculated:
-                    td.lines.append(get_line_data(line))
+                    line_number += 1
+                    line_data = get_line_data(line)
+                    line_data.lineitem_export_id = line_number
+                    td.lines.append(line_data)
 
     else:
         print('No tiene order')
