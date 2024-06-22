@@ -1,5 +1,6 @@
-import time
+import datetime
 import json
+import time
 from functools import reduce
 from itertools import chain, groupby
 
@@ -115,12 +116,24 @@ def get_timestamp():
 def get_client_id(transactions):
     return transactions.data[0].client_id
 
+def format_date_number(timestamp, number):
+    date_time = datetime.datetime.fromtimestamp(timestamp)
+    formatted_date = date_time.strftime('%Y-%m-%d')
+    formatted_number = str(number).zfill(7)
+    return f"{formatted_date}-{formatted_number}"
+
 def get_head(transactions):
     # TODO fix first and last
     cch = CashClosingHead()
     cch.export_creation_date = get_timestamp()
-    cch.first_transaction_export_id = 1
-    cch.last_transaction_export_id = 100
+
+    sorted_data = sorted(transactions.data, key=lambda x: (x.time_start, x.number))
+
+    min_element = sorted_data[0]
+    max_element = sorted_data[-1]
+
+    cch.first_transaction_export_id = format_date_number(min_element.time_start, min_element.number)
+    cch.last_transaction_export_id = format_date_number(max_element.time_start, max_element.number)
 
     return cch
 
@@ -169,7 +182,7 @@ def get_payment(receipts):
             
     return p
 
-def get_transaction_head(receipt):
+def get_transaction_head(receipt, receipt_number):
     th = TransactionHead()
     th.type = "Beleg"
     th.storno = False
@@ -177,14 +190,14 @@ def get_transaction_head(receipt):
     th.timestamp_start = receipt.time_start
     th.timestamp_end = receipt.time_end
     th.tx_id = receipt._id
+    th.number = receipt_number
     th.references = []
     if hasattr(receipt, 'metadata') and hasattr(receipt.metadata, 'order_id'):
         r = Reference()
         r.order_id = receipt.metadata.order_id
         th.references.append(r)
 
-    # TODO fix this to a consecutive number
-    th.transaction_export_id = receipt.number
+    th.transaction_export_id = format_date_number(receipt.time_start, receipt.number)
 
     return th
 
@@ -226,11 +239,13 @@ def get_transaction_security(receipt):
 
     return ts
 
-def get_transactions(receipts):
+def get_transactions(receipts, last_receipt_number):
     transactions = []
+    receipt_number = last_receipt_number
     for receipt in receipts:
         t = Transaction()
-        t.head = get_transaction_head(receipt)
+        receipt_number += 1
+        t.head = get_transaction_head(receipt, receipt_number)
         t.data = get_transaction_data(receipt)
         t.security = get_transaction_security(receipt)
 
@@ -286,7 +301,10 @@ def build_cash_closing(transactions, options, products_provider):
     add_amounts_per_vat_id(raw_receipts)
     receipts = get_receipts(raw_receipts)
     cc.cash_statement = get_cash_statement(receipts)
-    cc.transactions = get_transactions(raw_receipts)
+
+    last_receipt_number = options["last_receipt_number"]
+
+    cc.transactions = get_transactions(raw_receipts, last_receipt_number)
     return cc
 
 def get_line_data(line):
