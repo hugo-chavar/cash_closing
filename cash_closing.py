@@ -91,7 +91,7 @@ class TransactionData(JsonSerializable):
 
 class Reference(JsonSerializable):
     def __init__(self, *args):
-        self.type = "InterneTransaktion"
+        self.type = "Transaktion"
 
 class TransactionSecurity(JsonSerializable):
     pass
@@ -192,11 +192,18 @@ def get_transaction_head(receipt, receipt_number):
     th.timestamp_end = receipt.time_end
     th.tx_id = receipt._id
     th.number = receipt_number
-    th.references = []
-    if hasattr(receipt, 'metadata') and hasattr(receipt.metadata, 'order_id'):
-        r = Reference()
-        r.tx_id = receipt.metadata.order_id
-        th.references.append(r)
+    
+    # We need here the whole order to get:
+    #  - date
+    #  - transaction_export_id
+    # Also we have to copy here the cash_point_closing_export_id (and it is the same of this whole cash closing)
+    # Also we need cash_register_export_id. Not sure what to put there
+    # Conclusion: Not use references
+    # if hasattr(receipt, 'metadata') and hasattr(receipt.metadata, 'order_id'):
+    #     th.references = []
+    #     r = Reference()
+    #     r.tx_id = receipt.metadata.order_id
+    #     th.references.append(r)
 
     th.transaction_export_id = format_date_number(receipt.time_start, receipt.number)
 
@@ -243,7 +250,7 @@ def get_transaction_data(raw_receipt):
 
 def get_transaction_security(receipt):
     ts = TransactionSecurity()
-    ts.tss_tx_id = receipt.tss_id
+    ts.tss_tx_id = receipt._id
 
     return ts
 
