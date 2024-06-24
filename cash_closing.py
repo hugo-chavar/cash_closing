@@ -43,6 +43,15 @@ class AmountPerVat(JsonSerializable):
         if len(args) == 0:
             return
         
+        if len(args) == 3:
+            self.vat_definition_export_id =  args[0]
+            self.incl_vat = args[1]
+            self.vat = args[2]
+            excl_vat = (Decimal(str(self.incl_vat)) - Decimal(str(self.vat))).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+            self.excl_vat = float(excl_vat)
+            return
+
+
         vat_name = ""
         amount = 0.0
         if len(args) == 1:
@@ -60,9 +69,8 @@ class AmountPerVat(JsonSerializable):
                 print(str(args))
                 raise Exception(str(e) + ' ** ' + str(args) )
         
-        elif len(args) == 2:
-            self.vat_definition_export_id =  args[0]
-            amount = args[1]
+        else:
+            raise Exception(f"AmountPerVat invalid number of arguments: {len(args)}")
 
         
         self.incl_vat = amount
@@ -149,14 +157,20 @@ def get_business_case(receipts):
     bc.type = "Umsatz"
     bc.amounts_per_vat_id = []
 
-    amount1 = precise_sum([a.incl_vat for r in receipts for a in r.amounts_per_vat_id if a.is_normal()])
+    # amount1 = precise_sum([a.incl_vat for r in receipts for a in r.amounts_per_vat_id if a.is_normal()])
 
-    amount2 = precise_sum([a.incl_vat for r in receipts for a in r.amounts_per_vat_id if not a.is_normal()])
+    # amount2 = precise_sum([a.incl_vat for r in receipts for a in r.amounts_per_vat_id if not a.is_normal()])
 
-    if amount1 > 0:
-        bc.amounts_per_vat_id.append(AmountPerVat(NORMAL_VAT_RATE, amount1))
-    if amount2 > 0:
-        bc.amounts_per_vat_id.append(AmountPerVat(REDUCED_VAT_RATE, amount2))
+    incl_vat1 = precise_sum([a.incl_vat for r in receipts for a in r.amounts_per_vat_id if a.is_normal()])
+    vat1 = precise_sum([a.vat for r in receipts for a in r.amounts_per_vat_id if a.is_normal()])
+
+    incl_vat2 = precise_sum([a.incl_vat for r in receipts for a in r.amounts_per_vat_id if not a.is_normal()])
+    vat2 = precise_sum([a.vat for r in receipts for a in r.amounts_per_vat_id if not a.is_normal()])
+
+    if incl_vat1 > 0:
+        bc.amounts_per_vat_id.append(AmountPerVat(NORMAL_VAT_RATE, incl_vat1, vat1))
+    if incl_vat2 > 0:
+        bc.amounts_per_vat_id.append(AmountPerVat(REDUCED_VAT_RATE, incl_vat2, vat2))
 
     return bc
 
@@ -241,6 +255,7 @@ def get_transaction_data(raw_receipt):
     if hasattr(receipt, 'order'): 
         line_number = 0
         for line in receipt.order.line_items:
+            # TODO add here info that goes to the line
             if not line.is_discount:
                 line_number += 1
                 line_data = get_line_data(line)
@@ -326,11 +341,12 @@ def build_cash_closing(transactions, options, products_provider):
     raw_receipts = get_raw_receipts(transactions)
     add_amounts_per_vat_id(raw_receipts)
     receipts = get_receipts(raw_receipts)
-    cc.cash_statement = get_cash_statement(receipts)
 
     last_receipt_number = options["last_receipt_number"]
 
     cc.transactions = get_transactions(raw_receipts, last_receipt_number)
+    cc.cash_statement = get_cash_statement(receipts)
+
     return cc
 
 def get_line_data(line):
