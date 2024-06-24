@@ -1,4 +1,5 @@
 import datetime
+import decimal
 import json
 import time
 from functools import reduce
@@ -153,13 +154,18 @@ def get_business_case(receipts):
 
     return bc
 
+def precise_sum(elements):
+    decimal.getcontext().prec = 28  # Set precision
+    sum_decimal = reduce(decimal.Decimal.__add__, [decimal.Decimal(str(e)) for e in elements], decimal.Decimal('0.0'))
+    return float(sum_decimal)
+
 def get_payment(receipts):
     p = Payment()
     mapptf = lambda x: x.amounts_per_payment_type
     all_amounts_per_payment_type = list(chain.from_iterable(map(mapptf, receipts)))
-    sum = lambda x, y: x + y
-    p.full_amount = reduce(sum, [float(a.amount) for a in all_amounts_per_payment_type], 0.0)
-    p.cash_amount = reduce(sum, [float(a.amount) for a in all_amounts_per_payment_type if a.payment_type == "CASH"], 0.0)
+
+    p.full_amount = precise_sum([a.amount for a in all_amounts_per_payment_type])
+    p.cash_amount = precise_sum([a.amount for a in all_amounts_per_payment_type if a.payment_type == "CASH"])
     
     p.cash_amounts_by_currency = []
     clause = lambda x: (x.currency_code, "Bar" if x.payment_type == "CASH" else "Unbar")
@@ -169,7 +175,7 @@ def get_payment(receipts):
         a = AmountByCurrency()
         a.currency_code = key
         c = list(group)
-        a.amount = reduce(sum, [float(a.amount) for a in c], 0.0)
+        a.amount = precise_sum([a.amount for a in c])
         p.cash_amounts_by_currency.append(a)
             
     p.payment_types = []
@@ -178,7 +184,7 @@ def get_payment(receipts):
         a.currency_code = key[0]
         a.type = key[1]
         c = list(group)
-        a.amount = reduce(sum, [float(a.amount) for a in c], 0.0)
+        a.amount = precise_sum([a.amount for a in c])
         p.payment_types.append(a)
             
     return p
@@ -213,9 +219,8 @@ def get_transaction_data(raw_receipt):
     td = TransactionData()
     receipt = get_receipt(raw_receipt)
     td.amounts_per_vat_id = receipt.amounts_per_vat_id
-    sum = lambda x, y: x + y
 
-    td.full_amount_incl_vat = reduce(sum, [x.incl_vat for x in td.amounts_per_vat_id], 0.0)
+    td.full_amount_incl_vat =  float(reduce(decimal.Decimal.__add__, [decimal.Decimal(str(x.incl_vat)) for x in td.amounts_per_vat_id], decimal.Decimal('0.0')))
     td.payment_types = []
 
     for appt in receipt.amounts_per_payment_type:
