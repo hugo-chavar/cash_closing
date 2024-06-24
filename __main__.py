@@ -231,15 +231,17 @@ import cash_closing
 #         return self.prod_dict_by_title[title]
       
 
-TRANSACTIONS_FILENAME = 'ListofTransactions.json'
-CASH_CLOSING_FILENAME = 'result2_new2.json'
-CASH_CLOSING_UNFORMATTED_FILENAME = 'resultUNF_new.json'
+TRANSACTIONS_FILENAME = 'merged_file_filter1.json'
+CASH_CLOSING_FILENAME = 'result2_prod_8.json'
+CASH_CLOSING_UNFORMATTED_FILENAME = 'resultUNF_prod_0.json'
 
 options = {
     "last_cash_point_closing_export_id": 0,
     "cash_register": "e2bc3f5a-1130-4d08-ac54-0fb6730d3963",
     "last_receipt_number": 0,
 }
+
+print(f"WARNING: check last_cash_point_closing_export_id {options['last_cash_point_closing_export_id']} | last_receipt_number {options['last_receipt_number']} ")
 
 with open(TRANSACTIONS_FILENAME, encoding='utf-8', mode='r') as f:
     j = json.load(f, object_hook=lambda d: SimpleNamespace(**d))
