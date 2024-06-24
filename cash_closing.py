@@ -1,7 +1,7 @@
 import datetime
-import decimal
 import json
 import time
+from decimal import Decimal, ROUND_HALF_UP, getcontext
 from functools import reduce
 from itertools import chain, groupby
 
@@ -66,9 +66,14 @@ class AmountPerVat(JsonSerializable):
 
         
         self.incl_vat = amount
-        vat_rate = 19.0 if self.is_normal() else 7.0 # TODO get the vat_rate from the product
-        self.vat = round(self.incl_vat * vat_rate / 100.0, 2)
-        self.excl_vat = round(self.incl_vat - self.vat, 2)
+        vat_rate = Decimal(19.0) if self.is_normal() else Decimal(7.0) # TODO get the vat_rate from the product
+        
+        vat = (Decimal(amount) * vat_rate / Decimal(100.0)).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+        self.vat = float(vat)
+        
+        
+        excl_vat = (Decimal(amount) - vat).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+        self.excl_vat = float(excl_vat)
 
     
     def is_normal(self):
@@ -144,8 +149,9 @@ def get_business_case(receipts):
     bc.type = "Umsatz"
     bc.amounts_per_vat_id = []
 
-    amount1 = sum(a.incl_vat for r in receipts for a in r.amounts_per_vat_id if a.is_normal())
-    amount2 = sum(a.incl_vat for r in receipts for a in r.amounts_per_vat_id if not a.is_normal())
+    amount1 = precise_sum([a.incl_vat for r in receipts for a in r.amounts_per_vat_id if a.is_normal()])
+
+    amount2 = precise_sum([a.incl_vat for r in receipts for a in r.amounts_per_vat_id if not a.is_normal()])
 
     if amount1 > 0:
         bc.amounts_per_vat_id.append(AmountPerVat(NORMAL_VAT_RATE, amount1))
@@ -155,8 +161,8 @@ def get_business_case(receipts):
     return bc
 
 def precise_sum(elements):
-    decimal.getcontext().prec = 28  # Set precision
-    sum_decimal = reduce(decimal.Decimal.__add__, [decimal.Decimal(str(e)) for e in elements], decimal.Decimal('0.0'))
+    getcontext().prec = 28  # Set precision
+    sum_decimal = reduce(Decimal.__add__, [Decimal(str(e)) for e in elements], Decimal('0.0'))
     return float(sum_decimal)
 
 def get_payment(receipts):
@@ -220,7 +226,7 @@ def get_transaction_data(raw_receipt):
     receipt = get_receipt(raw_receipt)
     td.amounts_per_vat_id = receipt.amounts_per_vat_id
 
-    td.full_amount_incl_vat =  float(reduce(decimal.Decimal.__add__, [decimal.Decimal(str(x.incl_vat)) for x in td.amounts_per_vat_id], decimal.Decimal('0.0')))
+    td.full_amount_incl_vat =  precise_sum([x.incl_vat for x in td.amounts_per_vat_id])
     td.payment_types = []
 
     for appt in receipt.amounts_per_payment_type:
