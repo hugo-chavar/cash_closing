@@ -131,9 +131,12 @@ def get_timestamp():
 def get_client_id(transactions):
     return transactions.data[0].client_id
 
-def format_date_number(timestamp, number):
+def get_formatted_date(timestamp):
     date_time = datetime.datetime.fromtimestamp(timestamp)
-    formatted_date = date_time.strftime('%Y-%m-%d')
+    return date_time.strftime('%Y-%m-%d')
+
+def format_date_number(timestamp, number):
+    formatted_date = get_formatted_date(timestamp)
     formatted_number = str(number).zfill(7)
     return f"{formatted_date}-{formatted_number}"
 
@@ -146,6 +149,7 @@ def get_head(transactions):
 
     cch.first_transaction_export_id = format_date_number(min_element.head.timestamp_start, 1)
     cch.last_transaction_export_id = format_date_number(max_element.head.timestamp_start, len(transactions))
+    cch.business_date = get_formatted_date(max_element.head.timestamp_start)
 
     return cch
 
