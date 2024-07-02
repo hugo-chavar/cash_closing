@@ -138,17 +138,14 @@ def format_date_number(timestamp, number):
     return f"{formatted_date}-{formatted_number}"
 
 def get_head(transactions):
-    # TODO fix first and last
     cch = CashClosingHead()
     cch.export_creation_date = get_timestamp()
 
-    sorted_data = sorted(transactions.data, key=lambda x: (x.time_start, x.number))
+    min_element = transactions[0]
+    max_element = transactions[-1]
 
-    min_element = sorted_data[0]
-    max_element = sorted_data[-1]
-
-    cch.first_transaction_export_id = format_date_number(min_element.time_start, min_element.number)
-    cch.last_transaction_export_id = format_date_number(max_element.time_start, max_element.number)
+    cch.first_transaction_export_id = format_date_number(min_element.head.timestamp_start, 1)
+    cch.last_transaction_export_id = format_date_number(max_element.head.timestamp_start, len(transactions))
 
     return cch
 
@@ -209,7 +206,7 @@ def get_payment(receipts):
             
     return p
 
-def get_transaction_head(receipt, receipt_number):
+def get_transaction_head(receipt, receipt_number, tx_export_number):
     th = TransactionHead()
     th.type = "Beleg"
     th.storno = False
@@ -231,7 +228,7 @@ def get_transaction_head(receipt, receipt_number):
     #     r.tx_id = receipt.metadata.order_id
     #     th.references.append(r)
 
-    th.transaction_export_id = format_date_number(receipt.time_start, receipt.number)
+    th.transaction_export_id = format_date_number(receipt.time_start, tx_export_number)
 
     return th
 
@@ -282,11 +279,12 @@ def get_transaction_security(receipt):
 
 def get_transactions(receipts, last_receipt_number):
     transactions = []
-    receipt_number = last_receipt_number
+    tx_export_number = 0
     for receipt in receipts:
         t = Transaction()
-        receipt_number += 1
-        t.head = get_transaction_head(receipt, receipt_number)
+        tx_export_number += 1
+        receipt_number = last_receipt_number + tx_export_number
+        t.head = get_transaction_head(receipt, receipt_number, tx_export_number)
         t.data = get_transaction_data(receipt)
         t.security = get_transaction_security(receipt)
 
@@ -335,7 +333,6 @@ def build_cash_closing(transactions, options, products_provider):
 
     cc.client_id = get_client_id(transactions)
 
-    cc.head = get_head(transactions)
     add_order_to_receipt(transactions, products_provider)
 
     raw_receipts = get_raw_receipts(transactions)
@@ -346,6 +343,7 @@ def build_cash_closing(transactions, options, products_provider):
 
     cc.transactions = get_transactions(raw_receipts, last_receipt_number)
     cc.cash_statement = get_cash_statement(receipts)
+    cc.head = get_head(cc.transactions)
 
     return cc
 
