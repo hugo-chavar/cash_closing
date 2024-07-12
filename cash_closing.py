@@ -214,27 +214,32 @@ def get_transaction_head(receipt, receipt_number, tx_export_number):
     th = TransactionHead()
     th.type = "Beleg"
     th.storno = False
-    th.closing_client_id = receipt.client_id
-    th.timestamp_start = receipt.time_start
-    th.timestamp_end = receipt.time_end
-    th.tx_id = receipt._id
-    th.number = receipt_number
-    
-    # We need here the whole order to get:
-    #  - date
-    #  - transaction_export_id
-    # Also we have to copy here the cash_point_closing_export_id (and it is the same of this whole cash closing)
-    # Also we need cash_register_export_id. Not sure what to put there
-    # Conclusion: Not use references
-    # if hasattr(receipt, 'metadata') and hasattr(receipt.metadata, 'order_id'):
-    #     th.references = []
-    #     r = Reference()
-    #     r.tx_id = receipt.metadata.order_id
-    #     th.references.append(r)
+    try:
+        th.closing_client_id = receipt.client_id
+        th.timestamp_start = receipt.time_start
+        th.timestamp_end = receipt.time_end
+        th.tx_id = receipt._id
+        th.number = receipt_number
+        
+        # We need here the whole order to get:
+        #  - date
+        #  - transaction_export_id
+        # Also we have to copy here the cash_point_closing_export_id (and it is the same of this whole cash closing)
+        # Also we need cash_register_export_id. Not sure what to put there
+        # Conclusion: Not use references
+        # if hasattr(receipt, 'metadata') and hasattr(receipt.metadata, 'order_id'):
+        #     th.references = []
+        #     r = Reference()
+        #     r.tx_id = receipt.metadata.order_id
+        #     th.references.append(r)
 
-    th.transaction_export_id = format_date_number(receipt.time_start, tx_export_number)
+        th.transaction_export_id = format_date_number(receipt.time_start, tx_export_number)
 
-    return th
+        return th
+    except AttributeError as e:
+        error_message = f"Receipt ID: {receipt._id}.\nReceipt Number: {receipt_number}.\nError: {str(e)}"
+        raise AttributeError(error_message) from e
+
 
 def get_transaction_data(raw_receipt):
     td = TransactionData()
@@ -253,7 +258,7 @@ def get_transaction_data(raw_receipt):
 
     td.lines = []
 
-    if hasattr(receipt, 'order'): 
+    if hasattr(receipt, 'order'):  
         line_number = 0
         for line in receipt.order.line_items:
             # TODO add here info that goes to the line
@@ -270,7 +275,7 @@ def get_transaction_data(raw_receipt):
                     td.lines.append(line_data)
 
     else:
-        print('No tiene order')
+        print(f"No tiene order. Raw receipt number: {raw_receipt.number}")
         print(str(receipt))
 
     return td
@@ -285,14 +290,17 @@ def get_transactions(receipts, last_receipt_number):
     transactions = []
     tx_export_number = 0
     for receipt in receipts:
-        t = Transaction()
-        tx_export_number += 1
-        receipt_number = last_receipt_number + tx_export_number
-        t.head = get_transaction_head(receipt, receipt_number, tx_export_number)
-        t.data = get_transaction_data(receipt)
-        t.security = get_transaction_security(receipt)
+        if receipt.state == "FINISHED":
+            t = Transaction()
+            tx_export_number += 1
+            receipt_number = last_receipt_number + tx_export_number
+            t.head = get_transaction_head(receipt, receipt_number, tx_export_number)
+            t.data = get_transaction_data(receipt)
+            t.security = get_transaction_security(receipt)
 
-        transactions.append(t)
+            transactions.append(t)
+        else:
+            print(f"Receipt ID {receipt._id} is in state {receipt.state}. Ignoring")
 
     return transactions
 
@@ -420,6 +428,10 @@ def add_order_to_receipt(transactions, products_provider):
             orders[tx._id] = order
 
     for tx in txs:
-        if transaction_is_receipt(tx):
-            if hasattr(tx, 'metadata') and hasattr(tx.metadata, 'order_id'):
+        if transaction_is_receipt(tx) and hasattr(tx, 'metadata'):
+            if hasattr(tx.metadata, 'order_id'):
                 tx.schema.standard_v1.receipt.order = orders[tx.metadata.order_id]
+            
+            if hasattr(tx.metadata, 'fiskaly_order_id'):
+                tx.schema.standard_v1.receipt.order = orders[tx.metadata.fiskaly_order_id]
+            
