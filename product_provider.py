@@ -130,7 +130,9 @@ class ProductProvider():
         ("YOOTEA", Product(1866,"YOOTEA",5.9,7)),
         ("BIBIM MYUN", Product(1867,"BIBIM MYUN",29.9,7)),
         ("ALLEGRA", Product(1868,"ALLEGRA",4.7,7)),
-        ("GINGER NOODLE SALAD", Product(1869,"GINGER NOODLE SALAD",21.9,7))
+        ("GINGER NOODLE SALAD", Product(1869,"GINGER NOODLE SALAD",21.9,7)),
+        ("Mini Franky's Roll Lemon Cheesecake", Product(13824,"Mini Franky's Roll Lemon Cheesecake",2.9,0.7)),
+        ("beans", Product(13797,"beans",14,7))
     ])
 
     prod_dict_by_id = dict([
@@ -233,7 +235,9 @@ class ProductProvider():
         (1866, Product(1866,"YOOTEA",5.9,7)),
         (1867, Product(1867,"BIBIM MYUN",29.9,7)),
         (1868, Product(1868,"ALLEGRA",4.7,7)),
-        (1869, Product(1869,"GINGER NOODLE SALAD",21.9,7))
+        (1869, Product(1869,"GINGER NOODLE SALAD",21.9,7)),
+        (13824, Product(13824,"Mini Franky's Roll Lemon Cheesecake",2.9,0.7)),
+        (13797, Product(13797,"beans",14,7))
     ])
 
     def get_by_id(self, id):
