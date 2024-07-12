@@ -37,6 +37,6 @@ with open(TRANSACTIONS_FILENAME, encoding='utf-8', mode='r') as f:
 
    print(f"Transactions: {TRANSACTIONS_FILENAME}")
    print(f"Cash Closing: {CASH_CLOSING_FILENAME}")
-   print(f"last_receipt_number: {cash_closing_obj.transactions[-1]["head"]["number"]}")
+   print(f"last_receipt_number: {cash_closing_obj.transactions[-1].head.number}")
    print(f"last_cash_point_closing_export_id: {LAST_CASH_POINT_CLOSING_EXPORT_ID + 1}")
 
