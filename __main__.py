@@ -5,6 +5,15 @@ from types import SimpleNamespace
 from product_provider import ProductProvider
 import cash_closing
 
+
+def parse(d):
+    x = SimpleNamespace()
+    _ = [setattr(x, k,
+                 parse(v) if isinstance(v, dict)
+                 else [parse(e) for e in v] if isinstance(v, list)
+                 else v) for k, v in d.items()]
+    return x
+
 options = {
    "last_cash_point_closing_export_id": LAST_CASH_POINT_CLOSING_EXPORT_ID,
    "cash_register": "e2bc3f5a-1130-4d08-ac54-0fb6730d3963",
@@ -15,6 +24,11 @@ print(f"WARNING: check last_cash_point_closing_export_id {options['last_cash_poi
 
 with open(TRANSACTIONS_FILENAME, encoding='utf-8', mode='r') as f:
    j = json.load(f, object_hook=lambda d: SimpleNamespace(**d))
+
+# https://stackoverflow.com/questions/16877422/whats-the-best-way-to-parse-a-json-response-from-the-requests-library
+# https://medium.com/snowflake/json-methods-load-vs-loads-and-dump-vs-dumps-21434a520b17
+
+
 
    # print(str(j))
    print('')
