@@ -237,7 +237,18 @@ class ProductProvider():
         (1868, Product(1868,"ALLEGRA",4.7,7)),
         (1869, Product(1869,"GINGER NOODLE SALAD",21.9,7)),
         (13824, Product(13824,"Mini Franky's Roll Lemon Cheesecake",2.9,0.7)),
-        (13797, Product(13797,"beans",14,7))
+        (13797, Product(13797,"beans",14,7)),
+        (13826, Product(13826,"CBD Öl",75,19)),
+        (13841, Product(13841,"Lachs-Stulle mit Frischkäse",13.8,19)),
+        (13841, Product(13841,"Lachs-Stulle mit Frischkäse",13.8,19)),
+        (13863, Product(13863,"Mochi",4,7)),
+        (13864, Product(13864,"Pocky",2.99,7)),
+        (13865, Product(13865,"Oreo",3,7)),
+        (13908, Product(13908,"Black Sesame Latte",4.9,7)),
+        (13910, Product(13910,"Red Bean Pandan Latte",5.9,7)),
+        (13911, Product(13911,"Lavander Iced Latte",5.2,7)),
+        (13915, Product(13915,"Franky's Coffee",10.9,7)),
+        (13909, Product(13909,"Mango Ice Matcha Latte",5.7,7))
     ])
 
     def get_by_id(self, id):
