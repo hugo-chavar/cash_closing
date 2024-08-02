@@ -183,7 +183,7 @@ def precise_sum(elements):
 def get_payment(receipts):
     p = Payment()
     mapptf = lambda x: x.amounts_per_payment_type
-    all_amounts_per_payment_type = list(chain.from_iterable(map(mapptf, receipts)))
+    all_amounts_per_payment_type = list(chain.from_iterable(map(mapptf, [r for r in receipts if r.receipt_type == "RECEIPT"])))
 
     p.full_amount = precise_sum([a.amount for a in all_amounts_per_payment_type])
     p.cash_amount = precise_sum([a.amount for a in all_amounts_per_payment_type if a.payment_type == "CASH"])
@@ -212,7 +212,12 @@ def get_payment(receipts):
 
 def get_transaction_head(receipt, receipt_number, tx_export_number):
     th = TransactionHead()
-    th.type = "Beleg"
+    if receipt.state == 'FINISHED':
+        th.type = "Beleg"
+    elif receipt.state == 'CANCELLED':
+        th.type = "AVBelegabbruch"
+    else:
+        raise Exception(f"Receipt: {str(receipt)}\nState: {receipt.state}")
     th.storno = False
     try:
         th.closing_client_id = receipt.client_id
@@ -242,43 +247,50 @@ def get_transaction_head(receipt, receipt_number, tx_export_number):
 
 
 def get_transaction_data(raw_receipt):
-    td = TransactionData()
-    receipt = get_receipt(raw_receipt)
-    td.amounts_per_vat_id = receipt.amounts_per_vat_id
+    try:
+        td = TransactionData()
+        receipt = get_receipt(raw_receipt)
+        td.full_amount_incl_vat = 0.0
+        # avoid make computation when type is CANCELLATION
+        if receipt.receipt_type == 'RECEIPT':
+            td.amounts_per_vat_id = receipt.amounts_per_vat_id
 
-    td.full_amount_incl_vat =  precise_sum([x.incl_vat for x in td.amounts_per_vat_id])
-    td.payment_types = []
+            td.full_amount_incl_vat =  precise_sum([x.incl_vat for x in td.amounts_per_vat_id])
+            td.payment_types = []
 
-    for appt in receipt.amounts_per_payment_type:
-        a = AmountByCurrency()
-        a.currency_code = appt.currency_code
-        a.type = "Bar" if appt.payment_type == "CASH" else "Unbar"
-        a.amount = float(appt.amount)
-        td.payment_types.append(a)
+            for appt in receipt.amounts_per_payment_type:
+                a = AmountByCurrency()
+                a.currency_code = appt.currency_code
+                a.type = "Bar" if appt.payment_type == "CASH" else "Unbar"
+                a.amount = float(appt.amount)
+                td.payment_types.append(a)
 
-    td.lines = []
+            td.lines = []
 
-    if hasattr(receipt, 'order'):  
-        line_number = 0
-        for line in receipt.order.line_items:
-            # TODO add here info that goes to the line
-            if not line.is_discount:
-                line_number += 1
-                line_data = get_line_data(line)
-                line_data.lineitem_export_id = line_number
-                td.lines.append(line_data)
+            if hasattr(receipt, 'order'):  
+                line_number = 0
+                for line in receipt.order.line_items:
+                    # TODO add here info that goes to the line
+                    if not line.is_discount:
+                        line_number += 1
+                        line_data = get_line_data(line)
+                        line_data.lineitem_export_id = line_number
+                        td.lines.append(line_data)
+                    else:
+                        if line.is_discount_with_vat_calculated:
+                            line_number += 1
+                            line_data = get_line_data(line)
+                            line_data.lineitem_export_id = line_number
+                            td.lines.append(line_data)
+
             else:
-                if line.is_discount_with_vat_calculated:
-                    line_number += 1
-                    line_data = get_line_data(line)
-                    line_data.lineitem_export_id = line_number
-                    td.lines.append(line_data)
+                print(f"No tiene order. Raw receipt number: {raw_receipt.number}")
+                print(str(receipt))
 
-    else:
-        print(f"No tiene order. Raw receipt number: {raw_receipt.number}")
-        print(str(receipt))
+        return td
+    except AttributeError as e:
+        raise AttributeError(f"{str(receipt)}  - {str(e)}")
 
-    return td
 
 def get_transaction_security(receipt):
     ts = TransactionSecurity()
@@ -290,7 +302,7 @@ def get_transactions(receipts, last_receipt_number):
     transactions = []
     tx_export_number = 0
     for receipt in receipts:
-        if receipt.state == "FINISHED":
+        if receipt.state in ["FINISHED", "CANCELLED"]:
             t = Transaction()
             tx_export_number += 1
             receipt_number = last_receipt_number + tx_export_number
@@ -300,7 +312,7 @@ def get_transactions(receipts, last_receipt_number):
 
             transactions.append(t)
         else:
-            print(f"Receipt ID {receipt._id} is in state {receipt.state}. Ignoring")
+            raise (f"Receipt ID {receipt._id} is in state {receipt.state}. Ignoring")
 
     return transactions
 
