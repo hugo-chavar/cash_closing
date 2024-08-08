@@ -248,7 +248,10 @@ class ProductProvider():
         (13910, Product(13910,"Red Bean Pandan Latte",5.9,7)),
         (13911, Product(13911,"Lavander Iced Latte",5.2,7)),
         (13915, Product(13915,"Franky's Coffee",10.9,7)),
-        (13909, Product(13909,"Mango Ice Matcha Latte",5.7,7))
+        (13909, Product(13909,"Mango Ice Matcha Latte",5.7,7)),
+        (13999, Product(13999,"Lavendel Honig Latte",4.2,7)),
+        (14024, Product(14024,"Franky's Roll Pistacio",4.9,7)),
+        (14027, Product(14027,"Dirty Chai Latte",4.9,7))
     ])
 
     def get_by_id(self, id):
