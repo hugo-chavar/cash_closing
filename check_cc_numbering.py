@@ -4,8 +4,8 @@ from date_tests import truncate_timestamp_to_date, get_formatted_shortdate
 
 
 # Path to the folder containing JSON files
-# folder_path = 'closings/submitted'
-folder_path = 'closings4'
+folder_path = 'closings/submitted'
+# folder_path = 'closings6'
 
 
 # last_tx_number = 0

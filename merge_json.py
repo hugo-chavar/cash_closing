@@ -3,7 +3,7 @@ import os
 from product_provider import ProductProvider
 from date_tests import get_format_shortdate, get_german_date
 from cash_closing_config import Config
-from constants import LAST_CASH_POINT_CLOSING_EXPORT_ID, BASE_TIMESTAMP, LAST_RECEIPT_NUMBER
+from constants import LAST_CASH_POINT_CLOSING_EXPORT_ID, BASE_TIMESTAMP, LAST_RECEIPT_NUMBER, LAST_CASH_CLOSING_TO_PROCESS
 
 # # 20240711 - 1720648800
 # # Next START_TIME: 20240712 - 1720735200
@@ -81,7 +81,7 @@ def split_json_files_by_bussiness_date(input_folder, config):
     print(f"filtered_count: {filtered_count}. From {config.timestamp_low()} to {config.timestamp_high()}")
     print(f"Date {config.bussiness_date()}")
 
-    while config.last_cc_export_id < 39:
+    while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
         if filtered_count > 0:
             merged_dict = {
                 "data": filtered_data,
@@ -191,7 +191,8 @@ def merge_json_files(input_folder, config):
 # merge_json_files(input_folder, config)
 
 # split_json_files_by_bussiness_date
-config = Config(BASE_TIMESTAMP)
+# config = Config(BASE_TIMESTAMP)
+config = Config(BASE_TIMESTAMP, LAST_CASH_POINT_CLOSING_EXPORT_ID, LAST_RECEIPT_NUMBER)
 split_json_files_by_bussiness_date(input_folder, config)
 
 print(f"Next START_TIME: {config.timestamp_high()}")

@@ -1,6 +1,6 @@
 import json
 import time
-from constants import CASH_CLOSING_FILENAME, CASH_CLOSING_UNFORMATTED_FILENAME, TRANSACTIONS_FILENAME, LAST_CASH_POINT_CLOSING_EXPORT_ID, LAST_RECEIPT_NUMBER, BASE_TIMESTAMP
+from constants import CASH_CLOSING_FILENAME, CASH_CLOSING_UNFORMATTED_FILENAME, TRANSACTIONS_FILENAME, LAST_CASH_POINT_CLOSING_EXPORT_ID, LAST_RECEIPT_NUMBER, BASE_TIMESTAMP, LAST_CASH_CLOSING_TO_PROCESS
 from types import SimpleNamespace
 from product_provider import ProductProvider
 from cash_closing_config import Config
@@ -61,7 +61,7 @@ def process_closing(config: Config):
 config = Config(BASE_TIMESTAMP, last_cc_export_id=LAST_CASH_POINT_CLOSING_EXPORT_ID, last_receipt_number=LAST_RECEIPT_NUMBER)
 config.cash_register = "e2bc3f5a-1130-4d08-ac54-0fb6730d3963"
 
-while config.last_cc_export_id < 39:
+while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
 
    print(f"Date {config.bussiness_date()}")
    process_closing(config)

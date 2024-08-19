@@ -28,7 +28,7 @@ class Config:
         return self.last_cc_export_id + 1
     
     def transactions_filename(self):
-        return f'merged6\\merged_file_filter_{self.cc_number():03}_{format_shortdate(self.bussiness_date())}.json'
+        return f'merged7\\merged_file_filter_{self.cc_number():03}_{format_shortdate(self.bussiness_date())}.json'
     
     def cash_closing_filename(self):
         return f'closings6\\CASH_CLOSING_{self.cc_number():03}_{format_shortdate(self.bussiness_date())}.json'

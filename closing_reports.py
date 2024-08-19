@@ -3,9 +3,9 @@ import json
 import csv
 
 # Path to the folder containing JSON files
-# folder_path = 'closings/submitted'
-folder_path = 'closings6'
-csv_file_path = 'report3.csv'
+folder_path = 'closings/submitted'
+# folder_path = 'closings6'
+csv_file_path = 'report7.csv'
 # List to hold data for CSV
 data = []
 
