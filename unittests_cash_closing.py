@@ -7,7 +7,6 @@ from cash_closing_config import Config
 config = Config(BASE_TIMESTAMP, last_cc_export_id=LAST_CASH_POINT_CLOSING_EXPORT_ID, last_receipt_number=LAST_RECEIPT_NUMBER)
 config.cash_register = "e2bc3f5a-1130-4d08-ac54-0fb6730d3963"
 
-config.cash_closing_filename()
 
 # Load the JSON data
 with open(config.cash_closing_filename(), 'r') as f:

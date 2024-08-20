@@ -1,16 +1,20 @@
 import json
 import unittest
 from decimal import Decimal, getcontext, ROUND_HALF_UP
-from constants import CASH_CLOSING_FILENAME, CASH_CLOSING_UNFORMATTED_FILENAME, TRANSACTIONS_FILENAME
+from constants import CASH_CLOSING_FILENAME, CASH_CLOSING_UNFORMATTED_FILENAME, TRANSACTIONS_FILENAME, BASE_TIMESTAMP, LAST_CASH_POINT_CLOSING_EXPORT_ID, LAST_RECEIPT_NUMBER
+from cash_closing_config import Config
 
 getcontext().prec = 28
 
+config = Config(BASE_TIMESTAMP, last_cc_export_id=LAST_CASH_POINT_CLOSING_EXPORT_ID, last_receipt_number=LAST_RECEIPT_NUMBER)
+config.cash_register = "e2bc3f5a-1130-4d08-ac54-0fb6730d3963"
+
 # Load the JSON data from the merged file
-with open(TRANSACTIONS_FILENAME, 'r') as f:
+with open(config.transactions_filename(), 'r') as f:
     merged_data = json.load(f)
 
 # Load the JSON data from the result file
-with open(CASH_CLOSING_FILENAME, 'r') as f:
+with open(config.cash_closing_filename(), 'r') as f:
     result_data = json.load(f)
 
 class TestMergedFileAgainstResultFile(unittest.TestCase):
