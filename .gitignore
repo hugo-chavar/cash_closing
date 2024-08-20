@@ -3,6 +3,7 @@ jobs
 logs
 config
 *.json
+*.csv
 .env
 .pylintrc
 *.txt
