@@ -3,7 +3,7 @@ import os
 from product_provider import ProductProvider
 from date_tests import get_format_shortdate, get_german_date
 from cash_closing_config import Config
-from constants import LAST_CASH_POINT_CLOSING_EXPORT_ID, BASE_TIMESTAMP, LAST_RECEIPT_NUMBER, LAST_CASH_CLOSING_TO_PROCESS
+from constants import LAST_CASH_POINT_CLOSING_EXPORT_ID, BASE_TIMESTAMP, LAST_RECEIPT_NUMBER, LAST_CASH_CLOSING_TO_PROCESS, LAST_PROCESSED_TX_NUMBER
 
 # # 20240711 - 1720648800
 # # Next START_TIME: 20240712 - 1720735200
@@ -37,11 +37,11 @@ def split_json_files_by_bussiness_date(input_folder, config):
     merged_data.sort(key=lambda x: x["number"])
 
     # Check for specific conditions
-    p_tx_n = 0
+    p_tx_n = LAST_PROCESSED_TX_NUMBER
     pp = ProductProvider()
     for transaction in merged_data:
         if p_tx_n != (transaction['number'] - 1):
-            print(f"{p_tx_n} falta el siguiente ************ ERROR ERROR\n\n")
+            print(f"{p_tx_n} => {(transaction['number'] - 1)} falta el siguiente ************ ERROR ERROR\n\n")
         p_tx_n = transaction['number']
         if "schema" in transaction and "standard_v1" in transaction["schema"]:
             standard_v1 = transaction["schema"]["standard_v1"]
