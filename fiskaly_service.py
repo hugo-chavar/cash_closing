@@ -194,7 +194,8 @@ class FiskalyService():
         }
 
         return self.send_request("POST", url, payload)
-    
+
+
     def build_params_string(self, n_limit, n_offset):
         """Builds a parameters string based on given limit and offset values.
 
@@ -214,8 +215,15 @@ class FiskalyService():
 
         return "&".join(params)
 
+
     def get_transactions(self, fiskaly_client, limit=None, offset=None):
         
         url = f"{settings.FISKALY_URL}/tss/{fiskaly_client.tss_id}/tx?{self.build_params_string(limit, offset)}"
 
         return self.send_request("GET", url, {})
+
+
+    def create_cash_closing(self, cc_id, payload):
+        url = f"{settings.FISKALY_DSFINVK_URL}/cash_point_closings/{cc_id}"
+
+        return self.send_request("PUT", url, payload)
