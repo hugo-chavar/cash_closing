@@ -251,7 +251,14 @@ class ProductProvider():
         (13909, Product(13909,"Mango Ice Matcha Latte",5.7,7)),
         (13999, Product(13999,"Lavendel Honig Latte",4.2,7)),
         (14024, Product(14024,"Franky's Roll Pistacio",4.9,7)),
-        (14027, Product(14027,"Dirty Chai Latte",4.9,7))
+        (14027, Product(14027,"Dirty Chai Latte",4.9,7)),
+        (14041, Product(14041,"Hario SIphon TCA-5",149.9,19)),
+        (14042, Product(14042,"Hario BUONO v60 drip kettle",54.4,19)),
+        (14043, Product(14043,"Hario v60 dripper 02",23.9,19)),
+        (13910, Product(13910,"Red Bean Pandan Latte",5.9,7)),
+        (14124, Product(14124,"Buch",3.5,7)),
+        (14246, Product(14246,"Gardelli Efrain",19,7)),
+        (14248, Product(14248,"cbd sleepy drops",4.1,7))
     ])
 
     def get_by_id(self, id):
