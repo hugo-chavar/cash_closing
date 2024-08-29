@@ -1,6 +1,5 @@
 import json
-import time
-from constants import CASH_CLOSING_FILENAME, CASH_CLOSING_UNFORMATTED_FILENAME, TRANSACTIONS_FILENAME, LAST_CASH_POINT_CLOSING_EXPORT_ID, LAST_RECEIPT_NUMBER, BASE_TIMESTAMP, LAST_CASH_CLOSING_TO_PROCESS
+from constants import LAST_CASH_POINT_CLOSING_EXPORT_ID, LAST_RECEIPT_NUMBER, BASE_TIMESTAMP, LAST_CASH_CLOSING_TO_PROCESS
 from types import SimpleNamespace
 from product_provider import ProductProvider
 from cash_closing_config import Config
