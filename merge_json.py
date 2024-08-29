@@ -41,7 +41,9 @@ def split_json_files_by_bussiness_date(input_folder, config):
     pp = ProductProvider()
     for transaction in merged_data:
         if p_tx_n != (transaction['number'] - 1):
-            print(f"{p_tx_n} => {(transaction['number'] - 1)} falta el siguiente ************ ERROR ERROR\n\n")
+            print(f"{p_tx_n} => {(transaction['number'] - 1)} falta el siguiente ************ ERROR split\n\n")
+            print(f"Set LAST_PROCESSED_TX_NUMBER to {(transaction['number'] - 1)} \n\n")
+
         p_tx_n = transaction['number']
         if "schema" in transaction and "standard_v1" in transaction["schema"]:
             standard_v1 = transaction["schema"]["standard_v1"]
@@ -127,7 +129,8 @@ def merge_json_files(input_folder, config):
     pp = ProductProvider()
     for transaction in merged_data:
         if p_tx_n != (transaction['number'] - 1):
-            print(f"{p_tx_n} falta el siguiente ************ ERROR ERROR\n\n")
+            print(f"{p_tx_n} falta el siguiente ************ ERROR merge\n\n")
+            print(f"Set LAST_PROCESSED_TX_NUMBER to {(transaction['number'] - 1)} \n\n")
         p_tx_n = transaction['number']
         if "schema" in transaction and "standard_v1" in transaction["schema"]:
             standard_v1 = transaction["schema"]["standard_v1"]
