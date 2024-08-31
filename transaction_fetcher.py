@@ -4,7 +4,7 @@ class TransactionFetcher:
     def __init__(self, fiskaly: FiskalyService, client, last_tx_ok, last_tx):
         self.fiskaly_service = fiskaly
         self.last_tx_processed = last_tx_ok
-        self.last_tx_pending = last_tx
+        self.last_tx_pending = last_tx # Esto se actualiza internamente no debe venir como param en el constructor
         self.client = client
     
     def __iter__(self):
