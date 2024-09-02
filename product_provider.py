@@ -258,7 +258,28 @@ class ProductProvider():
         (13910, Product(13910,"Red Bean Pandan Latte",5.9,7)),
         (14124, Product(14124,"Buch",3.5,7)),
         (14246, Product(14246,"Gardelli Efrain",19,7)),
-        (14248, Product(14248,"cbd sleepy drops",4.1,7))
+        # (14248, Product(14248,"cbd sleepy drops",4.1,7))
+        (14266, Product(14266,"Gardelli Blue Batak",15,7)),
+        (14267, Product(14267,"La Claudina",20,7)),
+        (14268, Product(14268,"Sukala",20,7)),
+        (14269, Product(14269,"Cignobianco",14,7)),
+        (14270, Product(14270,"Gardelli El buho Decaf",15,7)),
+        (14271, Product(14271,"Gardelli La Argentina",50,7)),
+        (14272, Product(14272,"gardelli duwancono",24,7)),
+        (14275, Product(14275,"Classic Cheesy Cheese - Pan Pizza",7,7)),
+        (14276, Product(14276,"Cheesy Salami - Pan Pizza",7,7)),
+        (14277, Product(14277,"Türken Pan Pizza",7.5,7)),
+        (14278, Product(14278,"Ocean's Eleven",7.5,7)),
+        (14279, Product(14279,"Du bist Hippster - Pan Pizza",7.5,7)),
+        (14280, Product(14280,"Toad - Pan Pizza",7.5,7)),
+        (14281, Product(14281,"Le Sauce Hollandaise - Pan Pizza",7.5,7)),
+        (14282, Product(14282,"Korean Style - Pan Pizza",7.5,7)),
+        (14283, Product(14283,"Mom's Garlic",1.9,7)),
+        (14284, Product(14284,"BANG BANG (Spicy)",1.9,7)),
+        (14285, Product(14285,"Cool Ranch",1.9,7)),
+        (14286, Product(14286,"Crispy Potato",3.8,7)),
+        (14287, Product(14287,"Kimchi Pancake",4.1,7)),
+        (14288, Product(14288,"chocosauce",1,7))
     ])
 
     def get_by_id(self, id):
