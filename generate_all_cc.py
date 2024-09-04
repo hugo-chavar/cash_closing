@@ -54,7 +54,9 @@ def process_closing(config: Config):
       config.last_receipt_number = cash_closing_obj.transactions[-1].head.number
       print(f"Transactions: {config.transactions_filename()}")
       print(f"Cash Closing: {config.cash_closing_filename()}")
+      # save this value
       print(f"last_receipt_number: {config.last_receipt_number}")
+      # save this value
       print(f"last_cash_point_closing_export_id: {config.cc_number()}")
 
 config = Config(BASE_TIMESTAMP, last_cc_export_id=LAST_CASH_POINT_CLOSING_EXPORT_ID, last_receipt_number=LAST_RECEIPT_NUMBER)
