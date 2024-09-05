@@ -3,13 +3,13 @@ from fiskaly_service import FiskalyService
 from product_provider import ProductProvider
 from transaction_fetcher import TransactionFetcher
 from cash_closing_config import Config
-from constants import LAST_CASH_POINT_CLOSING_EXPORT_ID, BASE_TIMESTAMP, LAST_RECEIPT_NUMBER, LAST_CASH_CLOSING_TO_PROCESS
+from constants import LAST_CASH_POINT_CLOSING_EXPORT_ID, BASE_TIMESTAMP, LAST_RECEIPT_NUMBER, LAST_CASH_CLOSING_TO_PROCESS, LAST_PROCESSED_TX_NUMBER
 from models import FiskalyClient
 
 
 
 client = FiskalyClient()
-last_tx_ok=14679
+last_tx_ok=LAST_PROCESSED_TX_NUMBER
 fs = FiskalyService()
 fs.credentials = client.get_credentials()
 tf = TransactionFetcher(fs, client, last_tx_ok)
@@ -72,6 +72,7 @@ def split_json_files_by_bussiness_date(iter, config):
 
     # get last transaction to process
     last_transaction_to_process = merged_data[-1]["number"]
+    print(f"last_transaction_to_process: {last_transaction_to_process}")
     # step 4: save file
     # Write the merged dictionary to the output file
     # with open("json_files/E8.json", mode='w', encoding='utf8') as f:

@@ -8,7 +8,7 @@ SECONDS_PER_DAY = 86400
 LAST_CASH_CLOSING_TO_PROCESS = 76 # procesar de a uno, desaparece esta
 LAST_CASH_POINT_CLOSING_EXPORT_ID = 75
 LAST_RECEIPT_NUMBER = 7399
-# LAST_PROCESSED_TX_NUMBER = 14551 # se usa en merge_json, pero no en la nueva
+LAST_PROCESSED_TX_NUMBER = 14827 # es la ultima tx del ultimo del merge_file_filter procesado
 
 # TIMESTAMP_LOW = BASE_TIMESTAMP + SECONDS_PER_DAY*LAST_CASH_POINT_CLOSING_EXPORT_ID
 
