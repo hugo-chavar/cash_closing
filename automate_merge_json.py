@@ -6,16 +6,6 @@ from cash_closing_config import Config
 from constants import LAST_CASH_POINT_CLOSING_EXPORT_ID, BASE_TIMESTAMP, LAST_RECEIPT_NUMBER, LAST_CASH_CLOSING_TO_PROCESS, LAST_PROCESSED_TX_NUMBER
 from models import FiskalyClient
 
-
-
-client = FiskalyClient()
-last_tx_ok=LAST_PROCESSED_TX_NUMBER
-fs = FiskalyService()
-fs.credentials = client.get_credentials()
-tf = TransactionFetcher(fs, client, last_tx_ok)
-tf.update_last_tx_pending()
-
-
 # merge_json.py
 def split_json_files_by_bussiness_date(iter, config):
     # step 0
@@ -106,6 +96,16 @@ def split_json_files_by_bussiness_date(iter, config):
         print(f"Date {config.bussiness_date()}")
 
     # save here the value of last_transaction_to_process
+
+
+client = FiskalyClient()
+last_tx_ok=LAST_PROCESSED_TX_NUMBER
+fs = FiskalyService()
+fs.credentials = client.get_credentials()
+tf = TransactionFetcher(fs, client, last_tx_ok)
+tf.update_last_tx_pending()
+
+
 
 myiter  = iter(tf)
 config = Config(BASE_TIMESTAMP, LAST_CASH_POINT_CLOSING_EXPORT_ID, LAST_RECEIPT_NUMBER)
