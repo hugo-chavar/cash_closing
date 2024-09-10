@@ -1,9 +1,9 @@
 from fiskaly_service import FiskalyService
 
 class TransactionFetcher:
-    def __init__(self, fiskaly: FiskalyService, client, last_tx_ok):
+    def __init__(self, fiskaly: FiskalyService, client):
         self.fiskaly_service = fiskaly
-        self.last_tx_processed = last_tx_ok
+        self.last_tx_processed = client.last_processed_tx_number
         self.client = client
     
     def __iter__(self):
