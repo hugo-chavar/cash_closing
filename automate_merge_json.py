@@ -3,7 +3,7 @@ from fiskaly_service import FiskalyService
 from product_provider import ProductProvider
 from transaction_fetcher import TransactionFetcher
 from cash_closing_config import Config
-from constants import LAST_CASH_POINT_CLOSING_EXPORT_ID, BASE_TIMESTAMP, LAST_RECEIPT_NUMBER, LAST_CASH_CLOSING_TO_PROCESS, LAST_PROCESSED_TX_NUMBER
+from constants import LAST_CASH_CLOSING_TO_PROCESS
 from models import FiskalyClient
 
 # merge_json.py
