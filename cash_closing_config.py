@@ -9,12 +9,13 @@ def date_from_timestamp(timestamp):
     return datetime.datetime.fromtimestamp(timestamp)
 
 class Config:
-    def __init__(self, base_timestamp, last_cc_export_id=0, last_receipt_number=0):
-        self.last_cc_export_id = last_cc_export_id
-        self.base_timestamp = base_timestamp
-        self.last_receipt_number = last_receipt_number
-        self.cash_register = ""
-
+    def __init__(self, fiskaly_client):
+        self.last_cc_export_id = fiskaly_client.last_cash_point_closing_export_id
+        self.base_timestamp = fiskaly_client.base_timestamp
+        self.last_receipt_number = fiskaly_client.last_receipt_number
+        self.cash_register = fiskaly_client.cash_register ## Used in process_closing (generate_all_cc.py)
+        self.last_processed_tx_number = fiskaly_client.last_processed_tx_number
+    
     def timestamp_low(self):
         return self.base_timestamp + SECONDS_PER_DAY*self.last_cc_export_id
     

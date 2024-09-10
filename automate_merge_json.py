@@ -23,7 +23,7 @@ def split_json_files_by_bussiness_date(iter, config):
     merged_data.sort(key=lambda x: x["number"])
 
     # step 3: complete product data if missing
-    p_tx_n = last_tx_ok
+    p_tx_n = config.last_processed_tx_number
     pp = ProductProvider()
     for transaction in merged_data:
         if p_tx_n != (transaction['number'] - 1):
@@ -98,17 +98,18 @@ def split_json_files_by_bussiness_date(iter, config):
     # save here the value of last_transaction_to_process
 
 
-client = FiskalyClient()
-last_tx_ok=LAST_PROCESSED_TX_NUMBER
+client = FiskalyClient.objects.get(id=1)
+# last_tx_ok=LAST_PROCESSED_TX_NUMBER
 fs = FiskalyService()
 fs.credentials = client.get_credentials()
-tf = TransactionFetcher(fs, client, last_tx_ok)
+tf = TransactionFetcher(fs, client)
 tf.update_last_tx_pending()
 
 
 
 myiter  = iter(tf)
-config = Config(BASE_TIMESTAMP, LAST_CASH_POINT_CLOSING_EXPORT_ID, LAST_RECEIPT_NUMBER)
+# config = Config(BASE_TIMESTAMP, LAST_CASH_POINT_CLOSING_EXPORT_ID, LAST_RECEIPT_NUMBER)
+config = Config(client)
 split_json_files_by_bussiness_date(myiter, config)
 # print(str(next(myiter)))
 # print(next(myiter))
