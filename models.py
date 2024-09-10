@@ -3,17 +3,41 @@ File:           models.py
 Author:         Hugo Chavar
 Created on:     08/11/23, 09:30 am
 """
-from django.db import models
-from django.contrib.auth import get_user_model
+# from django.db import models
+# from django.contrib.auth import get_user_model
 from enum import Enum
+from unittest.mock import Mock
+from constants import BASE_TIMESTAMP
 
-from api.models.base_model import BaseModel
-from api.models.restaurant import Restaurant
+# from api.models.base_model import BaseModel
+# from api.models.restaurant import Restaurant
 
 import time
 import math
 
-User = get_user_model()
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+ENV_LAST_CC_EXPORT_ID = "LAST_CASH_POINT_CLOSING_EXPORT_ID"
+ENV_LAST_RECEIPT_NUMBER = "LAST_RECEIPT_NUMBER"
+ENV_LAST_PROCESSED_TX_NUMBER = "LAST_PROCESSED_TX_NUMBER"
+ENV_API_KEY = "API_KEY"
+ENV_API_SECRET = "API_SECRET"
+ENV_TSS_ID = "TSS_ID"
+ENV_CASH_REGISTER_ID = "CASH_REGISTER_ID"
+
+LAST_CASH_POINT_CLOSING_EXPORT_ID = os.getenv(ENV_LAST_CC_EXPORT_ID)
+LAST_RECEIPT_NUMBER = os.getenv(ENV_LAST_RECEIPT_NUMBER)
+LAST_PROCESSED_TX_NUMBER = os.getenv(ENV_LAST_PROCESSED_TX_NUMBER)
+API_KEY = os.getenv(ENV_API_KEY)
+API_SECRET = os.getenv(ENV_API_SECRET)
+TSS_ID = os.getenv(ENV_TSS_ID)
+CASH_REGISTER_ID = os.getenv(ENV_CASH_REGISTER_ID)
+
+
+# User = get_user_model()
 
 class ClientStates(Enum):
     NOT_CREATED = 0
@@ -28,62 +52,68 @@ class ClientStates(Enum):
     CASH_REGISTER_CREATED = 9
 
 
+ 
+## Mocked version
 
-class FiskalyClient(BaseModel):
-    """ Store the fiskaly client information """
-    restaurant = models.OneToOneField(
-        Restaurant, on_delete=models.CASCADE
-    )
-    fiskaly_client_id = models.UUIDField(null=True)
-    serial_number = models.CharField(null=True, max_length=70)
-    tss_id = models.UUIDField(null=True)
-    tss_serial_number = models.CharField(null=True, max_length=70)
-    tss_state = models.CharField(null=True, max_length=20)
-    tss_admin_puk = models.CharField(null=True, max_length=20)
-    tss_admin_pin = models.CharField(null=True, max_length=20)
-    client_state = models.PositiveSmallIntegerField(null=False, default=0)
-    organization_id = models.UUIDField(null=True)
-    billing_address_id = models.UUIDField(null=True)
-    api_key = models.CharField(null=True, max_length=70)
-    api_secret = models.CharField(null=True, max_length=70)
-    
-    # Fiskaly confirmation that VAT data is Ok
-    vat_id_valid = models.BooleanField(default=False)
-    
-    client_state_information = models.TextField(null=True)
-    access_token = models.TextField(null=True)
-    access_token_expires_at = models.PositiveBigIntegerField(null=True)
-    refresh_token = models.TextField(null=True)
-    refresh_token_expires_at = models.PositiveBigIntegerField(null=True)
-    cash_register = models.UUIDField(null=True)
-    last_cash_point_closing_export_id = models.PositiveIntegerField(null=False, default=0)
-    last_receipt_number  = models.PositiveIntegerField(null=False, default=0)
+# def get_credentials(self):
+#     return {
+#         "api_key": str(self.api_key),
+#         "api_secret": str(self.api_secret)
+#     }
 
 
-    def get_credentials(self):
-        return {
-            "api_key": self.api_key,
-            "api_secret": self.api_secret
+# def get_refresh_credentials(self):
+#     return {
+#         "refresh_token": self.refresh_token
+#     }
+
+
+FiskalyClient = Mock()
+FiskalyClient.objects = Mock()
+
+# Add a method to the mock object
+def get(self, id):
+    if id == 1:
+        mock_obj = Mock(
+            id=1,
+            restaurant = None,
+            fiskaly_client_id = None,
+            serial_number = None,
+            tss_id = TSS_ID,
+            tss_serial_number = None,
+            tss_state = None,
+            tss_admin_puk = None,
+            tss_admin_pin = None,
+            client_state = None,
+            organization_id = None,
+            billing_address_id = None,
+            api_key = API_KEY,
+            api_secret = API_SECRET,
+            vat_id_valid = None,
+            client_state_information = None,
+            access_token = None,
+            access_token_expires_at = None,
+            refresh_token = None,
+            refresh_token_expires_at = None,
+            last_processed_tx_number = LAST_PROCESSED_TX_NUMBER,
+            base_timestamp = BASE_TIMESTAMP,
+            last_cash_point_closing_export_id =  LAST_CASH_POINT_CLOSING_EXPORT_ID, # default = 0
+            last_receipt_number = LAST_RECEIPT_NUMBER, # default = 0
+            cash_register = CASH_REGISTER_ID # TODO: add this to the model
+            # get_credentials=get_credentials.__get__(self, type(self))
+            # get_credentials= lambda self: {
+            #     "api_key": self.api_key,
+            #     "api_secret": self.api_secret                
+            # }
+        )
+        mock_obj.get_credentials = lambda: {
+            "api_key": mock_obj.api_key,
+            "api_secret": mock_obj.api_secret
         }
+        return mock_obj
+    else:
+        raise Exception('Object not found')
 
-
-    def get_refresh_credentials(self):
-        return {
-            "refresh_token": self.refresh_token
-        }
-
-
-    def is_creation_complete(self):
-        return self.client_state == ClientStates.CASH_REGISTER_CREATED.value
-
-
-    def access_token_expires_in(self):
-        time_rounded = int(math.ceil(time.time() / 100.0)) * 100
-        return  self.access_token_expires_at - time_rounded
-
-
-    def refresh_token_expires_in(self):
-        time_rounded = int(math.ceil(time.time() / 100.0)) * 100
-        return self.refresh_token_expires_at - time_rounded
+FiskalyClient.objects.get = get.__get__(FiskalyClient.objects, type(FiskalyClient.objects))
 
 
