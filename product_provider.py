@@ -279,7 +279,9 @@ class ProductProvider():
         (14285, Product(14285,"Cool Ranch",1.9,7)),
         (14286, Product(14286,"Crispy Potato",3.8,7)),
         (14287, Product(14287,"Kimchi Pancake",4.1,7)),
-        (14288, Product(14288,"chocosauce",1,7))
+        (14288, Product(14288,"chocosauce",1,7)),
+        (14327, Product(14327,"Extra Brot",0.9,7)),
+        (14335, Product(14335,"Franky's Blueberry Chocolate Cookies",3.9,7))
     ])
 
     def get_by_id(self, id):
