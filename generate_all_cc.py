@@ -1,5 +1,5 @@
 import json
-from constants import LAST_CASH_POINT_CLOSING_EXPORT_ID, LAST_RECEIPT_NUMBER, BASE_TIMESTAMP, LAST_CASH_CLOSING_TO_PROCESS
+from constants import LAST_CASH_CLOSING_TO_PROCESS
 from types import SimpleNamespace
 from product_provider import ProductProvider
 from cash_closing_config import Config
@@ -60,8 +60,6 @@ def process_closing(config: Config):
       # save this value
       print(f"last_cash_point_closing_export_id: {config.cc_number()}")
 
-# config = Config(BASE_TIMESTAMP, last_cc_export_id=LAST_CASH_POINT_CLOSING_EXPORT_ID, last_receipt_number=LAST_RECEIPT_NUMBER)
-# config.cash_register = "e2bc3f5a-1130-4d08-ac54-0fb6730d3963"
 
 client = FiskalyClient.objects.get(id=1)
 # fs = FiskalyService()

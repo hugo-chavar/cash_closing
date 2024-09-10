@@ -99,7 +99,6 @@ def split_json_files_by_bussiness_date(iter, config):
 
 
 client = FiskalyClient.objects.get(id=1)
-# last_tx_ok=LAST_PROCESSED_TX_NUMBER
 fs = FiskalyService()
 fs.credentials = client.get_credentials()
 tf = TransactionFetcher(fs, client)
@@ -108,7 +107,6 @@ tf.update_last_tx_pending()
 
 
 myiter  = iter(tf)
-# config = Config(BASE_TIMESTAMP, LAST_CASH_POINT_CLOSING_EXPORT_ID, LAST_RECEIPT_NUMBER)
 config = Config(client)
 split_json_files_by_bussiness_date(myiter, config)
 # print(str(next(myiter)))
