@@ -1,9 +1,12 @@
 import json
 import time
-from constants import CASH_CLOSING_FILENAME, CASH_CLOSING_UNFORMATTED_FILENAME, TRANSACTIONS_FILENAME, LAST_CASH_POINT_CLOSING_EXPORT_ID, LAST_RECEIPT_NUMBER
+from constants import CASH_CLOSING_FILENAME, CASH_CLOSING_UNFORMATTED_FILENAME, TRANSACTIONS_FILENAME
 from types import SimpleNamespace
 from product_provider import ProductProvider
 import cash_closing
+from models import FiskalyClient
+
+client = FiskalyClient.objects.get(id=1)
 
 
 def parse(d):
@@ -15,9 +18,9 @@ def parse(d):
     return x
 
 options = {
-   "last_cash_point_closing_export_id": LAST_CASH_POINT_CLOSING_EXPORT_ID,
+   "last_cash_point_closing_export_id": client.last_cash_point_closing_export_id,
    "cash_register": "e2bc3f5a-1130-4d08-ac54-0fb6730d3963",
-   "last_receipt_number": LAST_RECEIPT_NUMBER,
+   "last_receipt_number": client.last_receipt_number,
 }
 
 print(f"WARNING: check last_cash_point_closing_export_id {options['last_cash_point_closing_export_id']} | last_receipt_number {options['last_receipt_number']} ")
@@ -52,5 +55,5 @@ with open(TRANSACTIONS_FILENAME, encoding='utf-8', mode='r') as f:
    print(f"Transactions: {TRANSACTIONS_FILENAME}")
    print(f"Cash Closing: {CASH_CLOSING_FILENAME}")
    print(f"last_receipt_number: {cash_closing_obj.transactions[-1].head.number}")
-   print(f"last_cash_point_closing_export_id: {LAST_CASH_POINT_CLOSING_EXPORT_ID + 1}")
+   print(f"last_cash_point_closing_export_id: {client.last_cash_point_closing_export_id + 1}")
 
