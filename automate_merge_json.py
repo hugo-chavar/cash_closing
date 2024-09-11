@@ -62,7 +62,7 @@ def split_json_files_by_bussiness_date(iter, config):
 
     # get last transaction to process
     last_transaction_to_process = merged_data[-1]["number"]
-    print(f"last_transaction_to_process: {last_transaction_to_process}")
+    print(f"last_transaction_to_process (update env): {last_transaction_to_process}")
     # step 4: save file
     # Write the merged dictionary to the output file
     # with open("json_files/E8.json", mode='w', encoding='utf8') as f:
