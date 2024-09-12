@@ -1,5 +1,5 @@
 import json
-from constants import LAST_CASH_CLOSING_TO_PROCESS
+# from constants import LAST_CASH_CLOSING_TO_PROCESS
 from types import SimpleNamespace
 from product_provider import ProductProvider
 from cash_closing_config import Config
@@ -56,7 +56,7 @@ def process_closing(config: Config):
       print(f"Transactions: {config.transactions_filename()}")
       print(f"Cash Closing: {config.cash_closing_filename()}")
       # save this value
-      print(f"last_receipt_number: {config.last_receipt_number}")
+      print(f"last_receipt_number (update env): {config.last_receipt_number}")
       # save this value
       print(f"last_cash_point_closing_export_id: {config.cc_number()}")
 
@@ -67,8 +67,8 @@ client = FiskalyClient.objects.get(id=1)
 
 config = Config(client)
 
-while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
-
+# while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
+if 1 == 1:
    print(f"Date {config.bussiness_date()}")
    process_closing(config)
    config.next()

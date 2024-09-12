@@ -83,7 +83,8 @@ def split_json_files_by_bussiness_date(input_folder, config):
     print(f"filtered_count: {filtered_count}. From {config.timestamp_low()} to {config.timestamp_high()}")
     print(f"Date {config.bussiness_date()}")
 
-    while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
+    # while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
+    if 1 == 1:
         if filtered_count > 0:
             merged_dict = {
                 "data": filtered_data,

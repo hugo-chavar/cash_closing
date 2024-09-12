@@ -3,7 +3,7 @@ from fiskaly_service import FiskalyService
 from product_provider import ProductProvider
 from transaction_fetcher import TransactionFetcher
 from cash_closing_config import Config
-from constants import LAST_CASH_CLOSING_TO_PROCESS
+# from constants import LAST_CASH_CLOSING_TO_PROCESS
 from models import FiskalyClient
 
 # merge_json.py
@@ -75,7 +75,8 @@ def split_json_files_by_bussiness_date(iter, config):
     print(f"filtered_count: {filtered_count}. From {config.timestamp_low()} to {config.timestamp_high()}")
     print(f"Date {config.bussiness_date()}")
 
-    while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
+    # while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
+    if 1 == 1:
         if filtered_count > 0:
             merged_dict = {
                 "data": filtered_data,
