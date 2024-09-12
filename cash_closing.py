@@ -183,23 +183,33 @@ def precise_sum(elements):
 def get_payment(receipts):
     p = Payment()
     mapptf = lambda x: x.amounts_per_payment_type
+    # Filter only "RECEIPT" type receipts
     all_amounts_per_payment_type = list(chain.from_iterable(map(mapptf, [r for r in receipts if r.receipt_type == "RECEIPT"])))
 
     p.full_amount = precise_sum([a.amount for a in all_amounts_per_payment_type])
     p.cash_amount = precise_sum([a.amount for a in all_amounts_per_payment_type if a.payment_type == "CASH"])
     
     p.cash_amounts_by_currency = []
-    clause = lambda x: (x.currency_code, "Bar" if x.payment_type == "CASH" else "Unbar")
-    all_amounts_per_payment_type.sort(key= clause)
-
-    for key, group in groupby(all_amounts_per_payment_type, lambda x: x.currency_code):
+    
+    # Filter only the cash payments before the grouping
+    cash_amounts_per_payment_type = [a for a in all_amounts_per_payment_type if a.payment_type == "CASH"]
+    
+    # Sort by currency code for cash payments
+    cash_amounts_per_payment_type.sort(key=lambda x: x.currency_code)
+    
+    # Summarize only the cash payments by currency
+    for key, group in groupby(cash_amounts_per_payment_type, lambda x: x.currency_code):
         a = AmountByCurrency()
         a.currency_code = key
         c = list(group)
         a.amount = precise_sum([a.amount for a in c])
         p.cash_amounts_by_currency.append(a)
-            
+    
+    # Summarize all payment types
     p.payment_types = []
+    clause = lambda x: (x.currency_code, "Bar" if x.payment_type == "CASH" else "Unbar")
+    all_amounts_per_payment_type.sort(key=clause)
+    
     for key, group in groupby(all_amounts_per_payment_type, clause):
         a = AmountByCurrency()
         a.currency_code = key[0]
@@ -207,8 +217,9 @@ def get_payment(receipts):
         c = list(group)
         a.amount = precise_sum([a.amount for a in c])
         p.payment_types.append(a)
-            
+    
     return p
+
 
 def get_transaction_head(receipt, receipt_number, tx_export_number):
     th = TransactionHead()
