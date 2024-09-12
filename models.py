@@ -7,11 +7,11 @@ Created on:     08/11/23, 09:30 am
 # from django.contrib.auth import get_user_model
 from enum import Enum
 from unittest.mock import Mock
-from constants import BASE_TIMESTAMP
+# from constants import BASE_TIMESTAMP
 
 # from api.models.base_model import BaseModel
 # from api.models.restaurant import Restaurant
-
+import datetime
 import time
 import math
 
@@ -36,6 +36,8 @@ API_SECRET = os.getenv(ENV_API_SECRET)
 TSS_ID = os.getenv(ENV_TSS_ID)
 CASH_REGISTER_ID = os.getenv(ENV_CASH_REGISTER_ID)
 
+BASE_DATE_TIME = datetime.datetime(2024, 6, 20, 0, 0)
+BASE_TIMESTAMP = 1718938800 # 1718852400 #1718920800
 
 # User = get_user_model()
 
@@ -96,9 +98,10 @@ def get(self, id):
             refresh_token = None,
             refresh_token_expires_at = None,
             last_processed_tx_number = LAST_PROCESSED_TX_NUMBER,
-            base_timestamp = BASE_TIMESTAMP,
             last_cash_point_closing_export_id =  LAST_CASH_POINT_CLOSING_EXPORT_ID, # default = 0
             last_receipt_number = LAST_RECEIPT_NUMBER, # default = 0
+            base_timestamp = BASE_TIMESTAMP, # put better name to the field
+            base_date_time = BASE_DATE_TIME, # put better name to the field
             cash_register = CASH_REGISTER_ID # TODO: add this to the model
             # get_credentials=get_credentials.__get__(self, type(self))
             # get_credentials= lambda self: {
