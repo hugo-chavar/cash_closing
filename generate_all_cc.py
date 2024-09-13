@@ -53,12 +53,14 @@ def process_closing(config: Config):
 
 
       config.last_receipt_number = cash_closing_obj.transactions[-1].head.number
+      config.last_cc_export_id += 1
+      config.save_vars()
       print(f"Transactions: {config.transactions_filename()}")
       print(f"Cash Closing: {config.cash_closing_filename()}")
       # save this value
       print(f"last_receipt_number (update env): {config.last_receipt_number}")
       # save this value
-      print(f"last_cash_point_closing_export_id: {config.cc_number()}")
+      print(f"last_cash_point_closing_export_id: {config.last_cc_export_id}")
 
 
 client = FiskalyClient.objects.get(id=1)
