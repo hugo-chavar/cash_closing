@@ -10,6 +10,7 @@ def date_from_timestamp(timestamp):
 
 class Config:
     def __init__(self, fiskaly_client):
+        self.client = fiskaly_client
         self.last_cc_export_id = fiskaly_client.last_cash_point_closing_export_id
         self.base_timestamp = fiskaly_client.base_timestamp
         self.last_receipt_number = fiskaly_client.last_receipt_number
@@ -36,3 +37,7 @@ class Config:
     
     def next(self):
         self.last_cc_export_id = self.cc_number()
+
+    def save_vars(self):
+        self.client.last_processed_tx_number = self.last_processed_tx_number
+        self.client.save()
