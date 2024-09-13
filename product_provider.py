@@ -281,7 +281,10 @@ class ProductProvider():
         (14287, Product(14287,"Kimchi Pancake",4.1,7)),
         (14288, Product(14288,"chocosauce",1,7)),
         (14327, Product(14327,"Extra Brot",0.9,7)),
-        (14335, Product(14335,"Franky's Blueberry Chocolate Cookies",3.9,7))
+        (14335, Product(14335,"Franky's Blueberry Chocolate Cookies",3.9,7)),
+        (14385, Product(14385,"BIONADE ZITRONE",3.1,7)),
+        (14386, Product(14386,"BIONADE ZITRONE BERGAMOTTE",3.1,7)),
+        (14387, Product(14387,"FRITZ-KOLA Classic Light",3.1,7))
     ])
 
     def get_by_id(self, id):
