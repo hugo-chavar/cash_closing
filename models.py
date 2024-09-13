@@ -17,6 +17,7 @@ import math
 
 import os
 from dotenv import load_dotenv
+from env_saver import update_env_vars
 
 load_dotenv()
 
@@ -113,6 +114,12 @@ def get(self, id):
             "api_key": mock_obj.api_key,
             "api_secret": mock_obj.api_secret
         }
+        mock_obj.get_values_to_save = lambda: {
+            "LAST_CASH_POINT_CLOSING_EXPORT_ID": mock_obj.last_cash_point_closing_export_id,
+            "LAST_RECEIPT_NUMBER": mock_obj.last_receipt_number,
+            "LAST_PROCESSED_TX_NUMBER": mock_obj.last_processed_tx_number
+        }
+        mock_obj.save = lambda: update_env_vars(mock_obj.get_values_to_save())
         return mock_obj
     else:
         raise Exception('Object not found')
