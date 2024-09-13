@@ -40,4 +40,6 @@ class Config:
 
     def save_vars(self):
         self.client.last_processed_tx_number = self.last_processed_tx_number
+        self.client.last_receipt_number = self.last_receipt_number
+        self.client.last_cash_point_closing_export_id = self.last_cc_export_id
         self.client.save()
