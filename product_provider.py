@@ -284,7 +284,9 @@ class ProductProvider():
         (14335, Product(14335,"Franky's Blueberry Chocolate Cookies",3.9,7)),
         (14385, Product(14385,"BIONADE ZITRONE",3.1,7)),
         (14386, Product(14386,"BIONADE ZITRONE BERGAMOTTE",3.1,7)),
-        (14387, Product(14387,"FRITZ-KOLA Classic Light",3.1,7))
+        (14387, Product(14387,"FRITZ-KOLA Classic Light",3.1,7)),
+        (14412, Product(14412,"Selters Sprudel 0,75l",3.9,7)),
+        (14413, Product(14413,"Vera Still 0,75l",3.8,7))
     ])
 
     def get_by_id(self, id):
