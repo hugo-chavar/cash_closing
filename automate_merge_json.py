@@ -3,7 +3,7 @@ from fiskaly_service import FiskalyService
 from product_provider import ProductProvider
 from transaction_fetcher import TransactionFetcher
 from cash_closing_config import Config
-# from constants import LAST_CASH_CLOSING_TO_PROCESS
+from constants import LAST_CASH_CLOSING_TO_PROCESS
 from models import FiskalyClient
 
 # merge_json.py
@@ -61,8 +61,8 @@ def split_json_files_by_bussiness_date(iter, config):
                             print(e)
 
     # get last transaction to process
-    config.last_processed_tx_number = merged_data[-1]["number"]
-    config.save_vars()
+    # config.last_processed_tx_number = merged_data[-1]["number"]
+    
     print(f"LAST_PROCESSED_TX_NUMBER (update env): {config.last_processed_tx_number}")
     # step 4: save file
     # Write the merged dictionary to the output file
@@ -76,8 +76,8 @@ def split_json_files_by_bussiness_date(iter, config):
     print(f"filtered_count: {filtered_count}. From {config.timestamp_low()} to {config.timestamp_high()}")
     print(f"Date {config.bussiness_date()}")
 
-    # while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
-    if 1 == 1:
+    while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
+    # if 1 == 1:
         if filtered_count > 0:
             merged_dict = {
                 "data": filtered_data,
@@ -88,12 +88,14 @@ def split_json_files_by_bussiness_date(iter, config):
             with open(config.transactions_filename(), mode='w', encoding='utf8') as f:
                 json.dump(merged_dict, f, indent=4)
 
+            config.last_processed_tx_number = filtered_data[-1]["number"]
             print(f"Saved: {config.transactions_filename()}")
 
         config.next()
         filtered_data = [transaction for transaction in merged_data if transaction["time_start"] >= config.timestamp_low() and transaction["time_start"] <  config.timestamp_high() ]
 
         filtered_count = len(filtered_data)
+        
         print(f"filtered_count: {filtered_count}. From {config.timestamp_low()} to {config.timestamp_high()}")
         print(f"Date {config.bussiness_date()}")
 
@@ -111,5 +113,6 @@ tf.update_last_tx_pending()
 myiter  = iter(tf)
 config = Config(client)
 split_json_files_by_bussiness_date(myiter, config)
+config.save_vars()
 # print(str(next(myiter)))
 # print(next(myiter))
