@@ -25,34 +25,15 @@ def process_closing(config: Config, transactions):
 
    print(f"WARNING: check last_cash_point_closing_export_id {options['last_cash_point_closing_export_id']} | last_receipt_number {options['last_receipt_number']} ")
 
-
-
-   # https://stackoverflow.com/questions/16877422/whats-the-best-way-to-parse-a-json-response-from-the-requests-library
-   # https://medium.com/snowflake/json-methods-load-vs-loads-and-dump-vs-dumps-21434a520b17
-
-
-
    print('')
 
    cash_closing_obj = cash_closing.build_cash_closing(transactions, options, ProductProvider())
-   # print(cash_closing_obj.client_id)
 
-   # # print(json.dumps(cash_closing_obj.__dict__))
    with open(config.cash_closing_filename(), encoding='utf-8', mode='w') as res:
       res.write(cash_closing_obj.toJSON())
 
-   # print(cash_closing_obj.toJSON())
-   # jo = cash_closing_obj.toJSON()
-   # print(type(cash_closing_obj.get_dict()))
-   # print('')
-   # print(json.dumps(cash_closing_obj.get_dict()))
-   # with open(CASH_CLOSING_UNFORMATTED_FILENAME, encoding='utf-8', mode='w') as unf:
-   #    unf.write(json.dumps(cash_closing_obj.get_dict()))
-
 
    config.last_receipt_number = cash_closing_obj.transactions[-1].head.number
-   # config.last_cc_export_id += 1
-   # config.save_vars()
    print(f"Transactions: {config.transactions_filename()}")
    print(f"Cash Closing: {config.cash_closing_filename()}")
    # save this value
