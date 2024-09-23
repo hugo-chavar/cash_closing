@@ -16,7 +16,7 @@ def parse(d):
     return x
 
 
-def process_closing(config: Config):
+def process_closing(config: Config, transactions):
    options = {
       "last_cash_point_closing_export_id": config.last_cc_export_id,
       "cash_register": config.cash_register,
@@ -25,42 +25,40 @@ def process_closing(config: Config):
 
    print(f"WARNING: check last_cash_point_closing_export_id {options['last_cash_point_closing_export_id']} | last_receipt_number {options['last_receipt_number']} ")
 
-   with open(config.transactions_filename(), encoding='utf-8', mode='r') as f:
-      transactions = json.load(f, object_hook=lambda d: SimpleNamespace(**d))
+
 
    # https://stackoverflow.com/questions/16877422/whats-the-best-way-to-parse-a-json-response-from-the-requests-library
    # https://medium.com/snowflake/json-methods-load-vs-loads-and-dump-vs-dumps-21434a520b17
 
 
 
-      # print(str(j))
-      print('')
+   print('')
 
-      cash_closing_obj = cash_closing.build_cash_closing(transactions, options, ProductProvider())
-      # print(cash_closing_obj.client_id)
+   cash_closing_obj = cash_closing.build_cash_closing(transactions, options, ProductProvider())
+   # print(cash_closing_obj.client_id)
 
-      # # print(json.dumps(cash_closing_obj.__dict__))
-      with open(config.cash_closing_filename(), encoding='utf-8', mode='w') as res:
-         res.write(cash_closing_obj.toJSON())
+   # # print(json.dumps(cash_closing_obj.__dict__))
+   with open(config.cash_closing_filename(), encoding='utf-8', mode='w') as res:
+      res.write(cash_closing_obj.toJSON())
 
-      # print(cash_closing_obj.toJSON())
-      # jo = cash_closing_obj.toJSON()
-      # print(type(cash_closing_obj.get_dict()))
-      # print('')
-      # print(json.dumps(cash_closing_obj.get_dict()))
-      # with open(CASH_CLOSING_UNFORMATTED_FILENAME, encoding='utf-8', mode='w') as unf:
-      #    unf.write(json.dumps(cash_closing_obj.get_dict()))
+   # print(cash_closing_obj.toJSON())
+   # jo = cash_closing_obj.toJSON()
+   # print(type(cash_closing_obj.get_dict()))
+   # print('')
+   # print(json.dumps(cash_closing_obj.get_dict()))
+   # with open(CASH_CLOSING_UNFORMATTED_FILENAME, encoding='utf-8', mode='w') as unf:
+   #    unf.write(json.dumps(cash_closing_obj.get_dict()))
 
 
-      config.last_receipt_number = cash_closing_obj.transactions[-1].head.number
-      # config.last_cc_export_id += 1
-      # config.save_vars()
-      print(f"Transactions: {config.transactions_filename()}")
-      print(f"Cash Closing: {config.cash_closing_filename()}")
-      # save this value
-      print(f"last_receipt_number (update env): {config.last_receipt_number}")
-      # save this value
-      print(f"last_cash_point_closing_export_id: {config.last_cc_export_id}")
+   config.last_receipt_number = cash_closing_obj.transactions[-1].head.number
+   # config.last_cc_export_id += 1
+   # config.save_vars()
+   print(f"Transactions: {config.transactions_filename()}")
+   print(f"Cash Closing: {config.cash_closing_filename()}")
+   # save this value
+   print(f"last_receipt_number (update env): {config.last_receipt_number}")
+   # save this value
+   print(f"last_cash_point_closing_export_id: {config.last_cc_export_id}")
 
 
 client = FiskalyClient.objects.get(id=1)
@@ -72,7 +70,9 @@ config = Config(client)
 while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
 # if 1 == 1:
    print(f"Date {config.bussiness_date()}")
-   process_closing(config)
+   with open(config.transactions_filename(), encoding='utf-8', mode='r') as f:
+      transactions = json.load(f, object_hook=lambda d: SimpleNamespace(**d))
+      process_closing(config, transactions)
    config.next()
 
 config.save_vars()    
