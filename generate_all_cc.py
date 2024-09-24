@@ -52,7 +52,9 @@ while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
 # if 1 == 1:
    print(f"Date {config.bussiness_date()}")
    with open(config.transactions_filename(), encoding='utf-8', mode='r') as f:
-      transactions = json.load(f, object_hook=lambda d: SimpleNamespace(**d))
+      # transactions = json.load(f, object_hook=lambda d: SimpleNamespace(**d))
+      transactions_dict = json.load(f)
+      transactions = parse(transactions_dict)
       process_closing(config, transactions)
    config.next()
 
