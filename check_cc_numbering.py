@@ -71,10 +71,16 @@ with open(os.path.join(folder_path, last_merged_file), encoding='utf-8', mode='r
 
 if config.last_cc_export_id == last_cc_export_id:
     print("last_cc_export_id OK.")
+else:
+    print(f"last_cc_export_id BAD. Is {config.last_cc_export_id} and should be {last_cc_export_id}")
 
 if config.last_receipt_number == last_receipt_number:
     print("last_receipt_number OK.")
+else:
+    print(f"last_receipt_number BAD. Is {config.last_receipt_number} and should be {last_receipt_number}")
 
 if config.last_processed_tx_number == last_processed_tx_number:
     print("last_processed_tx_number OK.")
+else:
+    print(f"last_processed_tx_number BAD. Is {config.last_processed_tx_number} and should be {last_processed_tx_number}")
 
