@@ -323,7 +323,7 @@ def get_transactions(receipts, last_receipt_number):
 
             transactions.append(t)
         else:
-            raise (f"Receipt ID {receipt._id} is in state {receipt.state}. Ignoring")
+            raise Exception(f"Receipt ID {receipt._id} is in state {receipt.state}. Ignoring")
 
     return transactions
 
