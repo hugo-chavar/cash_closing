@@ -9,6 +9,9 @@ from transaction_fetcher import TransactionFetcher
 from transaction_fixer import TransactionFixer
 from types import SimpleNamespace
 
+
+fiskaly_service = FiskalyService()
+
 def parse(d):
     x = SimpleNamespace()
     _ = [setattr(x, k,
@@ -34,6 +37,8 @@ def process_closing(config: Config, transactions):
    with open(config.cash_closing_filename(), encoding='utf-8', mode='w') as res:
       res.write(cash_closing_obj.toJSON())
 
+   cc_uuid = fiskaly_service.new_guid()
+   fiskaly_service.create_cash_closing(cc_uuid, cash_closing_obj.get_dict())
 
    config.last_receipt_number = cash_closing_obj.transactions[-1].head.number
    print(f"Transactions: {config.transactions_filename()}")
@@ -61,14 +66,16 @@ def split_json_files_by_bussiness_date(tx_iterator, config):
 
     # step 3: complete product data if missing
     product_provider = ProductProvider()
-    transaction_fixer = TransactionFixer(product_provider)
+    transaction_fixer = TransactionFixer(product_provider, fiskaly_service, config)
 
-    transaction_fixer.complete_transaction_data(all_transactions, config)
+    transaction_fixer.complete_transaction_data(all_transactions)
     
     print(f"LAST_PROCESSED_TX_NUMBER (update env): {config.last_processed_tx_number}")
 
 
     daily_txn_list = [transaction for transaction in all_transactions if transaction["time_start"] >= config.timestamp_low() and transaction["time_start"] <  config.timestamp_high() ]
+
+    transaction_fixer.cancel_active_txn(daily_txn_list)
 
     daily_txn_count = len(daily_txn_list)
     print(f"filtered_count: {daily_txn_count}. From {config.timestamp_low()} to {config.timestamp_high()}")
@@ -102,9 +109,9 @@ def split_json_files_by_bussiness_date(tx_iterator, config):
 
 
 client = FiskalyClient.objects.get(id=1)
-fs = FiskalyService()
-fs.credentials = client.get_credentials()
-transaction_fetcher = TransactionFetcher(fs, client)
+
+fiskaly_service.credentials = client.get_credentials()
+transaction_fetcher = TransactionFetcher(fiskaly_service, client)
 transaction_fetcher.update_last_tx_pending()
 
 
