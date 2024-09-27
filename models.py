@@ -80,7 +80,7 @@ def get(self, id):
         mock_obj = Mock(
             id=1,
             restaurant = None,
-            fiskaly_client_id = None,
+            fiskaly_client_id = CASH_REGISTER_ID,
             serial_number = None,
             tss_id = TSS_ID,
             tss_serial_number = None,
