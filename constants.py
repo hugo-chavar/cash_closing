@@ -8,7 +8,7 @@ client = FiskalyClient.objects.get(id=1)
 # BASE_TIMESTAMP = 1718938800 # 1718852400 #1718920800
 SECONDS_PER_DAY = 86400
 
-LAST_CASH_CLOSING_TO_PROCESS = 97 # procesar de a uno, desaparece esta
+LAST_CASH_CLOSING_TO_PROCESS = 98 # procesar de a uno, desaparece esta
 # LAST_RECEIPT_NUMBER = 7934
 # LAST_PROCESSED_TX_NUMBER = 15897 # es la ultima tx del ultimo del merge_file_filter procesado
 
