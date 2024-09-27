@@ -16,7 +16,7 @@ class TransactionFixer:
         complete_transaction_data(transactions, config): Completes missing product data in transactions
     """
     
-    def __init__(self, product_provider):
+    def __init__(self, product_provider, fiskaly_service, config):
         """
         Initializes the TransactionFixer.
 
@@ -24,19 +24,28 @@ class TransactionFixer:
         """
         self.product_provider = product_provider
         self.last_processed_tx_number = None
+        self.fiskaly_service = fiskaly_service
+        self.config = config
 
-    def complete_transaction_data(self, transactions, config):
+    def complete_transaction_data(self, transactions):
         """
         Completes missing product data in transactions.
 
         :param transactions: List of transactions
         :param config: Configuration object with last_processed_tx_number
         """
-        self.last_processed_tx_number = config.last_processed_tx_number
+        self.last_processed_tx_number = self.config.last_processed_tx_number
 
         for transaction in transactions:
             self._check_transaction_number_gap(transaction)
             self._complete_product_data(transaction)
+
+    def cancel_active_txn(self, transactions):
+        for transaction in transactions:
+            if transaction["state"] == "ACTIVE":
+                # TODO: check if it is a very recent tx
+                self.fiskaly_service.cancel_transaction(self.config.client, transaction["_id"], transaction["latest_revision"] + 1)
+                transaction["state"] = "CANCELLED"
 
     def _check_transaction_number_gap(self, transaction):
         """
