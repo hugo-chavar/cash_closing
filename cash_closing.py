@@ -233,6 +233,9 @@ def get_transaction_head(receipt, receipt_number, tx_export_number):
     try:
         th.closing_client_id = receipt.client_id
         th.timestamp_start = receipt.time_start
+        # TODO: 001 After cancelling txn time_end is not present
+        # Error: 'types.SimpleNamespace' object has no attribute 'time_end'
+        # but we also cannot complete because it is saved
         th.timestamp_end = receipt.time_end
         th.tx_id = receipt._id
         th.number = receipt_number
