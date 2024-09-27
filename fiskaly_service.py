@@ -227,3 +227,22 @@ class FiskalyService():
         url = f"{settings.FISKALY_DSFINVK_URL}/cash_point_closings/{cc_id}"
 
         return self.send_request("PUT", url, payload)
+    
+
+    def cancel_transaction(self, client, tx_id, tx_revision):
+        url = f"{settings.FISKALY_URL}/tss/{client.tss_id}/tx/{tx_id}?tx_revision={tx_revision}"
+
+        payload = {
+            "state": "CANCELLED",
+            "client_id": str(client.fiskaly_client_id),
+            "schema": {
+                "standard_v1": {
+                    "receipt": {
+                        "receipt_type": "CANCELLATION",
+                        "amounts_per_vat_rate": []
+                    }
+                }
+            }
+        }
+
+        return self.send_request("PUT", url, payload)
