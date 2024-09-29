@@ -286,7 +286,9 @@ class ProductProvider():
         (14386, Product(14386,"BIONADE ZITRONE BERGAMOTTE",3.1,7)),
         (14387, Product(14387,"FRITZ-KOLA Classic Light",3.1,7)),
         (14412, Product(14412,"Selters Sprudel 0,75l",3.9,7)),
-        (14413, Product(14413,"Vera Still 0,75l",3.8,7))
+        (14413, Product(14413,"Vera Still 0,75l",3.8,7)),
+        (14626, Product(14626,"San Sebastian komplete",50,7)),     
+        (14627, Product(14627,"sauce",9.8,7))
     ])
 
     def get_by_id(self, id):
