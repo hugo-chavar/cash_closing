@@ -1,7 +1,7 @@
 import cash_closing
 import json
 from cash_closing_config import Config
-from constants import LAST_CASH_CLOSING_TO_PROCESS
+# from constants import LAST_CASH_CLOSING_TO_PROCESS
 from fiskaly_service import FiskalyService
 from models import FiskalyClient
 from product_provider import ProductProvider
@@ -82,6 +82,7 @@ def split_json_files_by_bussiness_date(tx_iterator, config):
     print(f"filtered_count: {daily_txn_count}. From {config.timestamp_low()} to {config.timestamp_high()}")
     print(f"Date {config.bussiness_date()}")
 
+    LAST_CASH_CLOSING_TO_PROCESS = config.last_cc_export_id + 1
     while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
     # if 1 == 1:
         if daily_txn_count > 0:
