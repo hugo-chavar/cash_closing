@@ -33,14 +33,15 @@ def process_closing(config: Config, transactions):
    print('')
 
    cash_closing_obj = cash_closing.build_cash_closing(transactions, options, ProductProvider())
-
+   config.last_receipt_number = cash_closing_obj.transactions[-1].head.number
+   
    with open(config.cash_closing_filename(), encoding='utf-8', mode='w') as res:
       res.write(cash_closing_obj.toJSON())
 
    cc_uuid = fiskaly_service.new_guid()
    fiskaly_service.create_cash_closing(cc_uuid, cash_closing_obj.get_dict())
 
-   config.last_receipt_number = cash_closing_obj.transactions[-1].head.number
+   
    print(f"Transactions: {config.transactions_filename()}")
    print(f"Cash Closing: {config.cash_closing_filename()}")
    # save this value
