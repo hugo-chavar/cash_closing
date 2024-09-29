@@ -57,7 +57,7 @@ class FiskalyService():
 
 
     def send_request(self, type, url, payload):
-        errors = ['fiskaly errors occured', url]
+        errors = ['fiskaly errors occured', url, str(payload)]
         retry = True
         times = 0
         while retry and times < 3:
@@ -229,20 +229,41 @@ class FiskalyService():
         return self.send_request("PUT", url, payload)
     
 
-    def cancel_transaction(self, client, tx_id, tx_revision):
-        url = f"{settings.FISKALY_URL}/tss/{client.tss_id}/tx/{tx_id}?tx_revision={tx_revision}"
+    def cancel_transaction(self, client, transaction):
 
-        payload = {
-            "state": "CANCELLED",
-            "client_id": str(client.fiskaly_client_id),
-            "schema": {
-                "standard_v1": {
-                    "receipt": {
-                        "receipt_type": "CANCELLATION",
-                        "amounts_per_vat_rate": []
+        url = f"{settings.FISKALY_URL}/tss/{client.tss_id}/tx/{transaction["_id"]}?tx_revision={transaction["latest_revision"] + 1}"
+
+        standard_v1 = transaction.get("schema", {}).get("standard_v1", {})
+
+        payload = None
+
+        if "order" in standard_v1:
+            payload = {
+                "state": "CANCELLED",
+                "client_id": str(client.fiskaly_client_id),
+                "schema": {
+                    "standard_v1": {
+                        "order": {
+                            "line_items": []
+                        }
                     }
                 }
             }
-        }
+            
+        elif "receipt" in standard_v1:
+            payload = {
+                "state": "CANCELLED",
+                "client_id": str(client.fiskaly_client_id),
+                "schema": {
+                    "standard_v1": {
+                        "receipt": {
+                            "receipt_type": "CANCELLATION",
+                            "amounts_per_vat_rate": []
+                        }
+                    }
+                }
+            }
+        else:
+            raise Exception(f'Error cancelling tx {transaction["_id"]}')
 
         return self.send_request("PUT", url, payload)

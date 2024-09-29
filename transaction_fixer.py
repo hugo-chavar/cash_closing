@@ -44,7 +44,7 @@ class TransactionFixer:
         for transaction in transactions:
             if transaction["state"] == "ACTIVE":
                 # TODO: check if it is a very recent tx
-                self.fiskaly_service.cancel_transaction(self.config.client, transaction["_id"], transaction["latest_revision"] + 1)
+                self.fiskaly_service.cancel_transaction(self.config.client, transaction)
                 transaction["state"] = "CANCELLED"
 
     def _check_transaction_number_gap(self, transaction):
