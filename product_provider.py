@@ -288,7 +288,8 @@ class ProductProvider():
         (14412, Product(14412,"Selters Sprudel 0,75l",3.9,7)),
         (14413, Product(14413,"Vera Still 0,75l",3.8,7)),
         (14626, Product(14626,"San Sebastian komplete",50,7)),     
-        (14627, Product(14627,"sauce",9.8,7))
+        (14627, Product(14627,"sauce",9.8,7)),
+        (14870, Product(14870,"Papa diego",10.9,25))
     ])
 
     def get_by_id(self, id):
