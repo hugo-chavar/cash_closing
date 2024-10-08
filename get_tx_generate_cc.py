@@ -76,7 +76,6 @@ def split_json_files_by_bussiness_date(tx_iterator, config):
 
     daily_txn_list = [transaction for transaction in all_transactions if transaction["time_start"] >= config.timestamp_low() and transaction["time_start"] <  config.timestamp_high() ]
 
-    transaction_fixer.cancel_active_txn(daily_txn_list)
 
     daily_txn_count = len(daily_txn_list)
     print(f"filtered_count: {daily_txn_count}. From {config.timestamp_low()} to {config.timestamp_high()}")
@@ -86,6 +85,7 @@ def split_json_files_by_bussiness_date(tx_iterator, config):
     while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
     # if 1 == 1:
         if daily_txn_count > 0:
+            transaction_fixer.cancel_active_txn(daily_txn_list)
             daily_transactions = {
                 "data": daily_txn_list,
                 "count": daily_txn_count
