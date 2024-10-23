@@ -289,7 +289,14 @@ class ProductProvider():
         (14413, Product(14413,"Vera Still 0,75l",3.8,7)),
         (14626, Product(14626,"San Sebastian komplete",50,7)),     
         (14627, Product(14627,"sauce",9.8,7)),
-        (14870, Product(14870,"Papa diego",10.9,25))
+        (14870, Product(14870,"Papa diego",10.9,25)),
+        (14931, Product(14931,"Franky's Mini Roll Lemon Cheesecake",2.9,7)),
+        (14933, Product(14933,"Frankys Pistazien Tiramisu",7.9,7)),
+        (14943, Product(14943,"Franky's Roll Biscoff",4.9,7)),
+        (14944, Product(14944,"Mini Franky's Roll Biscoff",2.9,7)),
+        (14945, Product(14945,"Croissants le Franky's",3.1,7)),
+        (14950, Product(14950,"capacBana",46,25)),
+        (14954, Product(14954,"Bionade Johannisbeere Rosmarin",3.1,7)),
     ])
 
     def get_by_id(self, id):
