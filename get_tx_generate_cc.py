@@ -1,5 +1,5 @@
-import cash_closing
 import json
+from cash_closing import CashClosingException, build_cash_closing
 from cash_closing_config import Config
 # from constants import LAST_CASH_CLOSING_TO_PROCESS
 from fiskaly_service import FiskalyService
@@ -32,7 +32,7 @@ def process_closing(config: Config, transactions):
 
    print('')
 
-   cash_closing_obj = cash_closing.build_cash_closing(transactions, options, ProductProvider())
+   cash_closing_obj = build_cash_closing(transactions, options, ProductProvider())
    config.last_receipt_number = cash_closing_obj.transactions[-1].head.number
    
    with open(config.cash_closing_filename(), encoding='utf-8', mode='w') as res:
@@ -82,32 +82,35 @@ def split_json_files_by_bussiness_date(tx_iterator, config):
     print(f"Date {config.bussiness_date()}")
 
     LAST_CASH_CLOSING_TO_PROCESS = config.last_cc_export_id + 1
-    while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
-    # if 1 == 1:
-        if daily_txn_count > 0:
-            transaction_fixer.cancel_active_txn(daily_txn_list)
-            daily_transactions = {
-                "data": daily_txn_list,
-                "count": daily_txn_count
-            }
+
+    try:
+        while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
+        # if 1 == 1:
+            if daily_txn_count > 0:
+                transaction_fixer.cancel_active_txn(daily_txn_list)
+                daily_transactions = {
+                    "data": daily_txn_list,
+                    "count": daily_txn_count
+                }
+                
+                # Write the merged dictionary to the output file
+                with open(config.transactions_filename(), mode='w', encoding='utf8') as f:
+                    json.dump(daily_transactions, f, indent=4)
+
+                process_closing(config, parse(daily_transactions))
+                
+                config.last_processed_tx_number = daily_txn_list[-1]["number"]
+                print(f"Saved: {config.transactions_filename()}")
+
+            config.next()
+            daily_txn_list = [transaction for transaction in all_transactions if transaction["time_start"] >= config.timestamp_low() and transaction["time_start"] <  config.timestamp_high() ]
+
+            daily_txn_count = len(daily_txn_list)
             
-            # Write the merged dictionary to the output file
-            with open(config.transactions_filename(), mode='w', encoding='utf8') as f:
-                json.dump(daily_transactions, f, indent=4)
-
-            process_closing(config, parse(daily_transactions))
-            
-            config.last_processed_tx_number = daily_txn_list[-1]["number"]
-            print(f"Saved: {config.transactions_filename()}")
-
-        config.next()
-        daily_txn_list = [transaction for transaction in all_transactions if transaction["time_start"] >= config.timestamp_low() and transaction["time_start"] <  config.timestamp_high() ]
-
-        daily_txn_count = len(daily_txn_list)
-        
-        print(f"filtered_count: {daily_txn_count}. From {config.timestamp_low()} to {config.timestamp_high()}")
-        print(f"Date {config.bussiness_date()}")
-
+            print(f"filtered_count: {daily_txn_count}. From {config.timestamp_low()} to {config.timestamp_high()}")
+            print(f"Date {config.bussiness_date()}")
+    except CashClosingException as e:
+        print(f"Process cancelled due to error: {str(e)}")
 
 
 client = FiskalyClient.objects.get(id=1)
