@@ -240,7 +240,7 @@ def get_transaction_head(receipt, receipt_number, tx_export_number):
         # TODO: 001 After cancelling txn time_end is not present
         # but we also cannot complete because it is needed, so raise exception
         if not hasattr(receipt, 'time_end'):
-            raise CashClosingException()
+            raise CashClosingException(f"Receipt: {receipt_number} doesn't have time_end")
         th.timestamp_end = receipt.time_end
         th.tx_id = receipt._id
         th.number = receipt_number
