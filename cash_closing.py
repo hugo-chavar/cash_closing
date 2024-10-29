@@ -8,6 +8,9 @@ from itertools import chain, groupby
 NORMAL_VAT_RATE = 1
 REDUCED_VAT_RATE = 2
 
+class CashClosingException(Exception):
+    pass
+
 class JsonSerializable:
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__, 
@@ -228,14 +231,15 @@ def get_transaction_head(receipt, receipt_number, tx_export_number):
     elif receipt.state == 'CANCELLED':
         th.type = "AVBelegabbruch"
     else:
-        raise Exception(f"Receipt: {str(receipt)}\nState: {receipt.state}")
+        raise CashClosingException(f"Receipt: {str(receipt)}\nState: {receipt.state}\nInvalid state")
     th.storno = False
     try:
         th.closing_client_id = receipt.client_id
         th.timestamp_start = receipt.time_start
         # TODO: 001 After cancelling txn time_end is not present
-        # Error: 'types.SimpleNamespace' object has no attribute 'time_end'
-        # but we also cannot complete because it is saved
+        # but we also cannot complete because it is needed, so raise exception
+        if not hasattr(receipt, 'time_end'):
+            raise CashClosingException()
         th.timestamp_end = receipt.time_end
         th.tx_id = receipt._id
         th.number = receipt_number
