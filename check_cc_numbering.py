@@ -29,7 +29,7 @@ for file_name in file_list:
             last_tx = transactions[-1]["head"]["number"]
             cdate = truncate_timestamp_to_date(transactions[-1]["head"]["timestamp_start"])
 
-            print(f"{file_name}: {get_formatted_shortdate(cdate)} first {first_tx:06} last {last_tx:06}")
+            # print(f"{file_name}: {get_formatted_shortdate(cdate)} first {first_tx:06} last {last_tx:06}")
 
             if first_tx > last_tx_number + 1:
                 ok = False
@@ -59,7 +59,7 @@ with open(os.path.join(folder_path, last_cc_file_name), 'r', encoding='utf-8') a
     last_receipt_number = int(transactions[-1]["head"]["number"])
     # cdate = truncate_timestamp_to_date(transactions[-1]["head"]["timestamp_start"])
 
-    print(f"{file_name}: {get_formatted_shortdate(cdate)} first {first_tx:06} last {last_tx:06}")
+    # print(f"{file_name}: {get_formatted_shortdate(cdate)} first {first_tx:06} last {last_tx:06}")
 
 folder_path = 'merged6'
 file_list = sorted(os.listdir(folder_path))
