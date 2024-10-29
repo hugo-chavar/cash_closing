@@ -9,7 +9,8 @@ NORMAL_VAT_RATE = 1
 REDUCED_VAT_RATE = 2
 
 class CashClosingException(Exception):
-    pass
+    def __init__(self, message):
+        super().__init__(message)
 
 class JsonSerializable:
     def toJSON(self):
