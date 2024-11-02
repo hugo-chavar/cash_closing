@@ -297,6 +297,9 @@ class ProductProvider():
         (14945, Product(14945,"Croissants le Franky's",3.1,7)),
         (14950, Product(14950,"capacBana",46,25)),
         (14954, Product(14954,"Bionade Johannisbeere Rosmarin",3.1,7)),
+        (14990, Product(14990,"Menemen Spezial",13,19)),
+        (14991, Product(14991,"Avocado Roll TowerZutaten",14,19)),
+        (14992, Product(14992,"Meat Tower",14,19)),
     ])
 
     def get_by_id(self, id):
