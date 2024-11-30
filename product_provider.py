@@ -391,6 +391,12 @@ class ProductProvider:
             (14997, Product(14997, "Club Mate", 3.9, 7)),
             (14998, Product(14998, "Peppermint Mocha", 5.8, 7)),
             (15001, Product(15001, "Cheddar Schnittlauch Scones", 4, 7)),
+            (15034, Product(15034,"Franky's Dubai Dates",1.9,7)),
+            (15037, Product(15037,"Dubai Chocolate Cheesecake",9.6,7)),
+            (15038, Product(15038,"Dubai Chocolate Roll",5.4,7)),
+            (15039, Product(15039,"Dubai Chocolate mini Roll",3.9,7)),
+            (15253, Product(15253,"Franky's Roll Cinnamon & Salted Caramel",4.9,7)),
+            (15257, Product(15257,"Apple Pie Latte",5.5,7)),
         ]
     )
 
