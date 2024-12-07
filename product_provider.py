@@ -397,6 +397,12 @@ class ProductProvider:
             (15039, Product(15039,"Dubai Chocolate mini Roll",3.9,7)),
             (15253, Product(15253,"Franky's Roll Cinnamon & Salted Caramel",4.9,7)),
             (15257, Product(15257,"Apple Pie Latte",5.5,7)),
+            (15390, Product(15390,"Lotus Biscoff Cream Pie",5.9,7)),
+            (15392, Product(15392,"BBQ Wings",6,7)),
+            (15393, Product(15393,"Sweet Sour Wings",6,7)),
+            (15394, Product(15394,"Franky’s Dubai Chocolate Tiramisu",8.9,7)),
+            (15396, Product(15396,"(Vegan, Laktose Free) Franky’s Dubai Chocolate Tiramisu",8.9,7)),
+            (15397, Product(15397,"(Vegan , Laktose Free) Frankys Dubai Tiramisu",8.5,7)),
         ]
     )
 
