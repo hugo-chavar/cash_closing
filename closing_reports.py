@@ -7,77 +7,80 @@ from date_tests import get_german_date
 # Path to the folder containing JSON files
 folder_path = 'closings/submitted'
 # folder_path = 'closings6'
-csv_file_path = 'reports/report10.csv'
+csv_file_path = 'reports/report12.csv'
 # List to hold data for CSV
 data = []
 
 # Read and process each JSON file
+def extract_cash_closing_totals(cash_closing):
+    full_amount = cash_closing['cash_statement']['payment']['full_amount']
+    cash_amount = next((pt['amount'] for pt in cash_closing['cash_statement']['payment']['payment_types'] if pt['type'] == 'Bar'), 0)
+    non_cash_amount = next((pt['amount'] for pt in cash_closing['cash_statement']['payment']['payment_types'] if pt['type'] == 'Unbar'), 0)
+
+    vat_data_1 = next((item for item in cash_closing['cash_statement']['business_cases'][0]['amounts_per_vat_id'] if item['vat_definition_export_id'] == 1), {})
+    vat_data_2 = next((item for item in cash_closing['cash_statement']['business_cases'][0]['amounts_per_vat_id'] if item['vat_definition_export_id'] == 2), {})
+
+    incl_vat_1 = vat_data_1.get('incl_vat', 0)
+    excl_vat_1 = vat_data_1.get('excl_vat', 0)
+    vat_1 = vat_data_1.get('vat', 0)
+
+    incl_vat_2 = vat_data_2.get('incl_vat', 0)
+    excl_vat_2 = vat_data_2.get('excl_vat', 0)
+    vat_2 = vat_data_2.get('vat', 0)
+    time_creation = get_german_date(cash_closing['head']['export_creation_date'])
+
+            # Initialize totals
+    cash_totals = {
+                'vat_19': 0,
+                'vat_7': 0,
+            }
+
+    non_cash_totals = {
+                'vat_19': 0,
+                'vat_7': 0,
+            }
+            
+    for item in cash_closing['transactions']:
+        if item['head']['type'] != "Beleg":
+            continue
+                # print(f"Processing {item['head']['number']}")
+        payments = item['data']['payment_types']
+        lines = item['data']['lines']
+                
+                # Determine payment type (Bar or Unbar)
+        payment_type = "Unbar"  # Default to Unbar
+        for payment in payments:
+            if payment['type'] == "Bar":
+                payment_type = "Bar"
+                break
+
+                # Iterate over lines and accumulate incl_vat based on VAT definition and payment type
+        for line in lines:
+            for vat_info in line['business_case']['amounts_per_vat_id']:
+                incl_vat = vat_info['incl_vat']
+                vat_type = None
+
+                        # Determine VAT type
+                if vat_info['vat_definition_export_id'] == 1:
+                    vat_type = 'vat_19'
+                elif vat_info['vat_definition_export_id'] == 2:
+                    vat_type = 'vat_7'
+
+                        # Accumulate incl_vat based on payment type and VAT type
+                if vat_type:
+                    if payment_type == "Bar":
+                        cash_totals[vat_type] += incl_vat
+                    else:
+                                # print(f"Adding {vat_type} {incl_vat}")
+                        non_cash_totals[vat_type] += incl_vat
+    return full_amount,cash_amount,non_cash_amount,incl_vat_1,excl_vat_1,vat_1,incl_vat_2,excl_vat_2,vat_2,time_creation,cash_totals,non_cash_totals
+
 for file_name in sorted(os.listdir(folder_path)):
     if file_name.endswith('.json'):
         with open(os.path.join(folder_path, file_name), 'r', encoding='utf-8') as file:
             cash_closing = json.load(file)
 
-            # Extract necessary fields
-            full_amount = cash_closing['cash_statement']['payment']['full_amount']
-            cash_amount = next((pt['amount'] for pt in cash_closing['cash_statement']['payment']['payment_types'] if pt['type'] == 'Bar'), 0)
-            non_cash_amount = next((pt['amount'] for pt in cash_closing['cash_statement']['payment']['payment_types'] if pt['type'] == 'Unbar'), 0)
-
-            vat_data_1 = next((item for item in cash_closing['cash_statement']['business_cases'][0]['amounts_per_vat_id'] if item['vat_definition_export_id'] == 1), {})
-            vat_data_2 = next((item for item in cash_closing['cash_statement']['business_cases'][0]['amounts_per_vat_id'] if item['vat_definition_export_id'] == 2), {})
-
-            incl_vat_1 = vat_data_1.get('incl_vat', 0)
-            excl_vat_1 = vat_data_1.get('excl_vat', 0)
-            vat_1 = vat_data_1.get('vat', 0)
-
-            incl_vat_2 = vat_data_2.get('incl_vat', 0)
-            excl_vat_2 = vat_data_2.get('excl_vat', 0)
-            vat_2 = vat_data_2.get('vat', 0)
-            time_creation = get_german_date(cash_closing['head']['export_creation_date'])
-
-            # Initialize totals
-            cash_totals = {
-                'vat_19': 0,
-                'vat_7': 0,
-            }
-
-            non_cash_totals = {
-                'vat_19': 0,
-                'vat_7': 0,
-            }
-            
-            for item in cash_closing['transactions']:
-                if item['head']['type'] != "Beleg":
-                    continue
-                # print(f"Processing {item['head']['number']}")
-                payments = item['data']['payment_types']
-                lines = item['data']['lines']
-                
-                # Determine payment type (Bar or Unbar)
-                payment_type = "Unbar"  # Default to Unbar
-                for payment in payments:
-                    if payment['type'] == "Bar":
-                        payment_type = "Bar"
-                        break
-
-                # Iterate over lines and accumulate incl_vat based on VAT definition and payment type
-                for line in lines:
-                    for vat_info in line['business_case']['amounts_per_vat_id']:
-                        incl_vat = vat_info['incl_vat']
-                        vat_type = None
-
-                        # Determine VAT type
-                        if vat_info['vat_definition_export_id'] == 1:
-                            vat_type = 'vat_19'
-                        elif vat_info['vat_definition_export_id'] == 2:
-                            vat_type = 'vat_7'
-
-                        # Accumulate incl_vat based on payment type and VAT type
-                        if vat_type:
-                            if payment_type == "Bar":
-                                cash_totals[vat_type] += incl_vat
-                            else:
-                                # print(f"Adding {vat_type} {incl_vat}")
-                                non_cash_totals[vat_type] += incl_vat
+            full_amount, cash_amount, non_cash_amount, incl_vat_1, excl_vat_1, vat_1, incl_vat_2, excl_vat_2, vat_2, time_creation, cash_totals, non_cash_totals = extract_cash_closing_totals(cash_closing)
             # Append data to the list
             data.append([
                 full_amount, incl_vat_1, excl_vat_1, vat_1,
