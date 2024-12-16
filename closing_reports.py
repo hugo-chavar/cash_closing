@@ -48,6 +48,7 @@ for file_name in sorted(os.listdir(folder_path)):
             for item in json_data['transactions']:
                 if item['head']['type'] != "Beleg":
                     continue
+                # print(f"Processing {item['head']['number']}")
                 payments = item['data']['payment_types']
                 lines = item['data']['lines']
                 
@@ -75,6 +76,7 @@ for file_name in sorted(os.listdir(folder_path)):
                             if payment_type == "Bar":
                                 cash_totals[vat_type] += incl_vat
                             else:
+                                # print(f"Adding {vat_type} {incl_vat}")
                                 non_cash_totals[vat_type] += incl_vat
             # Append data to the list
             data.append([
