@@ -15,15 +15,15 @@ data = []
 for file_name in sorted(os.listdir(folder_path)):
     if file_name.endswith('.json'):
         with open(os.path.join(folder_path, file_name), 'r', encoding='utf-8') as file:
-            json_data = json.load(file)
+            cash_closing = json.load(file)
 
             # Extract necessary fields
-            full_amount = json_data['cash_statement']['payment']['full_amount']
-            cash_amount = next((pt['amount'] for pt in json_data['cash_statement']['payment']['payment_types'] if pt['type'] == 'Bar'), 0)
-            non_cash_amount = next((pt['amount'] for pt in json_data['cash_statement']['payment']['payment_types'] if pt['type'] == 'Unbar'), 0)
+            full_amount = cash_closing['cash_statement']['payment']['full_amount']
+            cash_amount = next((pt['amount'] for pt in cash_closing['cash_statement']['payment']['payment_types'] if pt['type'] == 'Bar'), 0)
+            non_cash_amount = next((pt['amount'] for pt in cash_closing['cash_statement']['payment']['payment_types'] if pt['type'] == 'Unbar'), 0)
 
-            vat_data_1 = next((item for item in json_data['cash_statement']['business_cases'][0]['amounts_per_vat_id'] if item['vat_definition_export_id'] == 1), {})
-            vat_data_2 = next((item for item in json_data['cash_statement']['business_cases'][0]['amounts_per_vat_id'] if item['vat_definition_export_id'] == 2), {})
+            vat_data_1 = next((item for item in cash_closing['cash_statement']['business_cases'][0]['amounts_per_vat_id'] if item['vat_definition_export_id'] == 1), {})
+            vat_data_2 = next((item for item in cash_closing['cash_statement']['business_cases'][0]['amounts_per_vat_id'] if item['vat_definition_export_id'] == 2), {})
 
             incl_vat_1 = vat_data_1.get('incl_vat', 0)
             excl_vat_1 = vat_data_1.get('excl_vat', 0)
@@ -32,7 +32,7 @@ for file_name in sorted(os.listdir(folder_path)):
             incl_vat_2 = vat_data_2.get('incl_vat', 0)
             excl_vat_2 = vat_data_2.get('excl_vat', 0)
             vat_2 = vat_data_2.get('vat', 0)
-            time_creation = get_german_date(json_data['head']['export_creation_date'])
+            time_creation = get_german_date(cash_closing['head']['export_creation_date'])
 
             # Initialize totals
             cash_totals = {
@@ -45,7 +45,7 @@ for file_name in sorted(os.listdir(folder_path)):
                 'vat_7': 0,
             }
             
-            for item in json_data['transactions']:
+            for item in cash_closing['transactions']:
                 if item['head']['type'] != "Beleg":
                     continue
                 # print(f"Processing {item['head']['number']}")
