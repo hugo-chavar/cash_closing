@@ -27,7 +27,7 @@ for file_name in file_list:
             transactions = json_data['transactions']
             first_tx = transactions[0]["head"]["number"]
             last_tx = transactions[-1]["head"]["number"]
-            cdate = truncate_timestamp_to_date(transactions[-1]["head"]["timestamp_start"])
+            # cdate = truncate_timestamp_to_date(transactions[-1]["head"]["timestamp_start"])
 
             # print(f"{file_name}: {get_formatted_shortdate(cdate)} first {first_tx:06} last {last_tx:06}")
 
