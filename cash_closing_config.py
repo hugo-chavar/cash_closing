@@ -23,12 +23,14 @@ class Config:
         self.last_processed_tx_number = fiskaly_client.last_processed_tx_number
 
     def timestamp_low(self):
+        # TODO: do not use self.last_cc_export_id because we have to discount deleted cc
         return self.base_timestamp + SECONDS_PER_DAY * self.last_cc_export_id
 
     def timestamp_high(self):
         return self.timestamp_low() + SECONDS_PER_DAY
 
     def bussiness_date(self):
+        # TODO: do not use self.last_cc_export_id because we have to discount deleted cc
         return date_from_timestamp(self.base_timestamp) + datetime.timedelta(
             days=self.last_cc_export_id
         )
