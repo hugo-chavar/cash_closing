@@ -64,6 +64,41 @@ class TestMergedFileAgainstResultFile(unittest.TestCase):
                 self.assertAlmostEqual(Decimal(str(tax['vat'])), vat_sums[vat_id]['vat'], places=2,
                     msg=f"VAT ID {vat_id}: excl_vat mismatch")
 
+        for tx in result_data['transactions']:
+            tx_number = tx['head']['number']
+            print(f"Pr: {tx_number}")
+            tx_vat_data_1 = next((item for item in tx['data']['amounts_per_vat_id'] if item['vat_definition_export_id'] == 1), {})
+            tx_vat_data_2 = next((item for item in tx['data']['amounts_per_vat_id'] if item['vat_definition_export_id'] == 2), {})
+
+            tx_incl_vat_1 = tx_vat_data_1.get('incl_vat', 0)
+            tx_acum_incl_vat_1 = 0
+            # tx_excl_vat_1 = tx_vat_data_1.get('excl_vat', 0)
+            # tx_vat_1 = tx_vat_data_1.get('vat', 0)
+
+            tx_incl_vat_2 = tx_vat_data_2.get('incl_vat', 0)
+            tx_acum_incl_vat_2 = 0
+            # tx_excl_vat_2 = tx_vat_data_2.get('excl_vat', 0)
+            # tx_vat_2 = tx_vat_data_2.get('vat', 0)
+            
+            for line in tx['data']['lines']:
+                line_vat_data_1 = line['business_case']['amounts_per_vat_id'][0] if line['business_case']['amounts_per_vat_id'][0]['vat_definition_export_id'] == 1 else {}
+                line_vat_data_2 = line['business_case']['amounts_per_vat_id'][0] if line['business_case']['amounts_per_vat_id'][0]['vat_definition_export_id'] == 2 else {}
+
+                line_incl_vat_1 = line_vat_data_1.get('incl_vat', 0)
+                tx_acum_incl_vat_1 += line_incl_vat_1
+                # line_excl_vat_1 = line_vat_data_1.get('excl_vat', 0)
+                # line_vat_1 = line_vat_data_1.get('vat', 0)
+
+                line_incl_vat_2 = line_vat_data_2.get('incl_vat', 0)
+                tx_acum_incl_vat_2 += line_incl_vat_2
+                # line_excl_vat_2 = line_vat_data_2.get('excl_vat', 0)
+                # line_vat_2 = line_vat_data_2.get('vat', 0)
+                
+            self.assertAlmostEqual(Decimal(str(tx_incl_vat_1)), Decimal(str(tx_acum_incl_vat_1)), places=2,
+                    msg=f"TX number {tx_number}: vat1 mismatch")
+            self.assertAlmostEqual(Decimal(str(tx_incl_vat_2)), Decimal(str(tx_acum_incl_vat_2)), places=2,
+                    msg=f"TX number {tx_number}: vat2 mismatch")
+
     def test_payments(self):
         payment_type_sums = {}
         transactions = merged_data['data']
