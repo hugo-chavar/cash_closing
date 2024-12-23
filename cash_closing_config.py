@@ -22,9 +22,13 @@ class Config:
         )  ## Used in process_closing (generate_all_cc.py)
         self.last_processed_tx_number = fiskaly_client.last_processed_tx_number
 
+    def cc_counter(self):
+        deleted_cc = 2
+        return self.last_cc_export_id - deleted_cc
+    
     def timestamp_low(self):
         # TODO: do not use self.last_cc_export_id because we have to discount deleted cc
-        return self.base_timestamp + SECONDS_PER_DAY * self.last_cc_export_id
+        return self.base_timestamp + SECONDS_PER_DAY * self.cc_counter()
 
     def timestamp_high(self):
         return self.timestamp_low() + SECONDS_PER_DAY
@@ -32,7 +36,7 @@ class Config:
     def bussiness_date(self):
         # TODO: do not use self.last_cc_export_id because we have to discount deleted cc
         return date_from_timestamp(self.base_timestamp) + datetime.timedelta(
-            days=self.last_cc_export_id
+            days=self.cc_counter()
         )
 
     def cc_number(self):
