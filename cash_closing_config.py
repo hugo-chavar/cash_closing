@@ -43,10 +43,12 @@ class Config:
         return self.last_cc_export_id + 1
 
     def transactions_filename(self):
-        return f"merged7\\merged_file_filter_{self.cc_number():03}_{format_shortdate(self.bussiness_date())}.json"
+        folder = "merged7"
+        return f"{folder}\\merged_file_filter_{self.cc_number():03}_{format_shortdate(self.bussiness_date())}.json"
 
     def cash_closing_filename(self):
-        return f"closings6\\CASH_CLOSING_{self.cc_number():03}_{format_shortdate(self.bussiness_date())}.json"
+        folder = "closings6"
+        return f"{folder}\\CASH_CLOSING_{self.cc_number():03}_{format_shortdate(self.bussiness_date())}.json"
 
     def next(self):
         self.last_cc_export_id = self.cc_number()
