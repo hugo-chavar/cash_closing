@@ -156,7 +156,7 @@
                     {
                         "quantity": "1",
                         "text": "Discount",
-                        "price_per_unit": "-3.22"
+                        "price_per_unit": "-3.22" ## Problem here
                     }
                 ]
             }
