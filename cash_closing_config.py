@@ -23,7 +23,7 @@ class Config:
         self.last_processed_tx_number = fiskaly_client.last_processed_tx_number
 
     def cc_counter(self):
-        deleted_cc = 2
+        deleted_cc = 2 if self.last_cc_export_id > 181 else 0
         return self.last_cc_export_id - deleted_cc
     
     def timestamp_low(self):
