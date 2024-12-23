@@ -6,7 +6,10 @@ from models import FiskalyClient
 
 client = FiskalyClient.objects.get(id=1)
 config = Config(client)
+# test specific cc
+config.last_cc_export_id = 121
 
+# set precision
 getcontext().prec = 28
 
 
