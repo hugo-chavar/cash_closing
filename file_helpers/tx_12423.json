@@ -69,3 +69,122 @@
         "type": "Beleg"
     }
 }
+
+
+{
+    "number": 24900,
+    "time_start": 1729431888,
+    "client_serial_number": "00000721",
+    "tss_serial_number": "7b3af793732682f90c8516a94a0ea3dc131738210164f79313e56652c5bc6fe3",
+    "state": "FINISHED",
+    "client_id": "e2bc3f5a-1130-4d08-ac54-0fb6730d3963",
+    "schema": {
+        "standard_v1": {
+            "receipt": {
+                "receipt_type": "RECEIPT",
+                "amounts_per_vat_rate": [
+                    {
+                        "vat_rate": "NORMAL",
+                        "amount": "8.68"
+                    },
+                    {
+                        "vat_rate": "REDUCED_1",
+                        "amount": "4.20"
+                    }
+                ],
+                "amounts_per_payment_type": [
+                    {
+                        "payment_type": "NON_CASH",
+                        "amount": "12.88",
+                        "currency_code": "EUR"
+                    }
+                ]
+            }
+        },
+        "raw": {
+            "process_type": "Kassenbeleg-V1",
+            "process_data": "QmVsZWdeOC42OF80LjIwXzAuMDBfMC4wMF8wLjAwXjEyLjg4OlVuYmFy"
+        }
+    },
+    "revision": 2,
+    "latest_revision": 2,
+    "tss_id": "128ad55c-e1df-4f8a-a97f-9b71466afeab",
+    "metadata": {
+        "doyoBillId": "6715095237813d44b0570660",
+        "doyoOrderId": "",
+        "fiskaly_order_id": "75e53ba6-8449-48ee-a05c-8ccd813e8906"
+    },
+    "_type": "TRANSACTION",
+    "_id": "f91da710-757e-4b99-b411-f592213da044",
+    "_env": "LIVE",
+    "_version": "2.1.19",
+    "time_end": 1729431889,
+    "qr_code_data": "V0;00000721;Kassenbeleg-V1;Beleg^8.68_4.20_0.00_0.00_0.00^12.88:Unbar;24900;50062;2024-10-20T13:44:48.000Z;2024-10-20T13:44:49.000Z;ecdsa-plain-SHA256;unixTime;+/x9ERaaO1veUbvSdjfZNWvmQcJp+e9IdP+n1X/MUp60/6oI5g6vL+JiEMGG9uxd1nrtDox5mOGmPv8HEZgDCw==;BHFnrHVuTxGsMOH4f3c/M4cfRu62rNmuudznn7BpQ4RaB5Qo43j/rZ1Wl7hdmnApGTlp5uNJPybI7T5U+uZwq4w=",
+    "log": {
+        "operation": "Finish",
+        "timestamp": 1729431889,
+        "timestamp_format": "unixTime"
+    },
+    "signature": {
+        "value": "+/x9ERaaO1veUbvSdjfZNWvmQcJp+e9IdP+n1X/MUp60/6oI5g6vL+JiEMGG9uxd1nrtDox5mOGmPv8HEZgDCw==",
+        "algorithm": "ecdsa-plain-SHA256",
+        "counter": "50062",
+        "public_key": "BHFnrHVuTxGsMOH4f3c/M4cfRu62rNmuudznn7BpQ4RaB5Qo43j/rZ1Wl7hdmnApGTlp5uNJPybI7T5U+uZwq4w="
+    }
+},
+{
+    "number": 24901,
+    "time_start": 1729431889,
+    "client_serial_number": "00000721",
+    "tss_serial_number": "7b3af793732682f90c8516a94a0ea3dc131738210164f79313e56652c5bc6fe3",
+    "state": "FINISHED",
+    "client_id": "e2bc3f5a-1130-4d08-ac54-0fb6730d3963",
+    "schema": {
+        "standard_v1": {
+            "order": {
+                "line_items": [
+                    {
+                        "quantity": "1",
+                        "text": "13508 - PARA YOK",
+                        "price_per_unit": "11.90"
+                    },
+                    {
+                        "quantity": "1",
+                        "text": "13489 - CHAI LATTE",
+                        "price_per_unit": "4.20"
+                    },
+                    {
+                        "quantity": "1",
+                        "text": "Discount",
+                        "price_per_unit": "-3.22"
+                    }
+                ]
+            }
+        },
+        "raw": {
+            "process_type": "Bestellung-V1",
+            "process_data": "MTsiMTM1MDggLSBQQVJBIFlPSyI7MTEuOTANMTsiMTM0ODkgLSBDSEFJIExBVFRFIjs0LjIwDTE7IkRpc2NvdW50IjstMy4yMg=="
+        }
+    },
+    "revision": 2,
+    "latest_revision": 2,
+    "tss_id": "128ad55c-e1df-4f8a-a97f-9b71466afeab",
+    "metadata": {},
+    "_type": "TRANSACTION",
+    "_id": "75e53ba6-8449-48ee-a05c-8ccd813e8906",
+    "_env": "LIVE",
+    "_version": "2.1.19",
+    "time_end": 1729431889,
+    "qr_code_data": "V0;00000721;Bestellung-V1;1;\"13508 - PARA YOK\";11.90\r1;\"13489 - CHAI LATTE\";4.20\r1;\"Discount\";-3.22;24901;50061;2024-10-20T13:44:49.000Z;2024-10-20T13:44:49.000Z;ecdsa-plain-SHA256;unixTime;W3Ve4Eze9HF+gnoP7qtjhx3Lo7F4B2G+eriJAytiSgdEleQZZr1ca5tl9El1PD9IT1mtzoOz3S05EKOqcSdM9A==;BHFnrHVuTxGsMOH4f3c/M4cfRu62rNmuudznn7BpQ4RaB5Qo43j/rZ1Wl7hdmnApGTlp5uNJPybI7T5U+uZwq4w=",
+    "log": {
+        "operation": "Finish",
+        "timestamp": 1729431889,
+        "timestamp_format": "unixTime"
+    },
+    "signature": {
+        "value": "W3Ve4Eze9HF+gnoP7qtjhx3Lo7F4B2G+eriJAytiSgdEleQZZr1ca5tl9El1PD9IT1mtzoOz3S05EKOqcSdM9A==",
+        "algorithm": "ecdsa-plain-SHA256",
+        "counter": "50061",
+        "public_key": "BHFnrHVuTxGsMOH4f3c/M4cfRu62rNmuudznn7BpQ4RaB5Qo43j/rZ1Wl7hdmnApGTlp5uNJPybI7T5U+uZwq4w="
+    }
+},
