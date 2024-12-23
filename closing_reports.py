@@ -7,13 +7,14 @@ from date_tests import get_german_date
 # Path to the folder containing JSON files
 folder_path = 'closings/submitted'
 # folder_path = 'closings6'
-csv_file_path = 'reports/report12.csv'
+csv_file_path = 'reports/report13.csv'
 # List to hold data for CSV
 data = []
 
 # Read and process each JSON file
 def extract_cash_closing_totals(cash_closing):
     # initialize
+    print(f"CC: {cash_closing['cash_point_closing_export_id']}")
     full_amount = cash_amount = non_cash_amount = 0
     incl_vat_1 = excl_vat_1 = vat_1 = 0
     incl_vat_2 = excl_vat_2 = vat_2 = 0
@@ -46,43 +47,73 @@ def extract_cash_closing_totals(cash_closing):
         excl_vat_2 = vat_data_2.get('excl_vat', 0)
         vat_2 = vat_data_2.get('vat', 0)
                 
-        for item in cash_closing['transactions']:
-            if item['head']['type'] != "Beleg":
+        for tx in cash_closing['transactions']:
+            if tx['head']['type'] != "Beleg":
                 continue
-                    # print(f"Processing {item['head']['number']}")
-            payments = item['data']['payment_types']
-            lines = item['data']['lines']
+            # print(f"Processing {item['head']['number']}")
+            
+            # Processing only problematic tx
+            # if tx['head']['number'] != 12423:
+            #     continue
+            
+            tx_payments = tx['data']['payment_types']
+            tx_lines = tx['data']['lines']
                     
-                    # Determine payment type (Bar or Unbar)
-            payment_type = "Unbar"  # Default to Unbar
-            for payment in payments:
+            # Determine payment type (Bar or Unbar)
+            tx_payment_type = "Unbar"  # Default to Unbar
+            tx_payment_amount = 0.0
+            for payment in tx_payments:
+                tx_payment_amount += payment['amount']
                 if payment['type'] == "Bar":
-                    payment_type = "Bar"
-                    break
+                    tx_payment_type = "Bar"
+                    # break
 
-                    # Iterate over lines and accumulate incl_vat based on VAT definition and payment type
-            for line in lines:
+            cash_tx = {
+                'vat_19': 0,
+                'vat_7': 0,
+            }
+
+            non_cash_tx = {
+                'vat_19': 0,
+                'vat_7': 0,
+            }
+            
+            # Iterate over lines and accumulate incl_vat based on VAT definition and payment type
+            for line in tx_lines:
                 for vat_info in line['business_case']['amounts_per_vat_id']:
                     incl_vat = vat_info['incl_vat']
                     vat_type = None
 
-                            # Determine VAT type
+                    # Determine VAT type
                     if vat_info['vat_definition_export_id'] == 1:
                         vat_type = 'vat_19'
                     elif vat_info['vat_definition_export_id'] == 2:
                         vat_type = 'vat_7'
 
-                            # Accumulate incl_vat based on payment type and VAT type
+                    # Accumulate incl_vat based on payment type and VAT type
                     if vat_type:
-                        if payment_type == "Bar":
+                        if tx_payment_type == "Bar":
                             cash_totals[vat_type] += incl_vat
+                            cash_tx[vat_type] += incl_vat
                         else:
-                                    # print(f"Adding {vat_type} {incl_vat}")
+                            # print(f"Adding {vat_type} {incl_vat}")
                             non_cash_totals[vat_type] += incl_vat
+                            non_cash_tx[vat_type] += incl_vat
+            
+            if payment['type'] == "Bar":
+                cash_tx_total = round(cash_tx['vat_19'] + cash_tx['vat_7'], 2)
+                if tx_payment_amount != cash_tx_total:
+                    print(f"Tx problem {tx['head']['number']} payment_amout {tx_payment_amount} cash total {cash_tx_total}")
+            else:
+                non_cash_tx_total = round(non_cash_tx['vat_19'] + non_cash_tx['vat_7'], 2)
+                if tx_payment_amount != non_cash_tx_total:
+                    print(f"Tx problem {tx['head']['number']} payment_amout {tx_payment_amount} cash total {non_cash_tx_total}")
+ 
+    
     return full_amount,cash_amount,non_cash_amount,incl_vat_1,excl_vat_1,vat_1,incl_vat_2,excl_vat_2,vat_2,time_creation,cash_totals,non_cash_totals
 
 for file_name in sorted(os.listdir(folder_path)):
-    if file_name.endswith('.json'):
+    if file_name.endswith('.json'): # and "_122_" in file_name
         with open(os.path.join(folder_path, file_name), 'r', encoding='utf-8') as file:
             cash_closing = json.load(file)
 

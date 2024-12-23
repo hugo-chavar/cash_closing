@@ -1,0 +1,71 @@
+{
+    "data": {
+        "amounts_per_vat_id": [
+            {
+                "excl_vat": 7.03,
+                "incl_vat": 8.68, #problem here
+                "vat": 1.65,
+                "vat_definition_export_id": 1
+            },
+            {
+                "excl_vat": 3.91,
+                "incl_vat": 4.2,
+                "vat": 0.29,
+                "vat_definition_export_id": 2
+            }
+        ],
+        "full_amount_incl_vat": 12.88,
+        "lines": [
+            {
+                "business_case": {
+                    "amounts_per_vat_id": [
+                        {
+                            "excl_vat": 9.64,
+                            "incl_vat": 11.9, #problem here
+                            "vat": 2.26,
+                            "vat_definition_export_id": 1
+                        }
+                    ],
+                    "type": "Umsatz"
+                },
+                "item": {
+                    "number": 1,
+                    "price_per_unit": 11.9,
+                    "quantity": 1.0
+                },
+                "lineitem_export_id": 1
+            },
+            {
+                "business_case": {
+                    "amounts_per_vat_id": [
+                        {
+                            "excl_vat": 3.91,
+                            "incl_vat": 4.2,
+                            "vat": 0.29,
+                            "vat_definition_export_id": 2
+                        }
+                    ],
+                    "type": "Umsatz"
+                },
+                "item": {
+                    "number": 2,
+                    "price_per_unit": 4.2,
+                    "quantity": 1.0
+                },
+                "lineitem_export_id": 2
+            }
+        ],
+        "payment_types": [
+            {
+                "amount": 12.88,
+                "type": "Unbar"
+            }
+        ]
+    },
+    "head": {
+        "number": 12423,
+        "transaction_export_id": "2024-10-20-0000063",
+        "tx_id": "f91da710-757e-4b99-b411-f592213da044",
+        "type": "Beleg"
+    }
+}
