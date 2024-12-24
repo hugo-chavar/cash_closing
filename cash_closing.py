@@ -115,7 +115,8 @@ class AmountByCurrency(JsonSerializable):
 
 
 class Transaction(JsonSerializable):
-    pass
+    def validate(self):
+        pass
 
 
 class TransactionHead(JsonSerializable):
@@ -152,7 +153,7 @@ def transaction_is(tx, type):
 
 
 def transaction_is_order(tx):
-    return transaction_is(tx, "order")
+    return transaction_is(tx, "order") and tx.state != "CANCELLED"
 
 
 def transaction_is_receipt(tx):
@@ -361,19 +362,10 @@ def get_transaction_data(raw_receipt):
             if hasattr(receipt, "order"):
                 line_number = 0
                 for line in receipt.order.line_items:
-                    # TODO add here info that goes to the line
-                    if not line.is_discount:
-                        line_number += 1
-                        line_data = get_line_data(line)
-                        line_data.lineitem_export_id = line_number
-                        td.lines.append(line_data)
-                    else:
-                        if line.is_discount_with_vat_calculated:
-                            line_number += 1
-                            line_data = get_line_data(line)
-                            line_data.lineitem_export_id = line_number
-                            td.lines.append(line_data)
-
+                    line_number += 1
+                    line_data = get_line_data(line)
+                    line_data.lineitem_export_id = line_number
+                    td.lines.append(line_data)
             else:
                 print(f"No tiene order. Raw receipt number: {raw_receipt.number}")
                 print(str(receipt))
@@ -401,6 +393,7 @@ def get_transactions(receipts, last_receipt_number):
             t.head = get_transaction_head(receipt, receipt_number, tx_export_number)
             t.data = get_transaction_data(receipt)
             t.security = get_transaction_security(receipt)
+            t.validate()
 
             transactions.append(t)
         else:
@@ -502,48 +495,56 @@ def add_order_to_receipt(transactions, products_provider):
     for tx in txs:
         if transaction_is_order(tx):
             order = tx.schema.standard_v1.order
-            line_number = 1
-            for l in order.line_items:
-                l.line_number = line_number
+            line_items = order.line_items
+            line_number = 0
+            
+            for l in line_items:
                 line_number += 1
-                l.is_discount = float(l.price_per_unit) < 0
+                l.line_number = line_number
+                l.amount = float(Decimal(l.price_per_unit)*Decimal(l.quantity))
+                l.is_discount = l.amount < 0
+                
                 if not l.is_discount:
                     id = int(l.text.split(" - ", 1)[0])
                     product = products_provider.get_by_id(id)
                     l.id = product.id
                     l.vat = product.vat
                     l.description = product.title
-                elif (
-                    l.line_number == 2
-                ):  # there are only 2 lines and the 2nd is discount
-                    l.vat = order.line_items[0].vat
-                    l.description = l.text
-                    l.is_discount_with_vat_calculated = True
-                else:
-                    first_vat = order.line_items[0].vat
-
-                    all_same_vat = reduce(
-                        lambda a, b: a and b,
-                        [
-                            x.vat == first_vat
-                            for x in order.line_items
-                            if not x.is_discount
-                        ],
-                        True,
-                    )
+                    
+            first_vat = next(l.vat for l in line_items if not l.is_discount)
+            total_vat_19 = reduce(
+                lambda a, b: a + b,
+                [
+                    l.amount
+                    for l in line_items
+                    if not l.is_discount and l.vat == 19
+                ],
+                0
+            )
+            
+            all_same_vat = reduce(
+                lambda a, b: a and b,
+                [
+                    x.vat == first_vat
+                    for x in line_items
+                    if not x.is_discount
+                ],
+                True,
+            )
+            for l in line_items:
+                if l.is_discount:
+                    
                     if (
                         all_same_vat
                     ):  # there are many lines but all have the same VAT rate
-                        l.vat = order.line_items[0].vat
+                        l.vat = first_vat
                         l.description = l.text
-                        l.is_discount_with_vat_calculated = True
                     else:  # TODO: treat all cases
-                        # TODO: throw error here we can't handle it yet
-                        l.is_discount_with_vat_calculated = False
-                        continue
-
-                l.amount = float(l.quantity) * float(l.price_per_unit)
-                l.vat_without_discount = l.amount * l.vat  # TODO we still not need this
+                        if (total_vat_19 + l.amount) > 0:
+                            l.vat = 19
+                            l.description = l.text
+                        else: 
+                            raise Exception(f"Discount causes bad calculation.")
 
                 l.business_case = get_line_business_case(l)
 
