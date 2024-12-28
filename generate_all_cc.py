@@ -47,9 +47,19 @@ client = FiskalyClient.objects.get(id=1)
 # fs.credentials = client.get_credentials()
 
 config = Config(client)
+# config.last_cc_export_id = 16
 
-while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
-# if 1 == 1:
+# while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
+if 1 == 1:
+   # except the problematic cc
+   # if config.last_cc_export_id in [16, 20, 21, 22, 28, 29, 179, 180]:
+   # if config.last_cc_export_id in [16, 22, 29, 179, 180]:
+   #    config.next()
+   #    continue
+   # process only the problematic cc
+   # if config.last_cc_export_id not in [16, 22, 29]:
+   #    config.next()
+   #    continue
    print(f"Date {config.bussiness_date()}")
    with open(config.transactions_filename(), encoding='utf-8', mode='r') as f:
       # transactions = json.load(f, object_hook=lambda d: SimpleNamespace(**d))
@@ -58,4 +68,4 @@ while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
       process_closing(config, transactions)
    config.next()
 
-config.save_vars()    
+# config.save_vars()    
