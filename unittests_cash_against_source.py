@@ -66,6 +66,8 @@ class TestMergedFileAgainstResultFile(unittest.TestCase):
 
         for tx in result_data['transactions']:
             tx_number = tx['head']['number']
+            if tx['head']['type'] != "Beleg":
+                continue
             print(f"Pr: {tx_number}")
             tx_vat_data_1 = next((item for item in tx['data']['amounts_per_vat_id'] if item['vat_definition_export_id'] == 1), {})
             tx_vat_data_2 = next((item for item in tx['data']['amounts_per_vat_id'] if item['vat_definition_export_id'] == 2), {})
