@@ -46,20 +46,29 @@ client = FiskalyClient.objects.get(id=1)
 
 config = Config(client)
 
-last_cc_file_name=file_list[-1]
-print(f"Last: {last_cc_file_name}")
+position = -1
+last_cc_export_id = -1
+found = False
+while not found:
+    last_cc_file_name=file_list[position]
+    
 
-with open(os.path.join(folder_path, last_cc_file_name), 'r', encoding='utf-8') as file:
-    json_data = json.load(file)
+    with open(os.path.join(folder_path, last_cc_file_name), 'r', encoding='utf-8') as file:
+        json_data = json.load(file)
 
-    last_cc_export_id = int(json_data["cash_point_closing_export_id"])
+        cc_state = json_data.get('state', "COMPLETED")
+        if last_cc_export_id == -1:
+            last_cc_export_id = int(json_data["cash_point_closing_export_id"])
+            print(f"Last: {last_cc_file_name} {cc_state}")
+        position -= 1
+        if cc_state != "DELETED":
+            found = True
+            transactions = json_data['transactions']
+            # first_tx = transactions[0]["head"]["number"]
+            last_receipt_number = int(transactions[-1]["head"]["number"])
+            # cdate = truncate_timestamp_to_date(transactions[-1]["head"]["timestamp_start"])
 
-    transactions = json_data['transactions']
-    # first_tx = transactions[0]["head"]["number"]
-    last_receipt_number = int(transactions[-1]["head"]["number"])
-    # cdate = truncate_timestamp_to_date(transactions[-1]["head"]["timestamp_start"])
-
-    # print(f"{file_name}: {get_formatted_shortdate(cdate)} first {first_tx:06} last {last_tx:06}")
+            # print(f"{file_name}: {get_formatted_shortdate(cdate)} first {first_tx:06} last {last_tx:06}")
 
 folder_path = 'merged6'
 file_list = sorted(os.listdir(folder_path))
