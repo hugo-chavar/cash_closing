@@ -6,8 +6,9 @@ from date_tests import get_german_date
 
 # Path to the folder containing JSON files
 folder_path = 'closings/submitted'
+# folder_path = 'closings8/t'
 # folder_path = 'closings6'
-csv_file_path = 'reports/report13.csv'
+csv_file_path = 'reports/report18.csv'
 # List to hold data for CSV
 data = []
 
