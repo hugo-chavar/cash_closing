@@ -8,6 +8,8 @@ from transaction_fetcher import TransactionFetcher
 from transaction_fixer import TransactionFixer
 from types import SimpleNamespace
 
+from date_tests import get_timestamp_from_german_date
+
 
 fiskaly_service = FiskalyService()
 
@@ -65,12 +67,23 @@ def split_json_files_by_bussiness_date(tx_iterator, config):
     total_count = 0
 
     # step 1: get all new transactions in batches
+    threshold = get_timestamp_from_german_date("2025-01-01 23:59:59+02:00")
+    
     for tx_batch in tx_iterator:
         print("MERGING")
         all_transactions.extend(tx_batch["data"])
         total_count += len(tx_batch["data"])
+        if tx_batch["data"][-1]["time_start"] >= threshold:
+            break
+        # if tx_batch["data"][-1]["number"] >= 29400:
+        #     break
 
     print(f"Total count: {total_count}")
+    # with open(
+    #     f"merged8\\all_{threshold}_1.json", mode="w", encoding="utf8"
+    # ) as ft:
+    #     json.dump(all_transactions, ft, indent=4)
+    
     # step 2: Sort the merged data by the "number" field
     all_transactions.sort(key=lambda x: x["number"])
 
@@ -124,6 +137,9 @@ def split_json_files_by_bussiness_date(tx_iterator, config):
             ]
 
             daily_txn_count = len(daily_txn_list)
+            if daily_txn_count == 0:
+                # la unica manera de que de 0 es que se ejecute al dia
+                break
 
             print(
                 f"filtered_count: {daily_txn_count}. From {config.timestamp_low()} to {config.timestamp_high()}"
@@ -136,11 +152,14 @@ def split_json_files_by_bussiness_date(tx_iterator, config):
 client = FiskalyClient.objects.get(id=1)
 
 fiskaly_service.credentials = client.get_credentials()
+fiskaly_service.token = client.get_token()
+# print(f"Token: {fiskaly_service.token}")
 transaction_fetcher = TransactionFetcher(fiskaly_service, client)
 transaction_fetcher.update_last_tx_pending()
 
 
 transactions_iterator = iter(transaction_fetcher)
 config = Config(client)
+client.token = fiskaly_service.token
 split_json_files_by_bussiness_date(transactions_iterator, config)
 config.save_vars()
