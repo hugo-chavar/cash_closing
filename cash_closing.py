@@ -13,15 +13,22 @@ class CashClosingException(Exception):
     def __init__(self, message):
         super().__init__(message)
 
+class TransactionValidationException(Exception):
+    def __init__(self, message):
+        super().__init__(message)
 
 class JsonSerializable:
     def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+        # do not include keys that start with __ 
+        
+        filtered_dict = self.get_dict()
+        j = json.dumps(filtered_dict, sort_keys=True, indent=4)
+        return j
 
     def get_dict(self):
         if not hasattr(self, "__dict__"):
             return self
-        new_subdic = vars(self)
+        new_subdic = {k: v for k, v in vars(self).items() if not k.startswith("__")}
         for key, value in new_subdic.items():
             if isinstance(value, JsonSerializable):
                 new_subdic[key] = value.get_dict()
@@ -51,6 +58,7 @@ class BusinessCase(JsonSerializable):
 class AmountPerVat(JsonSerializable):
     def __init__(self, *args):
         if len(args) == 0:
+            self.incl_vat = 0
             return
 
         if len(args) == 3:
@@ -102,6 +110,9 @@ class AmountPerVat(JsonSerializable):
         )
         self.excl_vat = float(excl_vat)
 
+    def __str__(self):
+        return self.toJSON()
+    
     def is_normal(self):
         return self.vat_definition_export_id == 1
 
@@ -115,8 +126,35 @@ class AmountByCurrency(JsonSerializable):
 
 
 class Transaction(JsonSerializable):
+    def __init__(self, receipt, receipt_number, tx_export_number):
+        self.head = get_transaction_head(receipt, receipt_number, tx_export_number)
+        self.data = get_transaction_data(receipt)
+        self.security = get_transaction_security(receipt)
+        # Hidden fields
+        self.__receipt__ = receipt
+    
+    def __str__(self):
+        return f"{self.head.type} number {self.head.number} ID {self.head.tx_id}"
+    
     def validate(self):
-        pass
+        # print(f"Validating TX:\n{self.toJSON()}")
+        try:
+            receipt = self.__receipt__
+            if receipt.state not in ["FINISHED", "CANCELLED"]:
+                raise TransactionValidationException(
+                    f"Receipt ID {receipt._id} is in invalid state {receipt.state}"
+                )
+            if receipt.state == "CANCELLED":
+                if self.data.full_amount_incl_vat != 0:
+                    raise TransactionValidationException(
+                        f"Cancellation ID {receipt._id} must be in 0.0"
+                    )
+                return True
+            return self.data.validate()
+        except TransactionValidationException as e:
+            error_msg = f"{str(self)}:\n{str(e)}"
+            print(error_msg)
+            return False
 
 
 class TransactionHead(JsonSerializable):
@@ -124,7 +162,43 @@ class TransactionHead(JsonSerializable):
 
 
 class TransactionData(JsonSerializable):
-    pass
+    # TODO: Fix duplicated code
+    def vat_totals_per_id(self, vat_id):
+        try:
+            return next((a for a in self.amounts_per_vat_id if a.vat_definition_export_id == vat_id), AmountPerVat())
+        except AttributeError as e:
+            raise TransactionValidationException(f"Error inesperado. vat_totals_per_id: {str(e)}")
+            
+    
+    def validate(self):
+
+        total_incl_vat_1 = Decimal(str(self.vat_totals_per_id(1).incl_vat))
+            
+        acum_incl_vat_1 = Decimal(0)
+        # tx_excl_vat_1 = tx_vat_data_1.get('excl_vat', 0)
+        # tx_vat_1 = tx_vat_data_1.get('vat', 0)
+
+        total_incl_vat_2 = Decimal(str(self.vat_totals_per_id(2).incl_vat))
+        acum_incl_vat_2 = Decimal(0)
+        # tx_excl_vat_2 = tx_vat_data_2.get('excl_vat', 0)
+        # tx_vat_2 = tx_vat_data_2.get('vat', 0)
+
+        for line in self.lines:
+
+
+            acum_incl_vat_1 += Decimal(str(line.vat_totals_per_id(1).incl_vat))
+            # line_excl_vat_1 = line_vat_data_1.get('excl_vat', 0)
+            # line_vat_1 = line_vat_data_1.get('vat', 0)
+
+            acum_incl_vat_2 += Decimal(str(line.vat_totals_per_id(2).incl_vat))
+            # line_excl_vat_2 = line_vat_data_2.get('excl_vat', 0)
+            # line_vat_2 = line_vat_data_2.get('vat', 0)
+        
+        if Decimal(str(total_incl_vat_1)) != Decimal(str(acum_incl_vat_1)):
+            raise TransactionValidationException(f"Vat 1 - Total {total_incl_vat_1} not equal to Acumulated {acum_incl_vat_1}")
+        if Decimal(str(total_incl_vat_2)) != Decimal(str(acum_incl_vat_2)):
+            raise TransactionValidationException(f"Vat 2 - Total {total_incl_vat_2} not equal to Acumulated {acum_incl_vat_2}")
+        return True
 
 
 class Reference(JsonSerializable):
@@ -137,7 +211,10 @@ class TransactionSecurity(JsonSerializable):
 
 
 class Line(JsonSerializable):
-    pass
+    # TODO: Fix duplicated code
+    def vat_totals_per_id(self, vat_id):
+        return next((a for a in self.business_case.amounts_per_vat_id if a.vat_definition_export_id == vat_id), AmountPerVat())
+
 
 
 class Item(JsonSerializable):
@@ -385,22 +462,20 @@ def get_transaction_security(receipt):
 def get_transactions(receipts, last_receipt_number):
     transactions = []
     tx_export_number = 0
+    error = False
     for receipt in receipts:
-        if receipt.state in ["FINISHED", "CANCELLED"]:
-            t = Transaction()
-            tx_export_number += 1
-            receipt_number = last_receipt_number + tx_export_number
-            t.head = get_transaction_head(receipt, receipt_number, tx_export_number)
-            t.data = get_transaction_data(receipt)
-            t.security = get_transaction_security(receipt)
-            t.validate()
+        tx_export_number += 1
+        receipt_number = last_receipt_number + tx_export_number
+        t = Transaction(receipt, receipt_number, tx_export_number)
+        if not t.validate():
+            error = True
 
-            transactions.append(t)
-        else:
-            raise Exception(
-                f"Receipt ID {receipt._id} is in state {receipt.state}. Ignoring"
-            )
-
+        transactions.append(t)
+    if error:
+        # Flush error to output
+        print(".", flush=True)
+        raise CashClosingException("")
+    
     return transactions
 
 
