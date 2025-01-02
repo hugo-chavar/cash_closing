@@ -7,7 +7,7 @@ from models import FiskalyClient
 client = FiskalyClient.objects.get(id=1)
 config = Config(client)
 # test specific cc
-config.last_cc_export_id = 121
+config.last_cc_export_id = 197
 
 # set precision
 getcontext().prec = 28
@@ -68,7 +68,7 @@ class TestMergedFileAgainstResultFile(unittest.TestCase):
             tx_number = tx['head']['number']
             if tx['head']['type'] != "Beleg":
                 continue
-            print(f"Pr: {tx_number}")
+            # print(f"Pr: {tx_number}")
             tx_vat_data_1 = next((item for item in tx['data']['amounts_per_vat_id'] if item['vat_definition_export_id'] == 1), {})
             tx_vat_data_2 = next((item for item in tx['data']['amounts_per_vat_id'] if item['vat_definition_export_id'] == 2), {})
 
