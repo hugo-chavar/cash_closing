@@ -21,10 +21,22 @@ class Config:
             fiskaly_client.cash_register
         )  ## Used in process_closing (generate_all_cc.py)
         self.last_processed_tx_number = fiskaly_client.last_processed_tx_number
+        self.deleted_cc = dict([(180, True), (181, True), (183, True), (184, True), (185, True), (186, True), (187, True), (188, True)])
 
+    def deleted_count(self):
+        deleted_cc = 0
+        deleted_cc += 1 if self.last_cc_export_id > 179 else 0
+        deleted_cc += 1 if self.last_cc_export_id > 180 else 0
+        deleted_cc += 1 if self.last_cc_export_id > 182 else 0
+        deleted_cc += 1 if self.last_cc_export_id > 183 else 0
+        deleted_cc += 1 if self.last_cc_export_id > 184 else 0
+        deleted_cc += 1 if self.last_cc_export_id > 185 else 0
+        deleted_cc += 1 if self.last_cc_export_id > 186 else 0
+        deleted_cc += 1 if self.last_cc_export_id > 187 else 0
+        return deleted_cc
+    
     def cc_counter(self):
-        deleted_cc = 2 if self.last_cc_export_id > 181 else 0
-        return self.last_cc_export_id - deleted_cc
+        return self.last_cc_export_id - self.deleted_count()
     
     def timestamp_low(self):
         # TODO: do not use self.last_cc_export_id because we have to discount deleted cc
@@ -40,14 +52,20 @@ class Config:
         )
 
     def cc_number(self):
-        return self.last_cc_export_id + 1
+        cc_number = self.last_cc_export_id + 1
+        while self.deleted_cc.get(cc_number, False):
+            cc_number += 1
+        return cc_number
 
     def transactions_filename(self):
         folder = "merged7"
+        # folder = "merged9"
         return f"{folder}\\merged_file_filter_{self.cc_number():03}_{format_shortdate(self.bussiness_date())}.json"
 
     def cash_closing_filename(self):
         folder = "closings6"
+        # folder = "closings\\submitted"
+        # folder = "closings8\\f"
         return f"{folder}\\CASH_CLOSING_{self.cc_number():03}_{format_shortdate(self.bussiness_date())}.json"
 
     def next(self):
