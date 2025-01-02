@@ -23,7 +23,7 @@ def process_closing(config: Config, transactions):
       "last_receipt_number": config.last_receipt_number,
    }
 
-   print(f"WARNING: check last_cash_point_closing_export_id {options['last_cash_point_closing_export_id']} | last_receipt_number {options['last_receipt_number']} ")
+   # print(f"WARNING: check last_cash_point_closing_export_id {options['last_cash_point_closing_export_id']} | last_receipt_number {options['last_receipt_number']} ")
 
    print('')
 
@@ -37,9 +37,9 @@ def process_closing(config: Config, transactions):
    print(f"Transactions: {config.transactions_filename()}")
    print(f"Cash Closing: {config.cash_closing_filename()}")
    # save this value
-   print(f"last_receipt_number (update env): {config.last_receipt_number}")
+   # print(f"last_receipt_number (update env): {config.last_receipt_number}")
    # save this value
-   print(f"last_cash_point_closing_export_id: {config.last_cc_export_id}")
+   # print(f"last_cash_point_closing_export_id: {config.last_cc_export_id}")
 
 
 client = FiskalyClient.objects.get(id=1)
@@ -47,10 +47,10 @@ client = FiskalyClient.objects.get(id=1)
 # fs.credentials = client.get_credentials()
 
 config = Config(client)
-# config.last_cc_export_id = 16
+config.last_cc_export_id = 181  # Error from this 183
 
-# while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
-if 1 == 1:
+while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
+   # if 1 == 1:
    # except the problematic cc
    # if config.last_cc_export_id in [16, 20, 21, 22, 28, 29, 179, 180]:
    # if config.last_cc_export_id in [16, 22, 29, 179, 180]:
@@ -65,7 +65,10 @@ if 1 == 1:
       # transactions = json.load(f, object_hook=lambda d: SimpleNamespace(**d))
       transactions_dict = json.load(f)
       transactions = parse(transactions_dict)
-      process_closing(config, transactions)
+      try:
+         process_closing(config, transactions)
+      except cash_closing.CashClosingException:
+         print(f"CC {config.last_cc_export_id + 1} ended with errors")
    config.next()
 
 # config.save_vars()    
