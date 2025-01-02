@@ -26,6 +26,7 @@ ENV_LAST_RECEIPT_NUMBER = "LAST_RECEIPT_NUMBER"
 ENV_LAST_PROCESSED_TX_NUMBER = "LAST_PROCESSED_TX_NUMBER"
 ENV_API_KEY = "API_KEY"
 ENV_API_SECRET = "API_SECRET"
+ENV_TOKEN = "TOKEN"
 ENV_TSS_ID = "TSS_ID"
 ENV_CASH_REGISTER_ID = "CASH_REGISTER_ID"
 
@@ -34,6 +35,7 @@ LAST_RECEIPT_NUMBER = int(os.getenv(ENV_LAST_RECEIPT_NUMBER))
 LAST_PROCESSED_TX_NUMBER = int(os.getenv(ENV_LAST_PROCESSED_TX_NUMBER))
 API_KEY = os.getenv(ENV_API_KEY)
 API_SECRET = os.getenv(ENV_API_SECRET)
+TOKEN = os.getenv(ENV_TOKEN)
 TSS_ID = os.getenv(ENV_TSS_ID)
 CASH_REGISTER_ID = os.getenv(ENV_CASH_REGISTER_ID)
 
@@ -94,15 +96,15 @@ def get(self, id):
             api_secret = API_SECRET,
             vat_id_valid = None,
             client_state_information = None,
-            access_token = None,
+            access_token = TOKEN,
             access_token_expires_at = None,
             refresh_token = None,
             refresh_token_expires_at = None,
             last_processed_tx_number = LAST_PROCESSED_TX_NUMBER,
             last_cash_point_closing_export_id =  LAST_CASH_POINT_CLOSING_EXPORT_ID, # default = 0
             last_receipt_number = LAST_RECEIPT_NUMBER, # default = 0
-            base_timestamp = BASE_TIMESTAMP, # put better name to the field
-            base_date_time = BASE_DATE_TIME, # put better name to the field
+            base_timestamp = BASE_TIMESTAMP, # put better name to the field => 02/01/2025 better, calculate the related from c.closings
+            base_date_time = BASE_DATE_TIME, # put better name to the field => 02/01/2025 better, calculate the related from c.closings
             cash_register = CASH_REGISTER_ID # TODO: add this to the model
             # get_credentials=get_credentials.__get__(self, type(self))
             # get_credentials= lambda self: {
@@ -117,9 +119,11 @@ def get(self, id):
         mock_obj.get_values_to_save = lambda: {
             "LAST_CASH_POINT_CLOSING_EXPORT_ID": mock_obj.last_cash_point_closing_export_id,
             "LAST_RECEIPT_NUMBER": mock_obj.last_receipt_number,
-            "LAST_PROCESSED_TX_NUMBER": mock_obj.last_processed_tx_number
+            "LAST_PROCESSED_TX_NUMBER": mock_obj.last_processed_tx_number,
+            "TOKEN": mock_obj.access_token
         }
         mock_obj.save = lambda: update_env_vars(mock_obj.get_values_to_save())
+        mock_obj.get_token = lambda: mock_obj.access_token
         return mock_obj
     else:
         raise Exception('Object not found')
