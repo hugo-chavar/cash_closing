@@ -183,16 +183,16 @@ german_dt = get_german_date(1719231364)
 
 date = f"{get_formatted_shortdate(german_dt)}"
 
-original_timestamp = get_timestamp_from_german_date(german_dt)
-back_to_german = get_german_date(original_timestamp)
-print(f"Original: {german_dt}")
-print(f"Converted back: {back_to_german}")
+# original_timestamp = get_timestamp_from_german_date(german_dt)
+# back_to_german = get_german_date(original_timestamp)
+# print(f"Original: {german_dt}")
+# print(f"Converted back: {back_to_german}")
 
-threshold = "2024-12-16 23:59:59+02:00"
-t_timestamp = get_timestamp_from_german_date(threshold)
-back_to_german = get_german_date(t_timestamp)
-print(f"Threshold timestamp: {t_timestamp}")
-print(f"Threshold Converted back: {back_to_german}")
+# threshold = "2024-12-16 23:59:59+02:00"
+# t_timestamp = get_timestamp_from_german_date(threshold)
+# back_to_german = get_german_date(t_timestamp)
+# print(f"Threshold timestamp: {t_timestamp}")
+# print(f"Threshold Converted back: {back_to_german}")
 
 # print(get_german_date(1720082141))
 # print(date_from_timestamp(1720168541))
