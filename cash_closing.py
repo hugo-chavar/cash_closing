@@ -462,18 +462,18 @@ def get_transaction_security(receipt):
 def get_transactions(receipts, last_receipt_number):
     transactions = []
     tx_export_number = 0
-    error = False
+    errors = 0
     for receipt in receipts:
         tx_export_number += 1
         receipt_number = last_receipt_number + tx_export_number
         t = Transaction(receipt, receipt_number, tx_export_number)
         if not t.validate():
-            error = True
+            errors += 1
 
         transactions.append(t)
-    if error:
+    if errors:
         # Flush error to output
-        print(".", flush=True)
+        print(f"{errors} errors found", flush=True)
         raise CashClosingException("")
     
     return transactions
