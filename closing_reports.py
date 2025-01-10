@@ -2,6 +2,7 @@ import os
 import json
 import csv
 
+from decimal import Decimal
 from date_tests import get_german_date
 
 # Path to the folder containing JSON files
@@ -16,17 +17,17 @@ data = []
 def extract_cash_closing_totals(cash_closing):
     # initialize
     print(f"CC: {cash_closing['cash_point_closing_export_id']}")
-    full_amount = cash_amount = non_cash_amount = 0
-    incl_vat_1 = excl_vat_1 = vat_1 = 0
-    incl_vat_2 = excl_vat_2 = vat_2 = 0
+    full_amount = cash_amount = non_cash_amount = Decimal("0")
+    incl_vat_1 = excl_vat_1 = vat_1 = Decimal("0")
+    incl_vat_2 = excl_vat_2 = vat_2 = Decimal("0")
     cash_totals = {
-                'vat_19': 0,
-                'vat_7': 0,
+                'vat_19': Decimal("0"),
+                'vat_7': Decimal("0"),
             }
 
     non_cash_totals = {
-                'vat_19': 0,
-                'vat_7': 0,
+                'vat_19': Decimal("0"),
+                'vat_7': Decimal("0"),
             }
     time_creation = get_german_date(cash_closing['head']['export_creation_date'])
     
@@ -70,13 +71,13 @@ def extract_cash_closing_totals(cash_closing):
                     # break
 
             cash_tx = {
-                'vat_19': 0,
-                'vat_7': 0,
+                'vat_19': Decimal("0"),
+                'vat_7': Decimal("0"),
             }
 
             non_cash_tx = {
-                'vat_19': 0,
-                'vat_7': 0,
+                'vat_19': Decimal("0"),
+                'vat_7': Decimal("0"),
             }
             
             # Iterate over lines and accumulate incl_vat based on VAT definition and payment type
@@ -94,19 +95,21 @@ def extract_cash_closing_totals(cash_closing):
                     # Accumulate incl_vat based on payment type and VAT type
                     if vat_type:
                         if tx_payment_type == "Bar":
-                            cash_totals[vat_type] += incl_vat
-                            cash_tx[vat_type] += incl_vat
+                            incl_vat_dec = Decimal(str(incl_vat))
+                            cash_totals[vat_type] += incl_vat_dec
+                            cash_tx[vat_type] += incl_vat_dec
                         else:
                             # print(f"Adding {vat_type} {incl_vat}")
-                            non_cash_totals[vat_type] += incl_vat
-                            non_cash_tx[vat_type] += incl_vat
+                            incl_vat_dec = Decimal(str(incl_vat))
+                            non_cash_totals[vat_type] += incl_vat_dec
+                            non_cash_tx[vat_type] += incl_vat_dec
             
             if payment['type'] == "Bar":
-                cash_tx_total = round(cash_tx['vat_19'] + cash_tx['vat_7'], 2)
+                cash_tx_total = float(cash_tx['vat_19'] + cash_tx['vat_7'])
                 if tx_payment_amount != cash_tx_total:
                     print(f"Tx problem {tx['head']['number']} payment_amout {tx_payment_amount} cash total {cash_tx_total}")
             else:
-                non_cash_tx_total = round(non_cash_tx['vat_19'] + non_cash_tx['vat_7'], 2)
+                non_cash_tx_total = float(non_cash_tx['vat_19'] + non_cash_tx['vat_7'])
                 if tx_payment_amount != non_cash_tx_total:
                     print(f"Tx problem {tx['head']['number']} payment_amout {tx_payment_amount} cash total {non_cash_tx_total}")
  
