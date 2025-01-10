@@ -21,7 +21,7 @@ class Config:
             fiskaly_client.cash_register
         )  ## Used in process_closing (generate_all_cc.py)
         self.last_processed_tx_number = fiskaly_client.last_processed_tx_number
-        self.deleted_cc = dict([(180, True), (181, True), (183, True), (184, True), (185, True), (186, True), (187, True), (188, True)])
+        self.deleted_cc = dict([(180, True), (181, True), (183, True), (184, True), (185, True), (186, True), (187, True), (188, True), (204, True), (205, True)])
 
     def deleted_count(self):
         deleted_cc = 0
@@ -33,6 +33,8 @@ class Config:
         deleted_cc += 1 if self.last_cc_export_id > 185 else 0
         deleted_cc += 1 if self.last_cc_export_id > 186 else 0
         deleted_cc += 1 if self.last_cc_export_id > 187 else 0
+        deleted_cc += 1 if self.last_cc_export_id > 203 else 0
+        deleted_cc += 1 if self.last_cc_export_id > 204 else 0
         return deleted_cc
     
     def cc_counter(self):
