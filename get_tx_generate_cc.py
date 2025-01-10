@@ -160,6 +160,6 @@ transaction_fetcher.update_last_tx_pending()
 
 transactions_iterator = iter(transaction_fetcher)
 config = Config(client)
-client.token = fiskaly_service.token
+client.access_token = fiskaly_service.token
 split_json_files_by_bussiness_date(transactions_iterator, config)
 config.save_vars()
