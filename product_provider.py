@@ -288,7 +288,7 @@ class ProductProvider:
             (13559, Product(13559, "Banenenbrot Blueberry (VEGAN)", 3.9, 7)),
             (13600, Product(13600, "Mille Feuille", 4, 7)),
             (13602, Product(13602, "Cold Brew", 5.2, 7)),
-            (13609, Product(13609, "Iced Long Black", 3.5, 7)),
+            (13609, Product(13609, "Iced Long Black", 3.5, 19)),
             (13610, Product(13610, "BIONADE HIMBEER PFLAUME", 3.1, 7)),
             (13611, Product(13611, "BIONADE EISTEE ZITRONE", 3.1, 7)),
             (13625, Product(13625, "Franky's Pistazien Cookie", 3.9, 7)),
@@ -643,6 +643,7 @@ class ProductProvider:
             (15713, Product(15713, "Orangensaft", 4.9, 19)),
             (15714, Product(15714, "Apotheke", 5.9, 7)),
             (15715, Product(15715, "Apple Pie Latte Special", 5.5, 19)),
+            (15776, Product(15776, "Teekanne", 5.9, 19)),
         ]
     )
 
@@ -651,3 +652,25 @@ class ProductProvider:
 
     def get_by_title(self, title):
         return self.prod_dict_by_title[title]
+    
+    
+    def update_by_id_to_normal(self, pid):
+        self.get_by_id(pid).vat = 19
+        
+    def update_by_id_to_reduced(self, pid):
+        self.get_by_id(pid).vat = 7
+    
+    def update_vat(self):
+        to_normal = [
+            13472, 13473, 13474, 13475, 13476, #13477,
+            13478, 13479, 13485, 13486, 13487, 13488, 13489,
+            13490, 13491, 13492, 13493, 13494, 13495, 13497, 
+            13501, 13510, 13511, 13512, 13524, 13529, 13558, 13559,
+            13909, 13911, 13999, 14024, 14027, 
+            14275, 14276, 14277, 14278, 14279, 14280, 14281, 14282, 14387,
+            14996, 15038, 15392, 15393, 15456, 15493, 15494, 15496, 15570,
+            15636, 15714
+        ]
+        for p_id in to_normal:
+            self.update_by_id_to_normal(p_id)
+            # self.get_by_id(p_id).vat = 19
