@@ -644,6 +644,7 @@ class ProductProvider:
             (15714, Product(15714, "Apotheke", 5.9, 19)),
             (15715, Product(15715, "Apple Pie Latte Special", 5.5, 19)),
             (15776, Product(15776, "Teekanne", 5.9, 19)),
+            (15792, Product(15792, "Brownie Cheesecake", 5.9, 19)),
         ]
     )
 
