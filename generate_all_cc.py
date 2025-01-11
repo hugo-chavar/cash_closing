@@ -47,10 +47,10 @@ client = FiskalyClient.objects.get(id=1)
 # fs.credentials = client.get_credentials()
 
 config = Config(client)
-config.last_cc_export_id = 181  # Error from this 183
+config.last_cc_export_id = 211  # Error from this 183
 
-while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
-   # if 1 == 1:
+# while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
+if 1 == 1:
    # except the problematic cc
    # if config.last_cc_export_id in [16, 20, 21, 22, 28, 29, 179, 180]:
    # if config.last_cc_export_id in [16, 22, 29, 179, 180]:
