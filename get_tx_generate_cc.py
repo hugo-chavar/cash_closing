@@ -67,7 +67,7 @@ def split_json_files_by_bussiness_date(tx_iterator, config):
     total_count = 0
 
     # step 1: get all new transactions in batches
-    threshold = get_timestamp_from_german_date("2025-01-01 23:59:59+02:00")
+    threshold = get_timestamp_from_german_date("2025-01-10 23:59:59+02:00")
     
     for tx_batch in tx_iterator:
         print("MERGING")
