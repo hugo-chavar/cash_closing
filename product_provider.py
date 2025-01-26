@@ -259,9 +259,9 @@ class ProductProvider:
             (13513, Product(13513, "FRANKY’S COOKIES Pistazie", 3.9, 7)),
             (13514, Product(13514, "ACAI BOWL", 9.9, 7)),
             (13515, Product(13515, "*Bestseller* GRILLED CHEESE BRUSKETT", 14.9, 19)),
-            (13516, Product(13516, "PESTO SMASHED AVOCADOSTULLE  & PARMESAN", 12.1, 19)),
-            (13517, Product(13517, "Pastrima SMASHED AVOCADOSTULLE MIT EI", 12.9, 19)),
-            (13518, Product(13518, "SHAKSHUKA CLASSIC", 9.9, 19)),
+            (13516, Product(13516, "PESTO SMASHED AVOCADOSTULLE  & PARMESAN", 13.5, 19)),
+            (13517, Product(13517, "Pastrima SMASHED AVOCADOSTULLE MIT EI", 13.5, 19)),
+            (13518, Product(13518, "SHAKSHUKA CLASSIC", 11, 19)),
             (13519, Product(13519, "SHAKSHUKA MERGUEZ", 10.6, 19)),
             (13520, Product(13520, "PASTIRMA & EI SANDWICH", 7.9, 19)),
             (13521, Product(13521, "DAS SANDWICH DES FLIEGENDEN HOLLÄNDERS", 5.8, 19)),
@@ -440,7 +440,7 @@ class ProductProvider:
             (14627, Product(14627, "sauce", 9.8, 7)),
             (14870, Product(14870, "Papa diego", 10.9, 25)),
             (14931, Product(14931, "Franky's Mini Roll Lemon Cheesecake", 2.9, 7)),
-            (14933, Product(14933, "Frankys Dubai Tiramisu", 6.9, 7)),
+            (14933, Product(14933, "Frankys Pistazien Tiramisu", 5.9, 19)),
             (14943, Product(14943, "Franky's Roll Biscoff", 4.9, 7)),
             (14944, Product(14944, "Mini Franky's Roll Biscoff", 2.9, 7)),
             (14945, Product(14945, "Croissants le Franky's", 3.1, 7)),
@@ -645,6 +645,8 @@ class ProductProvider:
             (15715, Product(15715, "Apple Pie Latte Special", 5.5, 19)),
             (15776, Product(15776, "Teekanne", 5.9, 19)),
             (15792, Product(15792, "Brownie Cheesecake", 5.9, 19)),
+            (15845, Product(15845, "Benedikt-Ei küsst Aachener Stulle", 13.9, 19)),
+            (15892, Product(15892, "Franky's Pizza Menü", 19.99, 19)),
         ]
     )
 
