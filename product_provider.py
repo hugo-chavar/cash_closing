@@ -647,6 +647,13 @@ class ProductProvider:
             (15792, Product(15792, "Brownie Cheesecake", 5.9, 19)),
             (15845, Product(15845, "Benedikt-Ei küsst Aachener Stulle", 13.9, 19)),
             (15892, Product(15892, "Franky's Pizza Menü", 19.99, 19)),
+            (15914, Product(15914, "Schokolade sauce", 1.5, 7)),
+            (15970, Product(15970, "Pancake Pistazie White Chocolate", 10.9, 19)),
+            (15971, Product(15971, "Schoko-Pancake mit Bananen", 10.1, 19)),
+            (15972, Product(15972, "Pancake mit Waldbeeren", 9.5, 19)),
+            (15973, Product(15973, "Shakshuka Classic", 11, 19)),
+            (15974, Product(15974, "Shakshuka Parmesan Special", 12.5, 19)),
+            (15975, Product(15975, "Shakshuka Sucuk", 12.9, 19)),
         ]
     )
 
