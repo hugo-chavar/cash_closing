@@ -637,8 +637,8 @@ class ProductProvider:
             (15659, Product(15659, "MILCHKAFFEE Milch", 3.9, 7)),
             (15660, Product(15660, "FLAT WHITE Milch", 4.2, 7)),
             (15669, Product(15669, "V60", 5.2, 19)),
-            (15696, Product(15696, "Menemen Spezial", 13, 19)),
-            (15697, Product(15697, "Avocado Roll TowerZutaten", 14, 19)),
+            (15696, Product(15696, "Menemen Spezial [Duplicate20241220094531]", 13, 19)),
+            (15697, Product(15697, "Avocado Roll TowerZutaten [Duplicate20241220094549]", 14, 19)),
             (15698, Product(15698, "Pancake Blueberry Vibe", 9.9, 19)),
             (15713, Product(15713, "Orangensaft", 4.9, 19)),
             (15714, Product(15714, "Apotheke", 5.9, 19)),
@@ -654,6 +654,8 @@ class ProductProvider:
             (15973, Product(15973, "Shakshuka Classic", 11, 19)),
             (15974, Product(15974, "Shakshuka Parmesan Special", 12.5, 19)),
             (15975, Product(15975, "Shakshuka Sucuk", 12.9, 19)),
+            (16184, Product(16184, "Schokolade Soße", 1.5, 7)),
+            (16185, Product(16185, "Pistazien Soße", 1.8, 7)),
         ]
     )
 
