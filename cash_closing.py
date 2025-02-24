@@ -195,8 +195,10 @@ class TransactionData(JsonSerializable):
             # line_vat_2 = line_vat_data_2.get('vat', 0)
         
         if Decimal(str(total_incl_vat_1)) != Decimal(str(acum_incl_vat_1)):
+            # print(f"Vat 1 - Total {total_incl_vat_1} not equal to Acumulated {acum_incl_vat_1}")
             raise TransactionValidationException(f"Vat 1 - Total {total_incl_vat_1} not equal to Acumulated {acum_incl_vat_1}")
         if Decimal(str(total_incl_vat_2)) != Decimal(str(acum_incl_vat_2)):
+            # print(f"Vat 2 - Total {total_incl_vat_2} not equal to Acumulated {acum_incl_vat_2}")
             raise TransactionValidationException(f"Vat 2 - Total {total_incl_vat_2} not equal to Acumulated {acum_incl_vat_2}")
         return True
 
@@ -507,7 +509,7 @@ def set_receipt_amounts_per_vat_id(raw_receipt):
 
     amounts_per_vat_rate = receipt.amounts_per_vat_rate
     for amount_per_vat_rate in amounts_per_vat_rate:
-        if float(amount_per_vat_rate.amount) > 0.0:
+        if float(amount_per_vat_rate.amount) != 0.0: #!=
             amounts_per_vat_id.append(AmountPerVat(amount_per_vat_rate))
 
     receipt.amounts_per_vat_id = amounts_per_vat_id
@@ -515,6 +517,8 @@ def set_receipt_amounts_per_vat_id(raw_receipt):
 
 def add_amounts_per_vat_id(raw_receipts):
     for r in raw_receipts:
+        if r.number == 43948:
+            print('test')
         set_receipt_amounts_per_vat_id(r)
 
 
@@ -619,7 +623,16 @@ def add_order_to_receipt(transactions, products_provider):
                             l.vat = 19
                             l.description = l.text
                         else: 
-                            raise Exception(f"Discount causes bad calculation.")
+                            raise Exception(f"Discount causes bad calculation. Tx ID: {tx._id}")
+                            # tx_exep = [
+                            #     'd5c549be-8c89-47ca-bcc3-1778e4870b95',
+                            #     '500e7916-8ed9-414d-ab65-382c8d8f2137'
+                            # ]
+                            # if tx._id in tx_exep: #'c0bf998e-1faf-4097-9b60-ac64a5604908':
+                            #     l.vat = 19
+                            #     l.description = l.text
+                            # else:
+                            #     raise Exception(f"Discount causes bad calculation. Tx ID: {tx._id}")
 
                 l.business_case = get_line_business_case(l)
 
