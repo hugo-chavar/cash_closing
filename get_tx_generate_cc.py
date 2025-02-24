@@ -67,13 +67,14 @@ def split_json_files_by_bussiness_date(tx_iterator, config):
     total_count = 0
 
     # step 1: get all new transactions in batches
-    threshold = get_timestamp_from_german_date("2025-01-10 23:59:59+02:00")
+    threshold = get_timestamp_from_german_date("2025-02-22 23:59:59+02:00")
     
     for tx_batch in tx_iterator:
         print("MERGING")
         all_transactions.extend(tx_batch["data"])
         total_count += len(tx_batch["data"])
         if tx_batch["data"][-1]["time_start"] >= threshold:
+            print('BREAK')
             break
         # if tx_batch["data"][-1]["number"] >= 29400:
         #     break
