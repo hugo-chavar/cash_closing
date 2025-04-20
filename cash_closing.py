@@ -153,7 +153,7 @@ class Transaction(JsonSerializable):
             return self.data.validate()
         except TransactionValidationException as e:
             error_msg = f"{str(self)}:\n{str(e)}"
-            print(error_msg)
+            print(error_msg, flush=True)
             return False
 
 
@@ -467,9 +467,12 @@ def get_transactions(receipts, last_receipt_number):
     errors = 0
     for receipt in receipts:
         tx_export_number += 1
+        if tx_export_number == 90:
+            print('')
         receipt_number = last_receipt_number + tx_export_number
         t = Transaction(receipt, receipt_number, tx_export_number)
         if not t.validate():
+            print(f"{tx_export_number} tx error", flush=True)
             errors += 1
 
         transactions.append(t)
@@ -571,8 +574,10 @@ def add_order_to_receipt(transactions, products_provider):
     txs = transactions.data
     orders = {}
 
+    order_count = 0
     for tx in txs:
         if transaction_is_order(tx):
+            order_count += 1
             order = tx.schema.standard_v1.order
             line_items = order.line_items
             line_number = 0
@@ -638,6 +643,17 @@ def add_order_to_receipt(transactions, products_provider):
 
             orders[tx._id] = order
 
+            # if order_count == 27:
+            #     products_provider.update_by_id_to_normal(13477)
+            # if order_count == 31:
+            #     products_provider.update_by_id_to_normal(13479)
+            # if order_count == 43: #tx._id == "3375aab0-8952-4677-ba6d-72c41e8b50de":  #"8d71a9b4-2e1c-4711-9fa6-b29fac77171b":
+            #     print(f"Count: {order_count}")
+            #     products_provider.update_vat()
+            # if order_count == 89:
+            #     products_provider.update_by_id_to_reduced(15477)
+
+    print(f"Count: {order_count}")
     for tx in txs:
         if transaction_is_receipt(tx) and hasattr(tx, "metadata"):
             if hasattr(tx.metadata, "order_id"):

@@ -501,7 +501,7 @@ class ProductProvider:
             (15474, Product(15474, "BIONADE NATURTRÜB  BLUTORANGE", 3.1, 7)),
             (15475, Product(15475, "DER MORGEN DANACH", 13.9, 19)),
             (15476, Product(15476, "VEGGIE BRUNO", 13.99, 19)),
-            (15477, Product(15477, "ICED MATCHA LATTE (Alternative Milch)", 4.7, 19)),
+            (15477, Product(15477, "ICED MATCHA LATTE (Alternative Milch)", 5.2, 7)),
             (15478, Product(15478, "Selters Sprudel 0,25l", 2.8, 7)),
             (15479, Product(15479, "MATCHACCINO (Hot) (Alternative Milch)", 3.3, 19)),
             (15480, Product(15480, "BIONADE HOLUNDER", 3.1, 7)),

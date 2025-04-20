@@ -47,7 +47,7 @@ client = FiskalyClient.objects.get(id=1)
 # fs.credentials = client.get_credentials()
 
 config = Config(client)
-config.last_cc_export_id = 211  # Error from this 183
+config.last_cc_export_id = 299  # Error from this 183
 
 # while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
 if 1 == 1:
