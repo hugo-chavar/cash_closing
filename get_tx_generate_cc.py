@@ -67,7 +67,7 @@ def split_json_files_by_bussiness_date(tx_iterator, config):
     total_count = 0
 
     # step 1: get all new transactions in batches
-    threshold = get_timestamp_from_german_date("2025-04-18 23:59:59+02:00")
+    threshold = get_timestamp_from_german_date("2025-04-20 23:59:59+02:00")
     
     for tx_batch in tx_iterator:
         print("MERGING")
@@ -109,7 +109,7 @@ def split_json_files_by_bussiness_date(tx_iterator, config):
     )
     print(f"Date {config.bussiness_date()}")
 
-    LAST_CASH_CLOSING_TO_PROCESS = config.last_cc_export_id + 1
+    LAST_CASH_CLOSING_TO_PROCESS = config.last_cc_export_id + 2
 
     try:
         while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
