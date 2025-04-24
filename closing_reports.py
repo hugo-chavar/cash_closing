@@ -16,7 +16,8 @@ data = []
 # Read and process each JSON file
 def extract_cash_closing_totals(cash_closing):
     # initialize
-    print(f"CC: {cash_closing['cash_point_closing_export_id']}")
+    id = cash_closing['cash_point_closing_export_id']
+    print(f"CC: {id}")
     full_amount = cash_amount = non_cash_amount = Decimal("0")
     incl_vat_1 = excl_vat_1 = vat_1 = Decimal("0")
     incl_vat_2 = excl_vat_2 = vat_2 = Decimal("0")
@@ -114,17 +115,17 @@ def extract_cash_closing_totals(cash_closing):
                     print(f"Tx problem {tx['head']['number']} payment_amout {tx_payment_amount} cash total {non_cash_tx_total}")
  
     
-    return full_amount,cash_amount,non_cash_amount,incl_vat_1,excl_vat_1,vat_1,incl_vat_2,excl_vat_2,vat_2,time_creation,cash_totals,non_cash_totals
+    return id, full_amount,cash_amount,non_cash_amount,incl_vat_1,excl_vat_1,vat_1,incl_vat_2,excl_vat_2,vat_2,time_creation,cash_totals,non_cash_totals
 
 for file_name in sorted(os.listdir(folder_path)):
     if file_name.endswith('.json'): # and "_122_" in file_name
         with open(os.path.join(folder_path, file_name), 'r', encoding='utf-8') as file:
             cash_closing = json.load(file)
 
-            full_amount, cash_amount, non_cash_amount, incl_vat_1, excl_vat_1, vat_1, incl_vat_2, excl_vat_2, vat_2, time_creation, cash_totals, non_cash_totals = extract_cash_closing_totals(cash_closing)
+            id, full_amount, cash_amount, non_cash_amount, incl_vat_1, excl_vat_1, vat_1, incl_vat_2, excl_vat_2, vat_2, time_creation, cash_totals, non_cash_totals = extract_cash_closing_totals(cash_closing)
             # Append data to the list
             data.append([
-                full_amount, incl_vat_1, excl_vat_1, vat_1,
+                id, full_amount, incl_vat_1, excl_vat_1, vat_1,
                 incl_vat_2, excl_vat_2, vat_2, cash_amount, cash_totals['vat_19'], cash_totals['vat_7'], non_cash_amount, non_cash_totals['vat_19'], non_cash_totals['vat_7'], time_creation
             ])
 
@@ -134,7 +135,7 @@ with open(csv_file_path, 'w', newline='', encoding='utf-8') as csv_file:
     writer = csv.writer(csv_file)
     # Write header
     writer.writerow([
-        'full_amount', 'incl_vat_1', 'excl_vat_1', 'vat_1',
+        'id', 'full_amount', 'incl_vat_1', 'excl_vat_1', 'vat_1',
         'incl_vat_2', 'excl_vat_2', 'vat_2', 'total_cash', 'cash_19', 'cash_7', 'total_non_cash', 'non_cash_19', 'non_cash_7', 'creation_date'
     ])
     # Write data
