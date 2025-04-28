@@ -20,9 +20,15 @@ for file_name in sorted(os.listdir(folder_path)):
             for tx in cash_closing.get('transactions', []):
                 head = tx.get('head', {})
                 tx_data = tx.get('data', {})
-                # Format payment types as "type: amount", joined with semicolons
+                # Split payment types into two columns "Bar" and "Unbar"
                 payments = tx_data.get('payment_types', [])
-                payments_str = "; ".join(f"{p.get('type')}:{p.get('amount')}" for p in payments)
+                bar_total = 0.0
+                unbar_total = 0.0
+                for p in payments:
+                    if p.get('type') == "Bar":
+                        bar_total += p.get('amount', 0)
+                    elif p.get('type') == "Unbar":
+                        unbar_total += p.get('amount', 0)
                 
                 data.append([
                     cc_id,
@@ -32,13 +38,14 @@ for file_name in sorted(os.listdir(folder_path)):
                     head.get('tx_id'),
                     head.get('type'),
                     tx_data.get('full_amount_incl_vat'),
-                    payments_str
+                    bar_total,
+                    unbar_total
                 ])
 
 # Write data to CSV file
 with open(csv_file_path, 'w', newline='', encoding='utf-8') as csv_file:
     writer = csv.writer(csv_file)
-    # Write header
+    # Write header with separate columns for Bar and Unbar payments
     writer.writerow([
         'cash_closing_export_id',
         'creation_date',
@@ -47,7 +54,8 @@ with open(csv_file_path, 'w', newline='', encoding='utf-8') as csv_file:
         'tx_id',
         'transaction_type',
         'full_amount_incl_vat',
-        'payment_types'
+        'Bar',
+        'Unbar'
     ])
     # Write data rows
     writer.writerows(data)
