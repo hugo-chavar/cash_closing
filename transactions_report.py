@@ -35,12 +35,14 @@ for file_name in sorted(os.listdir(folder_path)):
                             unbar_total += p.get('amount', 0)
                     
                     # Determine payment type (Bar or Unbar)
-                    tx_payment_type = "Unbar"  # Default to Unbar
+                    tx_payment_type = "Unbar"
+                    tx_payment_type_english = "CARD"
                     tx_payment_amount = 0.0
                     for payment in payments:
                         tx_payment_amount += payment['amount']
                         if payment['type'] == "Bar":
                             tx_payment_type = "Bar"
+                            tx_payment_type_english = "CASH"
                             # break
 
                     cash_tx = {
@@ -96,6 +98,7 @@ for file_name in sorted(os.listdir(folder_path)):
                         head.get('tx_id'),
                         head.get('type'),
                         tx_data.get('full_amount_incl_vat'),
+                        tx_payment_type_english,
                         bar_total,
                         unbar_total,
                         cash_tx['vat_7'],
@@ -120,6 +123,7 @@ with open(csv_file_path, 'w', newline='', encoding='utf-8') as csv_file:
         'tx_id',
         'tx_type',
         'full_amount_incl_vat',
+        'payment_type',
         'cash_amount',
         'non_cash_amount',
         'cash_7',
