@@ -9,7 +9,7 @@ from date_tests import get_german_date
 folder_path = 'closings/submitted'
 # folder_path = 'closings8/t'
 # folder_path = 'closings6'
-csv_file_path = 'reports/report18.csv'
+csv_file_path = 'reports/cc_report.csv'
 # List to hold data for CSV
 data = []
 
