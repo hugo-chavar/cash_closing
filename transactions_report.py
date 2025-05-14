@@ -16,6 +16,8 @@ for file_name in sorted(os.listdir(folder_path)):
             with open(os.path.join(folder_path, file_name), 'r', encoding='utf-8') as file:
                 cash_closing = json.load(file)
                 cc_id = cash_closing['cash_point_closing_export_id']
+                if cc_id < 332:
+                    continue
                 bussiness_date = str(cash_closing['head']['business_date'])
                 
                 # Loop through all transactions
