@@ -10,7 +10,7 @@ from types import SimpleNamespace
 
 from date_tests import get_timestamp_from_german_date
 
-DATE_THRESHOLD = "2025-04-30 23:59:59+02:00"  # YYYY-MM-DDTHH:MM:SSZ
+DATE_THRESHOLD = "2025-05-14 23:59:59+02:00"  # YYYY-MM-DDTHH:MM:SSZ
 NUMBER_OF_CASH_CLOSINGS_TO_PROCESS = 1
 
 fiskaly_service = FiskalyService()
