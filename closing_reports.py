@@ -121,13 +121,14 @@ for file_name in sorted(os.listdir(folder_path)):
     if file_name.endswith('.json'): # and "_122_" in file_name
         with open(os.path.join(folder_path, file_name), 'r', encoding='utf-8') as file:
             cash_closing = json.load(file)
+            id = cash_closing['cash_point_closing_export_id']
 
-            id, full_amount, cash_amount, non_cash_amount, incl_vat_1, excl_vat_1, vat_1, incl_vat_2, excl_vat_2, vat_2, time_creation, cash_totals, non_cash_totals = extract_cash_closing_totals(cash_closing)
-            # Append data to the list
-            data.append([
-                id, full_amount, incl_vat_1, excl_vat_1, vat_1,
-                incl_vat_2, excl_vat_2, vat_2, cash_amount, cash_totals['vat_19'], cash_totals['vat_7'], non_cash_amount, non_cash_totals['vat_19'], non_cash_totals['vat_7'], time_creation
-            ])
+            if id >= 332:
+                id, full_amount, cash_amount, non_cash_amount, incl_vat_1, excl_vat_1, vat_1, incl_vat_2, excl_vat_2, vat_2, time_creation, cash_totals, non_cash_totals = extract_cash_closing_totals(cash_closing)
+                data.append([
+                    id, full_amount, incl_vat_1, excl_vat_1, vat_1,
+                    incl_vat_2, excl_vat_2, vat_2, cash_amount, cash_totals['vat_19'], cash_totals['vat_7'], non_cash_amount, non_cash_totals['vat_19'], non_cash_totals['vat_7'], time_creation
+                ])
 
 # Write data to CSV file
 
