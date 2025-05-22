@@ -54,7 +54,7 @@ class TransactionFixer:
         :param transaction: Current transaction
         """
         if self.last_processed_tx_number != (transaction['number'] - 1):
-            msg = f"{self.last_processed_tx_number} => {(transaction['number'] - 1)} falta el siguiente"
+            msg = f"{self.last_processed_tx_number} => {(transaction['number'] - 1)} TF falta el siguiente"
             print(f"{msg}  ************ ERROR split\n\n", flush=True)
             raise Exception(msg)
             print(f"Set LAST_PROCESSED_TX_NUMBER to {(transaction['number'] - 1)} \n\n")

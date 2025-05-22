@@ -27,7 +27,7 @@ def split_json_files_by_bussiness_date(iter, config):
     pp = ProductProvider()
     for transaction in merged_data:
         if p_tx_n != (transaction['number'] - 1):
-            print(f"{p_tx_n} => {(transaction['number'] - 1)} falta el siguiente ************ ERROR split\n\n")
+            print(f"{p_tx_n} => {(transaction['number'] - 1)} amj falta el siguiente ************ ERROR split\n\n")
             print(f"Set LAST_PROCESSED_TX_NUMBER to {(transaction['number'] - 1)} \n\n")
 
         p_tx_n = transaction['number']
