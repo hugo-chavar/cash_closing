@@ -667,6 +667,9 @@ class ProductProvider:
             (16538, Product(16538, "Banana Pudding Ice Matcha Latte", 10.9, 7)),
             (16860, Product(16860, "(Bestseller) Franky's Banana Pudding", 5.9, 19)),
             (16861, Product(16861, "Matcha Cheesecake", 5.9, 19)),
+            (17339, Product(17339, "Vegane Chicken Stulle", 13.5, 19)),
+            (17340, Product(17340, "Hummus Avocado Stulle", 13.2, 19)),
+            (17341, Product(17341, "Vegane Shakshuka", 11.2, 19)),
         ]
     )
 
