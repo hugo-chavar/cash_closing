@@ -37,8 +37,16 @@ class TransactionFixer:
         self.last_processed_tx_number = self.config.last_processed_tx_number
 
         for transaction in transactions:
-            self._check_transaction_number_gap(transaction)
-            self._complete_product_data(transaction)
+            try:
+                self._check_transaction_number_gap(transaction)
+                self._complete_product_data(transaction)
+            except Exception as e:
+                print(f"Exception in transaction {transaction['number']}: {e}", flush=True)
+                print("New transactions were added to the backend", flush=True)
+                print(f"Last transaction in list: {transactions[-1]}", flush=True)
+                
+                raise e
+                
 
     def cancel_active_txn(self, transactions):
         for transaction in transactions:
