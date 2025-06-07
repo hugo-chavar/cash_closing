@@ -10,25 +10,6 @@ class Product:
 
 
 class ProductProvider:
-    #  products = [
-    #     Product(1853,"Coffe 19",6,19),
-    #     Product(1854,"Sandwich 7",23,7),
-    #     Product(1855,"Water 7",3,7),
-    #     Product(1856,"Pizza 19",38,19),
-    #     Product(1857,"Bao Pork Belly to Share",14.9,19),
-    #     Product(1858,"Gyoza",14.9,19),
-    #     Product(1859,"Vegan Nooba Salad",7.9,19),
-    #     Product(1860,"Satay Gai",16.9,19),
-    #     Product(1861,"Ginger Salmon",17.9,19),
-    #     Product(1862,"Fried no shrimp",14.9,19),
-    #     Product(1863,"Nooba Salad",8,19),
-    #     Product(1864,"HOMEMADE GINGER PANNA COTTA",6.9,7),
-    #     Product(1865,"FROZEN MOCHI",2.9,7),
-    #     Product(1866,"YOOTEA",5.9,7),
-    #     Product(1867,"BIBIM MYUN",29.9,7),
-    #     Product(1868,"ALLEGRA",4.7,7),
-    #     Product(1869,"GINGER NOODLE SALAD",21.9,7)
-    #  ]
 
     prod_dict_by_title = dict(
         [
@@ -670,6 +651,7 @@ class ProductProvider:
             (17339, Product(17339, "Vegane Chicken Stulle", 13.5, 19)),
             (17340, Product(17340, "Hummus Avocado Stulle", 13.2, 19)),
             (17341, Product(17341, "Vegane Shakshuka", 11.2, 19)),
+            (17493, Product(17493, "(Bestseller) Franky's Banana Pudding Schoco", 5.9, 19)),
         ]
     )
 
