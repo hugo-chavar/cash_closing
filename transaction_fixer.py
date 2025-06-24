@@ -15,7 +15,7 @@ class TransactionFixer:
     Methods:
         complete_transaction_data(transactions, config): Completes missing product data in transactions
     """
-    
+
     def __init__(self, product_provider, fiskaly_service, config):
         """
         Initializes the TransactionFixer.
@@ -41,17 +41,21 @@ class TransactionFixer:
                 self._check_transaction_number_gap(transaction)
                 self._complete_product_data(transaction)
             except Exception as e:
-                print(f"Exception in transaction {transaction['number']}: {e}", flush=True)
+                print(
+                    f"Exception in transaction {transaction['number']}: {e}", flush=True
+                )
                 print("New transactions were added to the backend", flush=True)
                 print(f"Last transaction in list: {transactions[-1]}", flush=True)
-                
-                raise e
-                
 
-    def cancel_active_txn(self, transactions):
+                raise e
+
+    def cancel_active_txn(self, transactions, limit_timestamp):
+
         for transaction in transactions:
-            if transaction["state"] == "ACTIVE":
-                # TODO: check if it is a very recent tx
+            if (
+                transaction["state"] == "ACTIVE"
+                and transaction["time_start"] < limit_timestamp
+            ):
                 self.fiskaly_service.cancel_transaction(self.config.client, transaction)
                 transaction["state"] = "CANCELLED"
 
@@ -61,12 +65,12 @@ class TransactionFixer:
 
         :param transaction: Current transaction
         """
-        if self.last_processed_tx_number != (transaction['number'] - 1):
+        if self.last_processed_tx_number != (transaction["number"] - 1):
             msg = f"{self.last_processed_tx_number} => {(transaction['number'] - 1)} TF falta el siguiente"
             print(f"{msg}  ************ ERROR split\n\n", flush=True)
             raise Exception(msg)
             print(f"Set LAST_PROCESSED_TX_NUMBER to {(transaction['number'] - 1)} \n\n")
-        self.last_processed_tx_number = transaction['number']
+        self.last_processed_tx_number = transaction["number"]
 
     def _complete_product_data(self, transaction):
         """
@@ -88,8 +92,10 @@ class TransactionFixer:
         """
         if line_item["text"].startswith("null"):
             try:
-                product_title = line_item["text"].split(' - ')[1]
-                line_item["text"] = str(self.product_provider.get_by_title(product_title))
+                product_title = line_item["text"].split(" - ")[1]
+                line_item["text"] = str(
+                    self.product_provider.get_by_title(product_title)
+                )
             except (AttributeError, IndexError, TypeError) as e:
                 print(f"Error completing line item data: {e}")
             except KeyError:

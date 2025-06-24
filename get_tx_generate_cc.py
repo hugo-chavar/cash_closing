@@ -8,10 +8,10 @@ from transaction_fetcher import TransactionFetcher
 from transaction_fixer import TransactionFixer
 from types import SimpleNamespace
 
-from date_tests import get_timestamp_from_german_date
+from date_tests import get_timestamp_from_german_date, get_yesterday_end_timestamp
 
-DATE_THRESHOLD = "2025-06-10 23:59:59+02:00"  # YYYY-MM-DDTHH:MM:SSZ
-NUMBER_OF_CASH_CLOSINGS_TO_PROCESS = 1
+DATE_THRESHOLD = "2025-06-22 23:59:59+02:00"  # YYYY-MM-DDTHH:MM:SSZ
+NUMBER_OF_CASH_CLOSINGS_TO_PROCESS = 12
 
 fiskaly_service = FiskalyService()
 
@@ -70,13 +70,13 @@ def split_json_files_by_bussiness_date(tx_iterator, config):
 
     # step 1: get all new transactions in batches
     threshold = get_timestamp_from_german_date(DATE_THRESHOLD)
-    
+
     for tx_batch in tx_iterator:
         print("MERGING")
         all_transactions.extend(tx_batch["data"])
         total_count += len(tx_batch["data"])
         if tx_batch["data"][-1]["time_start"] >= threshold:
-            print('BREAK')
+            print("BREAK")
             break
         # if tx_batch["data"][-1]["number"] >= 29400:
         #     break
@@ -86,7 +86,7 @@ def split_json_files_by_bussiness_date(tx_iterator, config):
     #     f"merged8\\all_{threshold}_1.json", mode="w", encoding="utf8"
     # ) as ft:
     #     json.dump(all_transactions, ft, indent=4)
-    
+
     # step 2: Sort the merged data by the "number" field
     all_transactions.sort(key=lambda x: x["number"])
 
@@ -95,6 +95,9 @@ def split_json_files_by_bussiness_date(tx_iterator, config):
     transaction_fixer = TransactionFixer(product_provider, fiskaly_service, config)
 
     transaction_fixer.complete_transaction_data(all_transactions)
+
+    limit_timestamp = get_yesterday_end_timestamp()
+    transaction_fixer.cancel_active_txn(all_transactions, limit_timestamp)
 
     print(f"LAST_PROCESSED_TX_NUMBER (update env): {config.last_processed_tx_number}")
 
@@ -111,13 +114,15 @@ def split_json_files_by_bussiness_date(tx_iterator, config):
     )
     print(f"Date {config.bussiness_date()}")
 
-    LAST_CASH_CLOSING_TO_PROCESS = config.last_cc_export_id + NUMBER_OF_CASH_CLOSINGS_TO_PROCESS
+    LAST_CASH_CLOSING_TO_PROCESS = (
+        config.last_cc_export_id + NUMBER_OF_CASH_CLOSINGS_TO_PROCESS
+    )
 
     try:
         while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
             # if 1 == 1:
             if daily_txn_count > 0:
-                transaction_fixer.cancel_active_txn(daily_txn_list)
+
                 daily_transactions = {"data": daily_txn_list, "count": daily_txn_count}
 
                 # Write the merged dictionary to the output file
