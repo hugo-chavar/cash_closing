@@ -240,7 +240,10 @@ class ProductProvider:
             (13513, Product(13513, "FRANKY’S COOKIES Pistazie", 3.9, 7)),
             (13514, Product(13514, "ACAI BOWL", 9.9, 7)),
             (13515, Product(13515, "*Bestseller* GRILLED CHEESE BRUSKETT", 14.9, 19)),
-            (13516, Product(13516, "PESTO SMASHED AVOCADOSTULLE  & PARMESAN", 13.5, 19)),
+            (
+                13516,
+                Product(13516, "PESTO SMASHED AVOCADOSTULLE  & PARMESAN", 13.5, 19),
+            ),
             (13517, Product(13517, "Pastrima SMASHED AVOCADOSTULLE MIT EI", 13.5, 19)),
             (13518, Product(13518, "SHAKSHUKA CLASSIC", 11, 19)),
             (13519, Product(13519, "SHAKSHUKA MERGUEZ", 10.6, 19)),
@@ -252,19 +255,24 @@ class ProductProvider:
             (13525, Product(13525, "Limoncello Fresh", 5.2, 7)),
             (13526, Product(13526, "Spanish Iced Latte", 4.9, 7)),
             (13527, Product(13527, "Ice Coconut Matcha", 6.3, 7)),
-            (13528, Product(13528,"Ice Strawberry Matcha",5,7)),
+            (13528, Product(13528, "Ice Strawberry Matcha", 5, 7)),
             (13529, Product(13529, "BIONADE NATURTRÜB ORANGE", 3.1, 19)),
             (13530, Product(13530, "BIONADE EISTEE PFIRSICH", 3.1, 7)),
             (13531, Product(13531, "BIONADE NATURTRÜB  INGWER ORANGE", 3.1, 7)),
-            (13546, Product(13546,"Franky's Roll Pistazie",4.9,7)),
+            (13546, Product(13546, "Franky's Roll Pistazie", 4.9, 7)),
             (13547, Product(13547, "Franky's Roll Lemon Cheesecake", 4.9, 19)),
             (13548, Product(13548, "Franky's Roll Schoko Pistacio", 4.8, 19)),
-            (13549, Product(13549,"Grilled Cheese Olive",5.1,7)),
+            (13549, Product(13549, "Grilled Cheese Olive", 5.1, 7)),
             (13550, Product(13550, "Mini Franky's Roll Pistacio", 2.9, 7)),
             (13551, Product(13551, "Mini Franky's Roll Cookie", 2.9, 7)),
-            (13552, Product(13552,"Flying Turkey Grilled",5.4,7)),
-            (13553, Product(13553,"Grilled Pastirma Sandwich",5.9,7)),
-            (13557, Product(13557, "Matcha Dose (30g für c.a 20-25 Matcha Getränke)", 19.9, 7)),
+            (13552, Product(13552, "Flying Turkey Grilled", 5.4, 7)),
+            (13553, Product(13553, "Grilled Pastirma Sandwich", 5.9, 7)),
+            (
+                13557,
+                Product(
+                    13557, "Matcha Dose (30g für c.a 20-25 Matcha Getränke)", 19.9, 7
+                ),
+            ),
             (13558, Product(13558, "Bananenbrot CHOCO (VEGAN)", 4.5, 19)),
             (13559, Product(13559, "Banenenbrot Blueberry (VEGAN)", 3.9, 19)),
             (13600, Product(13600, "Mille Feuille", 4.9, 7)),
@@ -275,7 +283,7 @@ class ProductProvider:
             (13625, Product(13625, "Franky's Pistazien Cookie", 3.9, 7)),
             (13626, Product(13626, "coffee Copacabana staff only", 25, 7)),
             (13797, Product(13797, "beans", 22.5, 7)),
-            (13824, Product(13824,"Mini Franky's Roll Lemon Cheesecake",2.9,0.7)),
+            (13824, Product(13824, "Mini Franky's Roll Lemon Cheesecake", 2.9, 0.7)),
             (13826, Product(13826, "CBD Öl", 75, 19)),
             (13841, Product(13841, "Lachs-Stulle mit Frischkäse", 13.8, 19)),
             (13863, Product(13863, "Mochi", 4, 7)),
@@ -340,7 +348,10 @@ class ProductProvider:
             (14194, Product(14194, "FRANKY’S COOKIES Pistazie", 3.9, 7)),
             (14195, Product(14195, "*Bestseller* GRILLED CHEESE BRUSKETT", 14.9, 19)),
             (14196, Product(14196, "ACAI BOWL", 9.9, 7)),
-            (14197, Product(14197, "PESTO SMASHED AVOCADOSTULLE  & PARMESAN", 12.1, 19)),
+            (
+                14197,
+                Product(14197, "PESTO SMASHED AVOCADOSTULLE  & PARMESAN", 12.1, 19),
+            ),
             (14198, Product(14198, "Pastrima SMASHED AVOCADOSTULLE MIT EI", 12.9, 19)),
             (14199, Product(14199, "SHAKSHUKA CLASSIC", 9.9, 19)),
             (14200, Product(14200, "SHAKSHUKA MERGUEZ", 10.6, 19)),
@@ -365,7 +376,12 @@ class ProductProvider:
             (14219, Product(14219, "Mini Franky's Roll Cookie", 2.9, 7)),
             (14220, Product(14220, "Flying Turkey Grilled", 5.4, 7)),
             (14221, Product(14221, "Grilled Pastirma Sandwich", 5.9, 7)),
-            (14222, Product(14222, "Matcha Dose (30g für c.a 20-25 Matcha Getränke)", 19.9, 7)),
+            (
+                14222,
+                Product(
+                    14222, "Matcha Dose (30g für c.a 20-25 Matcha Getränke)", 19.9, 7
+                ),
+            ),
             (14223, Product(14223, "Mille Feuille", 4, 7)),
             (14224, Product(14224, "Franky's Labneh Roll", 4.9, 7)),
             (14225, Product(14225, "Iced Long Black", 3.5, 7)),
@@ -388,7 +404,7 @@ class ProductProvider:
             (14242, Product(14242, "Hario v60 dripper 02", 23.9, 19)),
             (14243, Product(14243, "Buch", 3.5, 7)),
             (14246, Product(14246, "Gardelli Efrain", 16.5, 7)),
-            (14248, Product(14248,"cbd sleepy drops",4.1,7)),
+            (14248, Product(14248, "cbd sleepy drops", 4.1, 7)),
             (14266, Product(14266, "Gardelli Blue Batak", 15, 7)),
             (14267, Product(14267, "La Claudina", 20, 7)),
             (14268, Product(14268, "Sukala", 20, 7)),
@@ -444,7 +460,15 @@ class ProductProvider:
             (15392, Product(15392, "BBQ Wings", 7, 19)),
             (15393, Product(15393, "Sweet Sour Wings", 7, 19)),
             (15394, Product(15394, "Franky’s Dubai Chocolate Tiramisu", 3.9, 7)),
-            (15396, Product(15396, "(Vegan, Laktose Free) Franky’s Dubai Chocolate Tiramisu", 8.9, 7)),
+            (
+                15396,
+                Product(
+                    15396,
+                    "(Vegan, Laktose Free) Franky’s Dubai Chocolate Tiramisu",
+                    8.9,
+                    7,
+                ),
+            ),
             (15397, Product(15397, "Pistazien Tiramisu", 6.1, 7)),
             (15441, Product(15441, "Dubai Chocolate Cheesecake", 9.6, 7)),
             (15442, Product(15442, "Franky's Roll Cinnamon & Salted Caramel", 4.9, 7)),
@@ -452,8 +476,19 @@ class ProductProvider:
             (15444, Product(15444, "BBQ Wings", 6, 7)),
             (15445, Product(15445, "Sweet Sour Wings", 6, 7)),
             (15446, Product(15446, "Franky’s Dubai Chocolate Tiramisu", 6.1, 7)),
-            (15447, Product(15447, "(Vegan, Laktose Free) Franky’s Dubai Chocolate Tiramisu", 8.9, 7)),
-            (15448, Product(15448, "(Vegan , Laktose Free) Frankys Dubai Tiramisu", 8.5, 7)),
+            (
+                15447,
+                Product(
+                    15447,
+                    "(Vegan, Laktose Free) Franky’s Dubai Chocolate Tiramisu",
+                    8.9,
+                    7,
+                ),
+            ),
+            (
+                15448,
+                Product(15448, "(Vegan , Laktose Free) Frankys Dubai Tiramisu", 8.5, 7),
+            ),
             (15449, Product(15449, "ESPRESSI", 2.9, 19)),
             (15450, Product(15450, "Lotus Biscoff Cream Pie", 5.9, 7)),
             (15451, Product(15451, "DOPPIO ESPRESSI", 3.2, 19)),
@@ -503,14 +538,22 @@ class ProductProvider:
             (15495, Product(15495, "Limoncello Fresh", 5.2, 7)),
             (15496, Product(15496, "Spanish Iced Latte (alternative)", 4.9, 19)),
             (15497, Product(15497, "Vegan** DU BIST HIPSTER", 13.8, 19)),
-            (15498, Product(15498, "PESTO SMASHED AVOCADOSTULLE  & PARMESAN", 12.1, 19)),
+            (
+                15498,
+                Product(15498, "PESTO SMASHED AVOCADOSTULLE  & PARMESAN", 12.1, 19),
+            ),
             (15499, Product(15499, "BIONADE NATURTRÜB  INGWER ORANGE", 3.1, 7)),
             (15500, Product(15500, "BIONADE NATURTRÜB ORANGE", 3.1, 7)),
             (15501, Product(15501, "*Bestseller* GRILLED CHEESE BRUSKETT", 14.9, 19)),
             (15502, Product(15502, "Pastrima SMASHED AVOCADOSTULLE MIT EI", 12.9, 19)),
             (15503, Product(15503, "BIONADE EISTEE PFIRSICH", 3.1, 7)),
             (15504, Product(15504, "Ice Coconut Matcha (Alternative Milch)", 6.3, 19)),
-            (15505, Product(15505, "Matcha Dose (30g für c.a 20-25 Matcha Getränke)", 19.9, 7)),
+            (
+                15505,
+                Product(
+                    15505, "Matcha Dose (30g für c.a 20-25 Matcha Getränke)", 19.9, 7
+                ),
+            ),
             (15506, Product(15506, "CORTADO (alternative)", 3.2, 19)),
             (15507, Product(15507, "Franky's Roll Lemon Cheesecake", 4.9, 7)),
             (15508, Product(15508, "Franky's Roll Schoko Pistacio", 4.8, 19)),
@@ -535,7 +578,10 @@ class ProductProvider:
             (15527, Product(15527, "Black Sesame Latte", 4.9, 7)),
             (15528, Product(15528, "Lavander Iced Latte (alternative)", 5.2, 19)),
             (15529, Product(15529, "Franky's Coffee", 10.9, 7)),
-            (15530, Product(15530, "Mango Ice Matcha Latte (Alternative Milch)", 6.4, 19)),
+            (
+                15530,
+                Product(15530, "Mango Ice Matcha Latte (Alternative Milch)", 6.4, 19),
+            ),
             (15531, Product(15531, "Lavendel Honig Latte", 4.2, 7)),
             (15532, Product(15532, "Franky's Roll Pistacio", 4.9, 7)),
             (15533, Product(15533, "Dirty Chai Latte", 4.9, 7)),
@@ -641,17 +687,25 @@ class ProductProvider:
             (16247, Product(16247, "pochiertes Ei", 1.8, 7)),
             (16419, Product(16419, "FRANKY’S COOKIES Matcha", 4.3, 19)),
             (16420, Product(16420, "Red Velvet Cake", 6.9, 19)),
-            (16451, Product(16451, "(Bestseller) Bananabread Ice Matcha Latte", 6.4, 19)),
+            (
+                16451,
+                Product(16451, "(Bestseller) Bananabread Ice Matcha Latte", 6.4, 19),
+            ),
             (16535, Product(16535, "(Neu) Ahmed El Zamel Cake", 6.8, 19)),
             (16536, Product(16536, "Banana Pudding Ice Matcha Latte", 10.9, 19)),
-            (16537, Product(16537, "Bananabread Ice Matcha Latte", 6.4, 7)),
-            (16538, Product(16538, "Banana Pudding Ice Matcha Latte", 10.9, 7)),
+            (16537, Product(16537, "Bananabread Ice Matcha Latte", 6.4, 19)),
+            (16538, Product(16538, "Banana Pudding Ice Matcha Latte", 10.9, 19)),
             (16860, Product(16860, "(Bestseller) Franky's Banana Pudding", 5.9, 19)),
             (16861, Product(16861, "Matcha Cheesecake", 5.9, 19)),
             (17339, Product(17339, "Vegane Chicken Stulle", 13.5, 19)),
             (17340, Product(17340, "Hummus Avocado Stulle", 13.2, 19)),
             (17341, Product(17341, "Vegane Shakshuka", 11.2, 19)),
-            (17493, Product(17493, "(Bestseller) Franky's Banana Pudding Schoco", 5.9, 19)),
+            (
+                17493,
+                Product(17493, "(Bestseller) Franky's Banana Pudding Schoco", 5.9, 19),
+            ),
+            (17620, Product(17620, "Blackberrie Muffin Ice Matcha Latte", 7, 19)),
+            (17621, Product(17621, "Blackberrie Muffin Ice Matcha Latte", 7.1, 19)),
         ]
     )
 
@@ -660,24 +714,67 @@ class ProductProvider:
 
     def get_by_title(self, title):
         return self.prod_dict_by_title[title]
-    
-    
+
     def update_by_id_to_normal(self, pid):
         self.get_by_id(pid).vat = 19
-        
+
     def update_by_id_to_reduced(self, pid):
         self.get_by_id(pid).vat = 7
-    
+
     def update_vat(self):
         to_normal = [
-            13472, 13473, 13474, 13475, 13476, #13477,
-            13478, 13479, 13485, 13486, 13487, 13488, 13489,
-            13490, 13491, 13492, 13493, 13494, 13495, 13497, 
-            13501, 13510, 13511, 13512, 13524, 13529, 13558, 13559,
-            13909, 13911, 13999, 14024, 14027, 
-            14275, 14276, 14277, 14278, 14279, 14280, 14281, 14282, 14387,
-            14996, 15038, 15392, 15393, 15456, 15493, 15494, 15496, 15570,
-            15636, 15714
+            13472,
+            13473,
+            13474,
+            13475,
+            13476,  # 13477,
+            13478,
+            13479,
+            13485,
+            13486,
+            13487,
+            13488,
+            13489,
+            13490,
+            13491,
+            13492,
+            13493,
+            13494,
+            13495,
+            13497,
+            13501,
+            13510,
+            13511,
+            13512,
+            13524,
+            13529,
+            13558,
+            13559,
+            13909,
+            13911,
+            13999,
+            14024,
+            14027,
+            14275,
+            14276,
+            14277,
+            14278,
+            14279,
+            14280,
+            14281,
+            14282,
+            14387,
+            14996,
+            15038,
+            15392,
+            15393,
+            15456,
+            15493,
+            15494,
+            15496,
+            15570,
+            15636,
+            15714,
         ]
         for p_id in to_normal:
             self.update_by_id_to_normal(p_id)
