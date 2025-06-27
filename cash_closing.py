@@ -13,14 +13,16 @@ class CashClosingException(Exception):
     def __init__(self, message):
         super().__init__(message)
 
+
 class TransactionValidationException(Exception):
     def __init__(self, message):
         super().__init__(message)
 
+
 class JsonSerializable:
     def toJSON(self):
-        # do not include keys that start with __ 
-        
+        # do not include keys that start with __
+
         filtered_dict = self.get_dict()
         j = json.dumps(filtered_dict, sort_keys=True, indent=4)
         return j
@@ -112,7 +114,7 @@ class AmountPerVat(JsonSerializable):
 
     def __str__(self):
         return self.toJSON()
-    
+
     def is_normal(self):
         return self.vat_definition_export_id == 1
 
@@ -132,10 +134,10 @@ class Transaction(JsonSerializable):
         self.security = get_transaction_security(receipt)
         # Hidden fields
         self.__receipt__ = receipt
-    
+
     def __str__(self):
         return f"{self.head.type} number {self.head.number} ID {self.head.tx_id}"
-    
+
     def validate(self):
         # print(f"Validating TX:\n{self.toJSON()}")
         try:
@@ -165,15 +167,23 @@ class TransactionData(JsonSerializable):
     # TODO: Fix duplicated code
     def vat_totals_per_id(self, vat_id):
         try:
-            return next((a for a in self.amounts_per_vat_id if a.vat_definition_export_id == vat_id), AmountPerVat())
+            return next(
+                (
+                    a
+                    for a in self.amounts_per_vat_id
+                    if a.vat_definition_export_id == vat_id
+                ),
+                AmountPerVat(),
+            )
         except AttributeError as e:
-            raise TransactionValidationException(f"Error inesperado. vat_totals_per_id: {str(e)}")
-            
-    
+            raise TransactionValidationException(
+                f"Error inesperado. vat_totals_per_id: {str(e)}"
+            )
+
     def validate(self):
 
         total_incl_vat_1 = Decimal(str(self.vat_totals_per_id(1).incl_vat))
-            
+
         acum_incl_vat_1 = Decimal(0)
         # tx_excl_vat_1 = tx_vat_data_1.get('excl_vat', 0)
         # tx_vat_1 = tx_vat_data_1.get('vat', 0)
@@ -185,7 +195,6 @@ class TransactionData(JsonSerializable):
 
         for line in self.lines:
 
-
             acum_incl_vat_1 += Decimal(str(line.vat_totals_per_id(1).incl_vat))
             # line_excl_vat_1 = line_vat_data_1.get('excl_vat', 0)
             # line_vat_1 = line_vat_data_1.get('vat', 0)
@@ -193,13 +202,17 @@ class TransactionData(JsonSerializable):
             acum_incl_vat_2 += Decimal(str(line.vat_totals_per_id(2).incl_vat))
             # line_excl_vat_2 = line_vat_data_2.get('excl_vat', 0)
             # line_vat_2 = line_vat_data_2.get('vat', 0)
-        
+
         if Decimal(str(total_incl_vat_1)) != Decimal(str(acum_incl_vat_1)):
             # print(f"Vat 1 - Total {total_incl_vat_1} not equal to Acumulated {acum_incl_vat_1}")
-            raise TransactionValidationException(f"Vat 1 - Total {total_incl_vat_1} not equal to Acumulated {acum_incl_vat_1}")
+            raise TransactionValidationException(
+                f"Vat 1 - Total {total_incl_vat_1} not equal to Acumulated {acum_incl_vat_1}"
+            )
         if Decimal(str(total_incl_vat_2)) != Decimal(str(acum_incl_vat_2)):
             # print(f"Vat 2 - Total {total_incl_vat_2} not equal to Acumulated {acum_incl_vat_2}")
-            raise TransactionValidationException(f"Vat 2 - Total {total_incl_vat_2} not equal to Acumulated {acum_incl_vat_2}")
+            raise TransactionValidationException(
+                f"Vat 2 - Total {total_incl_vat_2} not equal to Acumulated {acum_incl_vat_2}"
+            )
         return True
 
 
@@ -215,8 +228,14 @@ class TransactionSecurity(JsonSerializable):
 class Line(JsonSerializable):
     # TODO: Fix duplicated code
     def vat_totals_per_id(self, vat_id):
-        return next((a for a in self.business_case.amounts_per_vat_id if a.vat_definition_export_id == vat_id), AmountPerVat())
-
+        return next(
+            (
+                a
+                for a in self.business_case.amounts_per_vat_id
+                if a.vat_definition_export_id == vat_id
+            ),
+            AmountPerVat(),
+        )
 
 
 class Item(JsonSerializable):
@@ -468,7 +487,7 @@ def get_transactions(receipts, last_receipt_number):
     for receipt in receipts:
         tx_export_number += 1
         if tx_export_number == 90:
-            print('')
+            print("")
         receipt_number = last_receipt_number + tx_export_number
         t = Transaction(receipt, receipt_number, tx_export_number)
         if not t.validate():
@@ -480,7 +499,7 @@ def get_transactions(receipts, last_receipt_number):
         # Flush error to output
         print(f"{errors} errors found", flush=True)
         raise CashClosingException("")
-    
+
     return transactions
 
 
@@ -512,7 +531,7 @@ def set_receipt_amounts_per_vat_id(raw_receipt):
 
     amounts_per_vat_rate = receipt.amounts_per_vat_rate
     for amount_per_vat_rate in amounts_per_vat_rate:
-        if float(amount_per_vat_rate.amount) != 0.0: #!=
+        if float(amount_per_vat_rate.amount) != 0.0:  #!=
             amounts_per_vat_id.append(AmountPerVat(amount_per_vat_rate))
 
     receipt.amounts_per_vat_id = amounts_per_vat_id
@@ -521,7 +540,7 @@ def set_receipt_amounts_per_vat_id(raw_receipt):
 def add_amounts_per_vat_id(raw_receipts):
     for r in raw_receipts:
         if r.number == 43948:
-            print('test')
+            print("test")
         set_receipt_amounts_per_vat_id(r)
 
 
@@ -581,43 +600,35 @@ def add_order_to_receipt(transactions, products_provider):
             order = tx.schema.standard_v1.order
             line_items = order.line_items
             line_number = 0
-            
+
             for l in line_items:
                 line_number += 1
                 l.line_number = line_number
-                l.amount = float(Decimal(l.price_per_unit)*Decimal(l.quantity))
+                l.amount = float(Decimal(l.price_per_unit) * Decimal(l.quantity))
                 l.is_discount = l.amount < 0
-                
+
                 if not l.is_discount:
                     id = int(l.text.split(" - ", 1)[0])
                     product = products_provider.get_by_id(id)
                     l.id = product.id
                     l.vat = product.vat
                     l.description = product.title
-                    
+
             first_vat = next(l.vat for l in line_items if not l.is_discount)
             total_vat_19 = reduce(
                 lambda a, b: a + b,
-                [
-                    l.amount
-                    for l in line_items
-                    if not l.is_discount and l.vat == 19
-                ],
-                0
+                [l.amount for l in line_items if not l.is_discount and l.vat == 19],
+                0,
             )
-            
+
             all_same_vat = reduce(
                 lambda a, b: a and b,
-                [
-                    x.vat == first_vat
-                    for x in line_items
-                    if not x.is_discount
-                ],
+                [x.vat == first_vat for x in line_items if not x.is_discount],
                 True,
             )
             for l in line_items:
                 if l.is_discount:
-                    
+
                     if (
                         all_same_vat
                     ):  # there are many lines but all have the same VAT rate
@@ -627,8 +638,10 @@ def add_order_to_receipt(transactions, products_provider):
                         if (total_vat_19 + l.amount) > 0:
                             l.vat = 19
                             l.description = l.text
-                        else: 
-                            raise Exception(f"Discount causes bad calculation. Tx ID: {tx._id}")
+                        else:
+                            raise Exception(
+                                f"Discount causes bad calculation. Tx ID: {tx._id}"
+                            )
                             # tx_exep = [
                             #     'd5c549be-8c89-47ca-bcc3-1778e4870b95',
                             #     '500e7916-8ed9-414d-ab65-382c8d8f2137'
