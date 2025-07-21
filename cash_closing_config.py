@@ -1,6 +1,6 @@
 import datetime
 from constants import SECONDS_PER_DAY
-
+from date_tests import get_german_date
 
 def format_shortdate(date_time):
     return f"{date_time.strftime("%Y%m%d")}"
@@ -36,12 +36,18 @@ class Config:
         deleted_cc += 1 if self.last_cc_export_id > 203 else 0
         deleted_cc += 1 if self.last_cc_export_id > 204 else 0
         deleted_cc += 1 if self.last_cc_export_id > 223 else 0
-        deleted_cc -= 1 if self.last_cc_export_id > 384 else 0
         # print(f"Deleted count: {deleted_cc}")
         return deleted_cc
     
+    def skipped_days_count(self):
+        skipped_days = 0
+        # 30-06-2025 has 0 tx
+        skipped_days += 1 if self.last_cc_export_id > 384 else 0
+        # print(f"Skipped count: {skipped_days}")
+        return skipped_days
+    
     def cc_counter(self):
-        return self.last_cc_export_id - self.deleted_count()
+        return self.last_cc_export_id - self.deleted_count()  + self.skipped_days_count()
     
     def timestamp_low(self):
         # TODO: do not use self.last_cc_export_id because we have to discount deleted cc
@@ -52,7 +58,7 @@ class Config:
 
     def bussiness_date(self):
         # TODO: do not use self.last_cc_export_id because we have to discount deleted cc
-        return date_from_timestamp(self.base_timestamp) + datetime.timedelta(
+        return get_german_date(self.base_timestamp) + datetime.timedelta(
             days=self.cc_counter()
         )
 
