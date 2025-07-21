@@ -257,7 +257,7 @@ class ProductProvider:
             (13527, Product(13527, "Ice Coconut Matcha", 6.3, 19)),
             (13528, Product(13528, "Ice Strawberry Matcha", 5, 7)),
             (13529, Product(13529, "BIONADE NATURTRÜB ORANGE", 3.1, 19)),
-            (13530, Product(13530, "BIONADE EISTEE PFIRSICH", 3.1, 7)),
+            (13530, Product(13530, "BIONADE EISTEE PFIRSICH", 3.8, 19)),
             (13531, Product(13531, "BIONADE NATURTRÜB  INGWER ORANGE", 3.1, 7)),
             (13546, Product(13546, "Franky's Roll Pistazie", 4.9, 7)),
             (13547, Product(13547, "Franky's Roll Lemon Cheesecake", 4.9, 19)),
