@@ -36,6 +36,8 @@ class Config:
         deleted_cc += 1 if self.last_cc_export_id > 203 else 0
         deleted_cc += 1 if self.last_cc_export_id > 204 else 0
         deleted_cc += 1 if self.last_cc_export_id > 223 else 0
+        deleted_cc -= 1 if self.last_cc_export_id > 384 else 0
+        # print(f"Deleted count: {deleted_cc}")
         return deleted_cc
     
     def cc_counter(self):
