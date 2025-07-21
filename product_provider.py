@@ -706,6 +706,15 @@ class ProductProvider:
             ),
             (17620, Product(17620, "Blackberrie Muffin Ice Matcha Latte", 7, 19)),
             (17621, Product(17621, "Blackberrie Muffin Ice Matcha Latte", 7.1, 19)),
+            (17942, Product(17942, "Matcha Dose 30g", 29.99, 7)),
+            (17943, Product(17943, "Matcha Dose 30g", 29.99, 7)),
+            (17964, Product(17964, "Chocolate Chip Cookie", 4.2, 19)),
+            (17965, Product(17965, "Double Chocolate Cookie", 4.2, 19)),
+            (17972, Product(17972, "(Vegan) Mango Bowl", 9.9, 7)),
+            (17973, Product(17973, "Tunesien Breakfast", 14.99, 19)),
+            (17974, Product(17974, "*Bestseller* Flying Simit", 14.9, 19)),
+            (17975, Product(17975, "Seidenstraße (Frühstücksplatte)", 16.99, 19)),
+            (17976, Product(17976, "(Veggie) Bruno Diego Frühstücksplatte", 16.99, 19)),
         ]
     )
 
