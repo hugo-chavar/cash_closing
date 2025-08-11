@@ -480,7 +480,7 @@ class ProductProvider:
             (15534, Product(15534, "Hario SIphon TCA-5", 149.9, 19)),
             (15535, Product(15535, "Hario BUONO v60 drip kettle", 54.4, 19)),
             (15536, Product(15536, "Hario v60 dripper 02", 23.9, 19)),
-            (15537, Product(15537, "Matcha Strawberry Latte", 6.4, 19)),
+            (15537, Product(15537, "Matcha Strawberry Latte", 6.4, 7)),
             (15538, Product(15538, "Buch", 3.5, 7)),
             (15539, Product(15539, "Gardelli Efrain", 16.5, 7)),
             (15540, Product(15540, "Franky’s Potato Frise", 3.9, 7)),
