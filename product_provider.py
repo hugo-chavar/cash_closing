@@ -597,6 +597,12 @@ class ProductProvider:
             (17974, Product(17974, "*Bestseller* Flying Simit", 14.9, 19)),
             (17975, Product(17975, "Seidenstraße (Frühstücksplatte)", 16.99, 19)),
             (17976, Product(17976, "(Veggie) Bruno Diego Frühstücksplatte", 16.99, 19)),
+            (18022, Product(18022, "Franky's Pistachio Cookies", 4.5, 19)),
+            (18039, Product(18039, "Franky's Strawberry Tiramisu", 6.9, 19)),
+            (18040, Product(18040, "Franky's Strawberry Tiramisu", 6.9, 7)),
+            (18049, Product(18049, "Franky's Bueno Tiramisu", 6.9, 19)),
+            (18050, Product(18050, "Franky's Bueno Tiramisu", 6.9, 7)),
+            (18323, Product(18323, "Franky Orient Express", 15.9, 19)),
         ]
     )
 
