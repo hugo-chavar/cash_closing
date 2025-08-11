@@ -206,12 +206,12 @@ class TransactionData(JsonSerializable):
         if Decimal(str(total_incl_vat_normal)) != Decimal(str(acum_incl_vat_normal)):
             # print(f"Vat NORMAL - Total {total_incl_vat_normal} not equal to Acumulated {acum_incl_vat_normal}")
             raise TransactionValidationException(
-                f"Vat NORMAL - Total {total_incl_vat_normal} not equal to Acumulated {acum_incl_vat_normal}"
+                f"Vat NORMAL - Total {total_incl_vat_normal} not equal to Acumulated {acum_incl_vat_normal}\nLines:{self.toJSON()}"
             )
         if Decimal(str(total_incl_vat_reduced)) != Decimal(str(acum_incl_vat_reduced)):
             # print(f"Vat 2 - Total {total_incl_vat_reduced} not equal to Acumulated {acum_incl_vat_reduced}")
             raise TransactionValidationException(
-                f"Vat REDUCED - Total {total_incl_vat_reduced} not equal to Acumulated {acum_incl_vat_reduced}"
+                f"Vat REDUCED - Total {total_incl_vat_reduced} not equal to Acumulated {acum_incl_vat_reduced}\nLines:{self.toJSON()}"
             )
         return True
 
