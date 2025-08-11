@@ -612,7 +612,7 @@ def add_order_to_receipt(transactions, products_provider):
                     product = products_provider.get_by_id(id)
                     l.id = product.id
                     l.vat = product.vat
-                    l.description = l.text # product.title
+                    l.description = product.title
 
             first_vat = next(l.vat for l in line_items if not l.is_discount)
             total_vat_19 = reduce(
@@ -663,8 +663,8 @@ def add_order_to_receipt(transactions, products_provider):
             # if order_count == 43: #tx._id == "3375aab0-8952-4677-ba6d-72c41e8b50de":  #"8d71a9b4-2e1c-4711-9fa6-b29fac77171b":
             #     print(f"Count: {order_count}")
             #     products_provider.update_vat()
-            if order_count == 61:
-                products_provider.update_by_id_to_reduced(15537)
+            # if order_count == 89:
+            #     products_provider.update_by_id_to_reduced(15477)
 
     print(f"Count: {order_count}")
     for tx in txs:
