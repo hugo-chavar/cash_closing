@@ -116,7 +116,7 @@ class AmountPerVat(JsonSerializable):
         return self.toJSON()
 
     def is_normal(self):
-        return self.vat_definition_export_id == 1
+        return self.vat_definition_export_id == NORMAL_VAT_RATE
 
 
 class Payment(JsonSerializable):
@@ -182,36 +182,36 @@ class TransactionData(JsonSerializable):
 
     def validate(self):
 
-        total_incl_vat_1 = Decimal(str(self.vat_totals_per_id(1).incl_vat))
+        total_incl_vat_normal = Decimal(str(self.vat_totals_per_id(NORMAL_VAT_RATE).incl_vat))
 
-        acum_incl_vat_1 = Decimal(0)
-        # tx_excl_vat_1 = tx_vat_data_1.get('excl_vat', 0)
-        # tx_vat_1 = tx_vat_data_1.get('vat', 0)
+        acum_incl_vat_normal = Decimal(0)
+        # tx_excl_vat_normal = tx_vat_data_normal.get('excl_vat', 0)
+        # tx_vat_normal = tx_vat_data_normal.get('vat', 0)
 
-        total_incl_vat_2 = Decimal(str(self.vat_totals_per_id(2).incl_vat))
-        acum_incl_vat_2 = Decimal(0)
-        # tx_excl_vat_2 = tx_vat_data_2.get('excl_vat', 0)
-        # tx_vat_2 = tx_vat_data_2.get('vat', 0)
+        total_incl_vat_reduced = Decimal(str(self.vat_totals_per_id(REDUCED_VAT_RATE).incl_vat))
+        acum_incl_vat_reduced = Decimal(0)
+        # tx_excl_vat_reduced = tx_vat_data_reduced.get('excl_vat', 0)
+        # tx_vat_reduced = tx_vat_data_reduced.get('vat', 0)
 
         for line in self.lines:
 
-            acum_incl_vat_1 += Decimal(str(line.vat_totals_per_id(1).incl_vat))
-            # line_excl_vat_1 = line_vat_data_1.get('excl_vat', 0)
-            # line_vat_1 = line_vat_data_1.get('vat', 0)
+            acum_incl_vat_normal += Decimal(str(line.vat_totals_per_id(NORMAL_VAT_RATE).incl_vat))
+            # line_excl_vat_normal = line_vat_data_normal.get('excl_vat', 0)
+            # line_vat_normal = line_vat_data_normal.get('vat', 0)
 
-            acum_incl_vat_2 += Decimal(str(line.vat_totals_per_id(2).incl_vat))
-            # line_excl_vat_2 = line_vat_data_2.get('excl_vat', 0)
-            # line_vat_2 = line_vat_data_2.get('vat', 0)
+            acum_incl_vat_reduced += Decimal(str(line.vat_totals_per_id(REDUCED_VAT_RATE).incl_vat))
+            # line_excl_vat_reduced = line_vat_data_reduced.get('excl_vat', 0)
+            # line_vat_reduced = line_vat_data_reduced.get('vat', 0)
 
-        if Decimal(str(total_incl_vat_1)) != Decimal(str(acum_incl_vat_1)):
-            # print(f"Vat 1 - Total {total_incl_vat_1} not equal to Acumulated {acum_incl_vat_1}")
+        if Decimal(str(total_incl_vat_normal)) != Decimal(str(acum_incl_vat_normal)):
+            # print(f"Vat NORMAL - Total {total_incl_vat_normal} not equal to Acumulated {acum_incl_vat_normal}")
             raise TransactionValidationException(
-                f"Vat 1 - Total {total_incl_vat_1} not equal to Acumulated {acum_incl_vat_1}"
+                f"Vat NORMAL - Total {total_incl_vat_normal} not equal to Acumulated {acum_incl_vat_normal}"
             )
-        if Decimal(str(total_incl_vat_2)) != Decimal(str(acum_incl_vat_2)):
-            # print(f"Vat 2 - Total {total_incl_vat_2} not equal to Acumulated {acum_incl_vat_2}")
+        if Decimal(str(total_incl_vat_reduced)) != Decimal(str(acum_incl_vat_reduced)):
+            # print(f"Vat 2 - Total {total_incl_vat_reduced} not equal to Acumulated {acum_incl_vat_reduced}")
             raise TransactionValidationException(
-                f"Vat 2 - Total {total_incl_vat_2} not equal to Acumulated {acum_incl_vat_2}"
+                f"Vat REDUCED - Total {total_incl_vat_reduced} not equal to Acumulated {acum_incl_vat_reduced}"
             )
         return True
 
@@ -304,14 +304,14 @@ def get_business_case(receipts):
 
     # amount2 = precise_sum([a.incl_vat for r in receipts for a in r.amounts_per_vat_id if not a.is_normal()])
 
-    incl_vat1 = precise_sum(
+    incl_vat_normal = precise_sum(
         [a.incl_vat for r in receipts for a in r.amounts_per_vat_id if a.is_normal()]
     )
-    vat1 = precise_sum(
+    vat_normal = precise_sum(
         [a.vat for r in receipts for a in r.amounts_per_vat_id if a.is_normal()]
     )
 
-    incl_vat2 = precise_sum(
+    incl_vat_reduced = precise_sum(
         [
             a.incl_vat
             for r in receipts
@@ -319,14 +319,14 @@ def get_business_case(receipts):
             if not a.is_normal()
         ]
     )
-    vat2 = precise_sum(
+    vat_reduced = precise_sum(
         [a.vat for r in receipts for a in r.amounts_per_vat_id if not a.is_normal()]
     )
 
-    if incl_vat1 > 0:
-        bc.amounts_per_vat_id.append(AmountPerVat(NORMAL_VAT_RATE, incl_vat1, vat1))
-    if incl_vat2 > 0:
-        bc.amounts_per_vat_id.append(AmountPerVat(REDUCED_VAT_RATE, incl_vat2, vat2))
+    if incl_vat_normal > 0:
+        bc.amounts_per_vat_id.append(AmountPerVat(NORMAL_VAT_RATE, incl_vat_normal, vat_normal))
+    if incl_vat_reduced > 0:
+        bc.amounts_per_vat_id.append(AmountPerVat(REDUCED_VAT_RATE, incl_vat_reduced, vat_reduced))
 
     return bc
 
