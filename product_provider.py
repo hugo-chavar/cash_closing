@@ -603,6 +603,8 @@ class ProductProvider:
             (18049, Product(18049, "Franky's Bueno Tiramisu", 6.9, 19)),
             (18050, Product(18050, "Franky's Bueno Tiramisu", 6.9, 7)),
             (18323, Product(18323, "Franky Orient Express", 15.9, 19)),
+            (18468, Product(18468, "Açaí Superfood Becher", 9.5, 7)),
+            (18469, Product(18469, "Açaí Superfood Becher", 9.5, 7)),
         ]
     )
 
