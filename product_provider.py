@@ -605,6 +605,10 @@ class ProductProvider:
             (18323, Product(18323, "Franky Orient Express", 15.9, 19)),
             (18468, Product(18468, "Açaí Superfood Becher", 9.5, 7)),
             (18469, Product(18469, "Açaí Superfood Becher", 9.5, 7)),
+            (18482, Product(18482, "FRANKY’S COOKIES Double Chocolate", 4.2, 7)),
+            (18544, Product(18544, "Franky’s Cherry Ice Matcha Latte (Amarena Style)", 7.9, 19)),
+            (18545, Product(18545, "Franky’s Cherry Ice Matcha Latte (Amarena Style)", 7.9, 7)),
+            (18546, Product(18546, "Franky’s Cherry Ice Matcha Latte (Amarena Style", 7.9, 7)),
         ]
     )
 
