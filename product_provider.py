@@ -609,6 +609,7 @@ class ProductProvider:
             (18544, Product(18544, "Franky’s Cherry Ice Matcha Latte (Amarena Style)", 7.9, 19)),
             (18545, Product(18545, "Franky’s Cherry Ice Matcha Latte (Amarena Style)", 7.9, 7)),
             (18546, Product(18546, "Franky’s Cherry Ice Matcha Latte (Amarena Style", 7.9, 7)),
+            (19413, Product(19413, "(Bestseller) Franky's Fondant au chocolat", 6.9, 19)),
         ]
     )
 
