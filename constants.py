@@ -2,7 +2,7 @@ import datetime
 from date_tests import get_format_shortdate
 from models import FiskalyClient
 
-client = FiskalyClient.objects.get(id=1)
+# # client = FiskalyClient.objects.get(id=1)
 
 # BASE_DATE_TIME = datetime.datetime(2024, 6, 20, 0, 0)
 # BASE_TIMESTAMP = 1718938800 # 1718852400 #1718920800
@@ -16,11 +16,11 @@ LAST_CASH_CLOSING_TO_PROCESS = 188 # procesar de a uno, desaparece esta
 
 # TIMESTAMP_HIGH = TIMESTAMP_LOW + SECONDS_PER_DAY
 
-date_fmt = get_format_shortdate(client.base_date_time + datetime.timedelta(days=client.last_cash_point_closing_export_id + 1))
-cc_number = client.last_cash_point_closing_export_id + 1
-TRANSACTIONS_FILENAME = f'merged7\\merged_file_filter_{date_fmt}.json'
-CASH_CLOSING_FILENAME = f'closings\\CASH_CLOSING_{cc_number:03}_{date_fmt}.json'
-CASH_CLOSING_UNFORMATTED_FILENAME = 'resultUNF_prod_0.json'
+# # date_fmt = get_format_shortdate(client.base_date_time + datetime.timedelta(days=client.last_cash_point_closing_export_id + 1))
+# # cc_number = client.last_cash_point_closing_export_id + 1
+# # TRANSACTIONS_FILENAME = f'merged7\\merged_file_filter_{date_fmt}.json'
+# # CASH_CLOSING_FILENAME = f'closings\\CASH_CLOSING_{cc_number:03}_{date_fmt}.json'
+# # CASH_CLOSING_UNFORMATTED_FILENAME = 'resultUNF_prod_0.json'
 
 # def get_cc_info(last_cc_export_id):
 #     timestamp_low = BASE_TIMESTAMP + SECONDS_PER_DAY*last_cc_export_id
