@@ -21,28 +21,19 @@ class Config:
             fiskaly_client.cash_register
         )  ## Used in process_closing (generate_all_cc.py)
         self.last_processed_tx_number = fiskaly_client.last_processed_tx_number
-        self.deleted_cc = dict([(180, True), (181, True), (183, True), (184, True), (185, True), (186, True), (187, True), (188, True), (204, True), (205, True), (224, True)])
+        # self.deleted_cc = dict([(180, True), (181, True), (183, True), (184, True), (185, True), (186, True), (187, True), (188, True), (204, True), (205, True), (224, True)])
+        self.deleted_cc = {}
 
     def deleted_count(self):
         deleted_cc = 0
-        deleted_cc += 1 if self.last_cc_export_id > 179 else 0
-        deleted_cc += 1 if self.last_cc_export_id > 180 else 0
-        deleted_cc += 1 if self.last_cc_export_id > 182 else 0
-        deleted_cc += 1 if self.last_cc_export_id > 183 else 0
-        deleted_cc += 1 if self.last_cc_export_id > 184 else 0
-        deleted_cc += 1 if self.last_cc_export_id > 185 else 0
-        deleted_cc += 1 if self.last_cc_export_id > 186 else 0
-        deleted_cc += 1 if self.last_cc_export_id > 187 else 0
-        deleted_cc += 1 if self.last_cc_export_id > 203 else 0
-        deleted_cc += 1 if self.last_cc_export_id > 204 else 0
-        deleted_cc += 1 if self.last_cc_export_id > 223 else 0
+        # deleted_cc += 1 if self.last_cc_export_id > 179 else 0
         # print(f"Deleted count: {deleted_cc}")
         return deleted_cc
     
     def skipped_days_count(self):
         skipped_days = 0
         # 30-06-2025 has 0 tx
-        skipped_days += 1 if self.last_cc_export_id > 384 else 0
+        # skipped_days += 1 if self.last_cc_export_id > 384 else 0
         # print(f"Skipped count: {skipped_days}")
         return skipped_days
     
@@ -69,12 +60,12 @@ class Config:
         return cc_number
 
     def transactions_filename(self):
-        folder = "merged7"
+        folder = f"closings\\{self.client.id}\\m"
         # folder = "merged9"
-        return f"{folder}\\merged_file_filter_{self.cc_number():03}_{format_shortdate(self.bussiness_date())}.json"
+        return f"{folder}\\merged_{self.cc_number():03}_{format_shortdate(self.bussiness_date())}.json"
 
     def cash_closing_filename(self):
-        folder = "closings6"
+        folder = f"closings\\{self.client.id}\\c"
         # folder = "closings\\submitted"
         # folder = "closings8\\f"
         return f"{folder}\\CASH_CLOSING_{self.cc_number():03}_{format_shortdate(self.bussiness_date())}.json"
