@@ -1,7 +1,13 @@
+from cash_closing_config import Config
+from models import FiskalyClient
 
 def pick_restaurant():
-    options = ['Thong Thai Restaurant und Biergarten', 'Gasthaus Marktplatz']
-    option_ids = [474, 1815]
+    options = [
+        'Thong Thai Restaurant und Biergarten',
+        'Gasthaus Marktplatz',
+        'test'
+    ]
+    option_ids = [474, 1815, 721]
 
     # Build the input_message
     input_message = "Pick a restaurant:\n"
@@ -27,3 +33,10 @@ def pick_restaurant():
     print(f'\nYou picked: {selected_option} (ID: {selected_option_id})')
     
     return selected_option_id
+
+def get_config() -> Config:
+    restaurant_id = pick_restaurant()
+
+    client = FiskalyClient.objects.get(id=restaurant_id)
+
+    return Config(client)
