@@ -7,7 +7,6 @@ Created on:     08/11/23, 09:30 am
 # from django.contrib.auth import get_user_model
 from enum import Enum
 from unittest.mock import Mock
-# from constants import BASE_TIMESTAMP
 
 # from api.models.base_model import BaseModel
 # from api.models.restaurant import Restaurant
@@ -78,55 +77,55 @@ FiskalyClient.objects = Mock()
 
 # Add a method to the mock object
 def get(self, id):
-    if id == 1:
-        mock_obj = Mock(
-            id=1,
-            restaurant = None,
-            fiskaly_client_id = CASH_REGISTER_ID,
-            serial_number = None,
-            tss_id = TSS_ID,
-            tss_serial_number = None,
-            tss_state = None,
-            tss_admin_puk = None,
-            tss_admin_pin = None,
-            client_state = None,
-            organization_id = None,
-            billing_address_id = None,
-            api_key = API_KEY,
-            api_secret = API_SECRET,
-            vat_id_valid = None,
-            client_state_information = None,
-            access_token = TOKEN,
-            access_token_expires_at = None,
-            refresh_token = None,
-            refresh_token_expires_at = None,
-            last_processed_tx_number = LAST_PROCESSED_TX_NUMBER,
-            last_cash_point_closing_export_id =  LAST_CASH_POINT_CLOSING_EXPORT_ID, # default = 0
-            last_receipt_number = LAST_RECEIPT_NUMBER, # default = 0
-            base_timestamp = BASE_TIMESTAMP, # put better name to the field => 02/01/2025 better, calculate the related from c.closings
-            base_date_time = BASE_DATE_TIME, # put better name to the field => 02/01/2025 better, calculate the related from c.closings
-            cash_register = CASH_REGISTER_ID # TODO: add this to the model
-            # get_credentials=get_credentials.__get__(self, type(self))
-            # get_credentials= lambda self: {
-            #     "api_key": self.api_key,
-            #     "api_secret": self.api_secret                
-            # }
-        )
-        mock_obj.get_credentials = lambda: {
-            "api_key": mock_obj.api_key,
-            "api_secret": mock_obj.api_secret
-        }
-        mock_obj.get_values_to_save = lambda: {
-            "LAST_CASH_POINT_CLOSING_EXPORT_ID": mock_obj.last_cash_point_closing_export_id,
-            "LAST_RECEIPT_NUMBER": mock_obj.last_receipt_number,
-            "LAST_PROCESSED_TX_NUMBER": mock_obj.last_processed_tx_number,
-            "TOKEN": mock_obj.access_token
-        }
-        mock_obj.save = lambda: update_env_vars(mock_obj.get_values_to_save())
-        mock_obj.get_token = lambda: mock_obj.access_token
-        return mock_obj
-    else:
-        raise Exception('Object not found')
+    if id not in (474, 1815):
+        raise Exception('Fiskaly client not found')
+    
+    mock_obj = Mock(
+        id=id,
+        restaurant = None,
+        fiskaly_client_id = CASH_REGISTER_ID,
+        serial_number = None,
+        tss_id = TSS_ID,
+        tss_serial_number = None,
+        tss_state = None,
+        tss_admin_puk = None,
+        tss_admin_pin = None,
+        client_state = None,
+        organization_id = None,
+        billing_address_id = None,
+        api_key = API_KEY,
+        api_secret = API_SECRET,
+        vat_id_valid = None,
+        client_state_information = None,
+        access_token = TOKEN,
+        access_token_expires_at = None,
+        refresh_token = None,
+        refresh_token_expires_at = None,
+        last_processed_tx_number = LAST_PROCESSED_TX_NUMBER,
+        last_cash_point_closing_export_id =  LAST_CASH_POINT_CLOSING_EXPORT_ID, # default = 0
+        last_receipt_number = LAST_RECEIPT_NUMBER, # default = 0
+        base_timestamp = BASE_TIMESTAMP, # put better name to the field => 02/01/2025 better, calculate the related from c.closings
+        base_date_time = BASE_DATE_TIME, # put better name to the field => 02/01/2025 better, calculate the related from c.closings
+        cash_register = CASH_REGISTER_ID # TODO: add this to the model
+        # get_credentials=get_credentials.__get__(self, type(self))
+        # get_credentials= lambda self: {
+        #     "api_key": self.api_key,
+        #     "api_secret": self.api_secret                
+        # }
+    )
+    mock_obj.get_credentials = lambda: {
+        "api_key": mock_obj.api_key,
+        "api_secret": mock_obj.api_secret
+    }
+    mock_obj.get_values_to_save = lambda: {
+        "LAST_CASH_POINT_CLOSING_EXPORT_ID": mock_obj.last_cash_point_closing_export_id,
+        "LAST_RECEIPT_NUMBER": mock_obj.last_receipt_number,
+        "LAST_PROCESSED_TX_NUMBER": mock_obj.last_processed_tx_number,
+        "TOKEN": mock_obj.access_token
+    }
+    mock_obj.save = lambda: update_env_vars(mock_obj.get_values_to_save())
+    mock_obj.get_token = lambda: mock_obj.access_token
+    return mock_obj
 
 FiskalyClient.objects.get = get.__get__(FiskalyClient.objects, type(FiskalyClient.objects))
 
