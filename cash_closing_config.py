@@ -87,3 +87,6 @@ class Config:
     
     def m_path(self):
         return f"{self.base_path()}\\m"
+    
+    def r_path(self):
+        return f"{self.base_path()}\\r\\cc_report.csv"
