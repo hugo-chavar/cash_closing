@@ -59,16 +59,16 @@ class Config:
             cc_number += 1
         return cc_number
 
+    def file_suffix(self):
+        return f"{self.cc_number():03}_{format_shortdate(self.bussiness_date())}"
+    
     def transactions_filename(self):
-        folder = f"closings\\{self.client.id}\\m"
-        # folder = "merged9"
-        return f"{folder}\\merged_{self.cc_number():03}_{format_shortdate(self.bussiness_date())}.json"
+        folder = f"{self.base_path()}\\m"
+        return f"{folder}\\merged_{self.file_suffix()}.json"
 
     def cash_closing_filename(self):
-        folder = f"closings\\{self.client.id}\\c"
-        # folder = "closings\\submitted"
-        # folder = "closings8\\f"
-        return f"{folder}\\CASH_CLOSING_{self.cc_number():03}_{format_shortdate(self.bussiness_date())}.json"
+        folder = f"{self.base_path()}\\ns"
+        return f"{folder}\\CASH_CLOSING_{self.file_suffix()}.json"
 
     def next(self):
         self.last_cc_export_id = self.cc_number()
@@ -78,3 +78,12 @@ class Config:
         self.client.last_receipt_number = self.last_receipt_number
         self.client.last_cash_point_closing_export_id = self.last_cc_export_id
         self.client.save()
+
+    def base_path(self):
+        return f"closings\\{self.client.id}"
+
+    def s_path(self):
+        return f"{self.base_path()}\\s"
+    
+    def m_path(self):
+        return f"{self.base_path()}\\m"
