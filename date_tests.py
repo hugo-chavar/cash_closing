@@ -265,4 +265,5 @@ def get_midnight_timestamp(date=None):
     return int(german_midnight.timestamp())
 
 
-some_date_midnight = get_midnight_timestamp(datetime(2024, 3, 15))  # Specific date
+some_date_midnight = get_midnight_timestamp(datetime(2025, 12, 22))  # Specific date
+# print(f"German midnight timestamp: {some_date_midnight}")
