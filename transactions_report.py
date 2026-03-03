@@ -3,10 +3,17 @@ import json
 import csv
 from decimal import Decimal
 from date_tests import get_german_date
+from restaurant_picker import get_config
+
+config = get_config()
 
 # Path to the folder containing JSON files
-folder_path = "closings/submitted"
-csv_file_path = "reports/transactions.csv"
+folder_path = config.s_path()
+csv_file_path = config.r_path()
+
+# Path to the folder containing JSON files
+folder_path = config.s_path()
+csv_file_path = config.tx_path()
 data = []
 
 # Process each JSON file
@@ -18,7 +25,7 @@ for file_name in sorted(os.listdir(folder_path)):
             ) as file:
                 cash_closing = json.load(file)
                 cc_id = cash_closing["cash_point_closing_export_id"]
-                if cc_id < 379:
+                if cc_id < 0:
                     continue
                 bussiness_date = str(cash_closing["head"]["business_date"])
 
