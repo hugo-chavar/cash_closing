@@ -1,16 +1,16 @@
 import json
 import os
 from date_tests import truncate_timestamp_to_date, get_formatted_shortdate
-from cash_closing_config import Config
-from models import FiskalyClient
-
-# Path to the folder containing JSON files
-folder_path = 'closings/submitted'
-# folder_path = 'closings6'
+from restaurant_picker import get_config
 
 
-# last_tx_number = 0
-last_tx_number = 98
+config = get_config()
+
+# Path to the folder containing submitted JSON files
+folder_path = config.s_path()
+
+
+last_tx_number = 0
 ok = True
 
 
@@ -42,14 +42,14 @@ else:
     print('Hay problemas')
 
 
-client = FiskalyClient.objects.get(id=1)
 
-config = Config(client)
 
 position = -1
 last_cc_export_id = -1
 found = False
-while not found:
+last_receipt_number = 0
+last_processed_tx_number = 0
+while not found and len(file_list) > 0:
     last_cc_file_name=file_list[position]
     
 
@@ -70,13 +70,14 @@ while not found:
 
             # print(f"{file_name}: {get_formatted_shortdate(cdate)} first {first_tx:06} last {last_tx:06}")
 
-folder_path = 'merged6'
+folder_path = config.m_path()
 file_list = sorted(os.listdir(folder_path))
-last_merged_file = file_list[-1]
+if len(file_list) > 0:
+    last_merged_file = file_list[-1]
 
-with open(os.path.join(folder_path, last_merged_file), encoding='utf-8', mode='r') as mf:
-    json_data = json.load(mf)
-    last_processed_tx_number = int(json_data["data"][-1]["number"])
+    with open(os.path.join(folder_path, last_merged_file), encoding='utf-8', mode='r') as mf:
+        json_data = json.load(mf)
+        last_processed_tx_number = int(json_data["data"][-1]["number"])
 
 if config.last_cc_export_id == last_cc_export_id:
     print("last_cc_export_id OK.")
