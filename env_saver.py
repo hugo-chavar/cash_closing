@@ -39,12 +39,12 @@ def update_env_var(key, value):
     dict[key] = value
     save_dict_to_env_file(dict)
 
-def update_env_vars(new_dict):
+def update_env_vars(new_dict, env_path):
     dict = read_env_file_to_dict()
-    bkp_filename = f"env_bkp/env_{dict["BACKUP"]}.txt"
+    bkp_filename = f"{env_path}\\env_bkp\\env_{dict["BACKUP"]}.txt"
     
     save_dict_to_env_file(dict, bkp_filename)
     dict["BACKUP"] = str(int(dict["BACKUP"]) + 1)
     for key, value in new_dict.items():
         dict[key] = value
-    save_dict_to_env_file(dict)
+    save_dict_to_env_file(dict, f"{env_path}\\.env")

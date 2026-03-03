@@ -18,7 +18,6 @@ import os
 from dotenv import load_dotenv
 from env_saver import update_env_vars
 
-load_dotenv()
 
 ENV_LAST_CC_EXPORT_ID = "LAST_CASH_POINT_CLOSING_EXPORT_ID"
 ENV_LAST_RECEIPT_NUMBER = "LAST_RECEIPT_NUMBER"
@@ -28,18 +27,19 @@ ENV_API_SECRET = "API_SECRET"
 ENV_TOKEN = "TOKEN"
 ENV_TSS_ID = "TSS_ID"
 ENV_CASH_REGISTER_ID = "CASH_REGISTER_ID"
+ENV_BASE_TIMESTAMP = "BASE_TIMESTAMP"
 
-LAST_CASH_POINT_CLOSING_EXPORT_ID = int(os.getenv(ENV_LAST_CC_EXPORT_ID))
-LAST_RECEIPT_NUMBER = int(os.getenv(ENV_LAST_RECEIPT_NUMBER))
-LAST_PROCESSED_TX_NUMBER = int(os.getenv(ENV_LAST_PROCESSED_TX_NUMBER))
-API_KEY = os.getenv(ENV_API_KEY)
-API_SECRET = os.getenv(ENV_API_SECRET)
-TOKEN = os.getenv(ENV_TOKEN)
-TSS_ID = os.getenv(ENV_TSS_ID)
-CASH_REGISTER_ID = os.getenv(ENV_CASH_REGISTER_ID)
+# LAST_CASH_POINT_CLOSING_EXPORT_ID = int(os.getenv(ENV_LAST_CC_EXPORT_ID))
+# LAST_RECEIPT_NUMBER = int(os.getenv(ENV_LAST_RECEIPT_NUMBER))
+# LAST_PROCESSED_TX_NUMBER = int(os.getenv(ENV_LAST_PROCESSED_TX_NUMBER))
+# API_KEY = os.getenv(ENV_API_KEY)
+# API_SECRET = os.getenv(ENV_API_SECRET)
+# TOKEN = os.getenv(ENV_TOKEN)
+# TSS_ID = os.getenv(ENV_TSS_ID)
+# CASH_REGISTER_ID = os.getenv(ENV_CASH_REGISTER_ID)
 
-BASE_DATE_TIME = datetime.datetime(2024, 6, 20, 0, 0)
-BASE_TIMESTAMP = 1718920800 #1718938800 # 1718852400 #1718920800 # TODO fix german date
+# BASE_DATE_TIME = datetime.datetime(2024, 6, 20, 0, 0)
+# BASE_TIMESTAMP = 1718920800 #1718938800 # 1718852400 #1718920800 # TODO fix german date
 
 # User = get_user_model()
 
@@ -77,15 +77,28 @@ FiskalyClient.objects = Mock()
 
 # Add a method to the mock object
 def get(self, id):
-    if id not in (474, 1815):
+    if id not in (474, 1815, 721):
         raise Exception('Fiskaly client not found')
+    
+    env_path = f"closings/{id}"
+    load_dotenv(
+        dotenv_path=os.path.join(env_path, ".env"),
+        override=True
+    )
+    
+    cash_register_id = os.getenv(ENV_CASH_REGISTER_ID)
+    api_key = os.getenv(ENV_API_KEY)
+    print(api_key)
+    
+    base_timestamp = os.getenv(ENV_BASE_TIMESTAMP)
+    print(base_timestamp)
     
     mock_obj = Mock(
         id=id,
         restaurant = None,
-        fiskaly_client_id = CASH_REGISTER_ID,
+        fiskaly_client_id = cash_register_id,
         serial_number = None,
-        tss_id = TSS_ID,
+        tss_id = os.getenv(ENV_TSS_ID),
         tss_serial_number = None,
         tss_state = None,
         tss_admin_puk = None,
@@ -93,20 +106,20 @@ def get(self, id):
         client_state = None,
         organization_id = None,
         billing_address_id = None,
-        api_key = API_KEY,
-        api_secret = API_SECRET,
+        api_key = os.getenv(ENV_API_KEY),
+        api_secret = os.getenv(ENV_API_SECRET),
         vat_id_valid = None,
         client_state_information = None,
-        access_token = TOKEN,
+        access_token = os.getenv(ENV_TOKEN),
         access_token_expires_at = None,
         refresh_token = None,
         refresh_token_expires_at = None,
-        last_processed_tx_number = LAST_PROCESSED_TX_NUMBER,
-        last_cash_point_closing_export_id =  LAST_CASH_POINT_CLOSING_EXPORT_ID, # default = 0
-        last_receipt_number = LAST_RECEIPT_NUMBER, # default = 0
-        base_timestamp = BASE_TIMESTAMP, # put better name to the field => 02/01/2025 better, calculate the related from c.closings
-        base_date_time = BASE_DATE_TIME, # put better name to the field => 02/01/2025 better, calculate the related from c.closings
-        cash_register = CASH_REGISTER_ID # TODO: add this to the model
+        last_processed_tx_number = int(os.getenv(ENV_LAST_PROCESSED_TX_NUMBER)),
+        last_cash_point_closing_export_id =  int(os.getenv(ENV_LAST_CC_EXPORT_ID)), # default = 0
+        last_receipt_number = int(os.getenv(ENV_LAST_RECEIPT_NUMBER)), # default = 0
+        base_timestamp = int(os.getenv(ENV_BASE_TIMESTAMP)), # put better name to the field => 02/01/2025 better, calculate the related from c.closings
+        # base_date_time = BASE_DATE_TIME, # put better name to the field => 02/01/2025 better, calculate the related from c.closings
+        cash_register = cash_register_id # TODO: add this to the model
         # get_credentials=get_credentials.__get__(self, type(self))
         # get_credentials= lambda self: {
         #     "api_key": self.api_key,
@@ -123,7 +136,7 @@ def get(self, id):
         "LAST_PROCESSED_TX_NUMBER": mock_obj.last_processed_tx_number,
         "TOKEN": mock_obj.access_token
     }
-    mock_obj.save = lambda: update_env_vars(mock_obj.get_values_to_save())
+    mock_obj.save = lambda: update_env_vars(mock_obj.get_values_to_save(), env_path)
     mock_obj.get_token = lambda: mock_obj.access_token
     return mock_obj
 
