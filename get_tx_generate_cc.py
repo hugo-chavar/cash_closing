@@ -2,13 +2,13 @@ import json
 from cash_closing import CashClosingException, build_cash_closing
 from cash_closing_config import Config
 from fiskaly_service import FiskalyService
-from models import FiskalyClient
 from product_provider import ProductProvider
 from transaction_fetcher import TransactionFetcher
 from transaction_fixer import TransactionFixer
 from types import SimpleNamespace
 
 from date_tests import get_timestamp_from_german_date, get_yesterday_end_timestamp
+from restaurant_picker import get_config
 
 DATE_THRESHOLD = "2026-01-01 23:59:59+02:00"  # YYYY-MM-DDTHH:MM:SSZ
 NUMBER_OF_CASH_CLOSINGS_TO_PROCESS = 12
@@ -155,8 +155,8 @@ def split_json_files_by_bussiness_date(tx_iterator, config):
     except CashClosingException as e:
         print(f"Process cancelled due to error: {str(e)}")
 
-
-client = FiskalyClient.objects.get(id=1)
+config = get_config()
+client = config.client
 
 fiskaly_service.credentials = client.get_credentials()
 fiskaly_service.token = client.get_token()
@@ -166,7 +166,6 @@ transaction_fetcher.update_last_tx_pending()
 
 
 transactions_iterator = iter(transaction_fetcher)
-config = Config(client)
 client.access_token = fiskaly_service.token
 split_json_files_by_bussiness_date(transactions_iterator, config)
 config.save_vars()
