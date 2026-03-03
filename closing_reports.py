@@ -4,12 +4,13 @@ import csv
 
 from decimal import Decimal
 from date_tests import get_german_date
+from restaurant_picker import get_config
+
+config = get_config()
 
 # Path to the folder containing JSON files
-folder_path = "closings/submitted"
-# folder_path = 'closings8/t'
-# folder_path = 'closings6'
-csv_file_path = "reports/cc_report.csv"
+folder_path = config.s_path()
+csv_file_path = config.r_path()
 # List to hold data for CSV
 data = []
 
@@ -174,7 +175,7 @@ for file_name in sorted(os.listdir(folder_path)):
             cash_closing = json.load(file)
             id = cash_closing["cash_point_closing_export_id"]
 
-            if id >= 379:
+            if id >= 0:
                 (
                     id,
                     full_amount,
