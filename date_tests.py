@@ -1,5 +1,5 @@
 import pytz
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone, timedelta, time
 from zoneinfo import ZoneInfo
 
 # print('Inicia date_tests')
@@ -187,19 +187,34 @@ def get_timestamp_from_german_date(german_datetime):
     return dt.timestamp()
 
 
+# def get_german_date(original_timestamp):
+#     """
+#     Convert timestamp back to datetime with +02:00 offset while preserving the original time.
+#     """
+#     # First get UTC time
+#     utc_dt = datetime.fromtimestamp(original_timestamp, tz=timezone.utc)
+
+#     # Convert to +02:00 offset while preserving the time
+#     offset = timedelta(hours=2)
+#     target_time = utc_dt.astimezone(timezone(offset))
+
+#     return target_time
+
 def get_german_date(original_timestamp):
     """
-    Convert timestamp back to datetime with +02:00 offset while preserving the original time.
+    Convert timestamp back to datetime with appropriate German timezone offset
+    (+01:00 for CET, +02:00 for CEST) while preserving the original time.
     """
-    # First get UTC time
+    # Get UTC time
     utc_dt = datetime.fromtimestamp(original_timestamp, tz=timezone.utc)
-
-    # Convert to +02:00 offset while preserving the time
-    offset = timedelta(hours=2)
-    target_time = utc_dt.astimezone(timezone(offset))
-
+    
+    # Use pytz for accurate German timezone handling
+    german_tz = pytz.timezone('Europe/Berlin')
+    
+    # Convert to German timezone
+    target_time = utc_dt.astimezone(german_tz)
+    
     return target_time
-
 
 def get_yesterday_end_timestamp():
     # Get today's date at midnight
@@ -229,3 +244,25 @@ date = f"{get_formatted_shortdate(german_dt)}"
 # print(date_from_timestamp(1720168541))
 # print(date)
 # print('Fin date_tests')
+
+
+def get_midnight_timestamp(date=None):
+    """
+    Return the timestamp of midnight (00:00:00) for the given date in German timezone.
+    If no date is provided, uses current date.
+    """
+    if date is None:
+        date = datetime.now().date()
+    elif isinstance(date, datetime):
+        date = date.date()
+    
+    # Create midnight datetime in German timezone
+    german_tz = pytz.timezone('Europe/Berlin')
+    midnight_dt = datetime.combine(date, time.min)
+    german_midnight = german_tz.localize(midnight_dt)
+    
+    # Convert to timestamp
+    return int(german_midnight.timestamp())
+
+
+some_date_midnight = get_midnight_timestamp(datetime(2024, 3, 15))  # Specific date
