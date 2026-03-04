@@ -56,7 +56,7 @@ client = config.client
 # fs = FiskalyService()
 # fs.credentials = client.get_credentials()
 
-# config.last_cc_export_id = 411
+config.last_cc_export_id = 1
 
 # while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
 if 1 == 1:
