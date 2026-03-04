@@ -131,6 +131,7 @@ def get(self, id):
         "LAST_CASH_POINT_CLOSING_EXPORT_ID": mock_obj.last_cash_point_closing_export_id,
         "LAST_RECEIPT_NUMBER": mock_obj.last_receipt_number,
         "LAST_PROCESSED_TX_NUMBER": mock_obj.last_processed_tx_number,
+        "SKIPPED_DAYS": mock_obj.skipped_days,
         "TOKEN": mock_obj.access_token
     }
     mock_obj.save = lambda: update_env_vars(mock_obj.get_values_to_save(), env_path)
