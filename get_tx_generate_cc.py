@@ -18,8 +18,6 @@ NUMBER_OF_CASH_CLOSINGS_TO_PROCESS = 6
 fiskaly_service = FiskalyService()
 
 
-
-
 def process_closing(config: Config, transactions):
 
     cash_closing_obj = build_cash_closing(
@@ -131,7 +129,8 @@ def split_json_files_by_bussiness_date(tx_iterator, config):
 
             daily_txn_count = len(daily_txn_list)
             if daily_txn_count == 0:
-                # la unica manera de que de 0 es que se ejecute al dia
+                # this is wrong, if count is 0 we need to continue to the next day
+                # we shouldn't execute config.next() because it increments the cash closing number, which is wron for "empty" days
                 break
 
             print(
