@@ -4,7 +4,7 @@ from types import SimpleNamespace
 from product_provider import ProductProvider
 from cash_closing_config import Config
 import cash_closing
-from models import FiskalyClient
+from restaurant_picker import get_config
 
 
 def parse(d):
@@ -51,12 +51,12 @@ def process_closing(config: Config, transactions):
     # print(f"last_cash_point_closing_export_id: {config.last_cc_export_id}")
 
 
-client = FiskalyClient.objects.get(id=1)
+config = get_config()
+client = config.client
 # fs = FiskalyService()
 # fs.credentials = client.get_credentials()
 
-config = Config(client)
-config.last_cc_export_id = 411
+# config.last_cc_export_id = 411
 
 # while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
 if 1 == 1:
