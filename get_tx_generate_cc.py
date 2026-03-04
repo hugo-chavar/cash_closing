@@ -39,7 +39,7 @@ def process_closing(config: Config, transactions):
     print(f"last_cash_point_closing_export_id: {config.last_cc_export_id}")
 
 
-def split_json_files_by_bussiness_date(tx_iterator, config):
+def split_json_files_by_bussiness_date(tx_iterator, config: Config):
     # step 0: setup
     all_transactions = []
     total_count = 0
@@ -118,8 +118,16 @@ def split_json_files_by_bussiness_date(tx_iterator, config):
 
                 config.last_processed_tx_number = daily_txn_list[-1]["number"]
                 print(f"Saved: {config.transactions_filename()}")
-
-            config.next()
+                
+                # Only increment the cash closing number when we actually processed a day
+                config.next()
+            else:
+                # Skip empty days without incrementing the cash closing number
+                # Just move to the next day's timestamp
+                print(f"Skipping empty day: {config.bussiness_date()} - No transactions found")
+                config.advance_to_next_day_only()  # You'll need to add this method
+            
+            # Update for next iteration
             daily_txn_list = [
                 transaction
                 for transaction in all_transactions
@@ -128,15 +136,12 @@ def split_json_files_by_bussiness_date(tx_iterator, config):
             ]
 
             daily_txn_count = len(daily_txn_list)
-            if daily_txn_count == 0:
-                # this is wrong, if count is 0 we need to continue to the next day
-                # we shouldn't execute config.next() because it increments the cash closing number, which is wron for "empty" days
-                break
-
+            
             print(
                 f"filtered_count: {daily_txn_count}. From {config.timestamp_low()} to {config.timestamp_high()}"
             )
             print(f"Date {config.bussiness_date()}")
+            
     except CashClosingException as e:
         print(f"Process cancelled due to error: {str(e)}")
 
