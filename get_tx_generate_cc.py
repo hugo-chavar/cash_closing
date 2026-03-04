@@ -13,8 +13,7 @@ from date_tests import get_timestamp_from_german_date, get_yesterday_end_timesta
 from restaurant_picker import get_config
 
 # The written date will be taken, including the time 23:59:59
-TIMESTAMP_THRESHOLD = get_midnight_timestamp(datetime(2025, 12, 29)) + (SECONDS_PER_DAY - 1)
-NUMBER_OF_CASH_CLOSINGS_TO_PROCESS = 6
+TIMESTAMP_THRESHOLD = get_midnight_timestamp(datetime(2026, 1, 3)) + (SECONDS_PER_DAY - 1)
 fiskaly_service = FiskalyService()
 
 
@@ -97,12 +96,8 @@ def split_json_files_by_bussiness_date(tx_iterator, config: Config):
     )
     print(f"Date {config.bussiness_date()}")
 
-    LAST_CASH_CLOSING_TO_PROCESS = (
-        config.last_cc_export_id + NUMBER_OF_CASH_CLOSINGS_TO_PROCESS
-    )
-
     try:
-        while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
+        while config.timestamp_low() <= TIMESTAMP_THRESHOLD:
             if daily_txn_count > 0:
 
                 daily_transactions = {"data": daily_txn_list, "count": daily_txn_count}
