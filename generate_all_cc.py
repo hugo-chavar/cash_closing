@@ -1,27 +1,10 @@
 import json
 from constants import LAST_CASH_CLOSING_TO_PROCESS
-from types import SimpleNamespace
 from product_provider import ProductProvider
 from cash_closing_config import Config
 import cash_closing
 from restaurant_picker import get_config
-
-
-def parse(d):
-    x = SimpleNamespace()
-    _ = [
-        setattr(
-            x,
-            k,
-            (
-                parse(v)
-                if isinstance(v, dict)
-                else [parse(e) for e in v] if isinstance(v, list) else v
-            ),
-        )
-        for k, v in d.items()
-    ]
-    return x
+from simple_ns_parser import parse
 
 
 def process_closing(config: Config, transactions):

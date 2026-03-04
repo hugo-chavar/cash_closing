@@ -6,33 +6,18 @@ from fiskaly_service import FiskalyService
 from product_provider import ProductProvider
 from transaction_fetcher import TransactionFetcher
 from transaction_fixer import TransactionFixer
-from types import SimpleNamespace
 from constants import SECONDS_PER_DAY
+from simple_ns_parser import parse
 
 from date_tests import get_timestamp_from_german_date, get_yesterday_end_timestamp, get_midnight_timestamp
 from restaurant_picker import get_config
 
 # The written date will be taken, including the time 23:59:59
-TIMESTAMP_THRESHOLD = get_midnight_timestamp(datetime(2025, 12, 23)) + (SECONDS_PER_DAY - 1)
-NUMBER_OF_CASH_CLOSINGS_TO_PROCESS = 1
+TIMESTAMP_THRESHOLD = get_midnight_timestamp(datetime(2025, 12, 29)) + (SECONDS_PER_DAY - 1)
+NUMBER_OF_CASH_CLOSINGS_TO_PROCESS = 6
 fiskaly_service = FiskalyService()
 
 
-def parse(d):
-    x = SimpleNamespace()
-    _ = [
-        setattr(
-            x,
-            k,
-            (
-                parse(v)
-                if isinstance(v, dict)
-                else [parse(e) for e in v] if isinstance(v, list) else v
-            ),
-        )
-        for k, v in d.items()
-    ]
-    return x
 
 
 def process_closing(config: Config, transactions):
@@ -55,7 +40,7 @@ def process_closing(config: Config, transactions):
         res.write(cash_closing_obj.toJSON())
 
     cc_uuid = fiskaly_service.new_guid()
-    fiskaly_service.create_cash_closing(cc_uuid, cash_closing_obj.get_dict())
+    # fiskaly_service.create_cash_closing(cc_uuid, cash_closing_obj.get_dict())
 
     print(f"Transactions: {config.transactions_filename()}")
     print(f"Cash Closing: {config.cash_closing_filename()}")
