@@ -8,3 +8,14 @@ config
 .pylintrc
 *.txt
 test*.py
+check_md5_files.py
+data_trns.py
+debuy_load_env.py
+extract_transactions.py
+german_date.py
+jsons_to_csv.py
+list_cash_closings_to_csv.py
+mymodel.py
+new_my_model.py
+replace_cc_id_by_export_id.py
+settings.py
