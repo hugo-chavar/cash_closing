@@ -30,17 +30,17 @@ def read_env_file_to_dict(filename='.env'):
                 dictionary[key] = value
     return dictionary
 
-def update_env_var(key, value):
-    dict = read_env_file_to_dict()
-    bkp_filename = f"env_bkp/env_{dict["BACKUP"]}.txt"
+# def update_env_var(key, value):
+#     dict = read_env_file_to_dict()
+#     bkp_filename = f"env_bkp/env_{dict["BACKUP"]}.txt"
     
-    save_dict_to_env_file(dict, bkp_filename)
-    dict["BACKUP"] = str(int(dict["BACKUP"]) + 1)
-    dict[key] = value
-    save_dict_to_env_file(dict)
+#     save_dict_to_env_file(dict, bkp_filename)
+#     dict["BACKUP"] = str(int(dict["BACKUP"]) + 1)
+#     dict[key] = value
+#     save_dict_to_env_file(dict)
 
 def update_env_vars(new_dict, env_path):
-    dict = read_env_file_to_dict()
+    dict = read_env_file_to_dict(os.path.join(env_path, ".env"))
     bkp_filename = f"{env_path}\\env_bkp\\env_{dict["BACKUP"]}.txt"
     
     save_dict_to_env_file(dict, bkp_filename)
