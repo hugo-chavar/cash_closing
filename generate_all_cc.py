@@ -8,18 +8,9 @@ from simple_ns_parser import parse
 
 
 def process_closing(config: Config, transactions):
-    options = {
-        "last_cash_point_closing_export_id": config.last_cc_export_id,
-        "cash_register": config.cash_register,
-        "last_receipt_number": config.last_receipt_number,
-    }
-
-    # print(f"WARNING: check last_cash_point_closing_export_id {options['last_cash_point_closing_export_id']} | last_receipt_number {options['last_receipt_number']} ")
-
-    print("")
 
     cash_closing_obj = cash_closing.build_cash_closing(
-        transactions, options, ProductProvider()
+        transactions, config.cash_closing_options(), ProductProvider()
     )
 
     with open(config.cash_closing_filename(), encoding="utf-8", mode="w") as res:
@@ -28,9 +19,7 @@ def process_closing(config: Config, transactions):
     config.last_receipt_number = cash_closing_obj.transactions[-1].head.number
     print(f"Transactions: {config.transactions_filename()}")
     print(f"Cash Closing: {config.cash_closing_filename()}")
-    # save this value
     # print(f"last_receipt_number (update env): {config.last_receipt_number}")
-    # save this value
     # print(f"last_cash_point_closing_export_id: {config.last_cc_export_id}")
 
 

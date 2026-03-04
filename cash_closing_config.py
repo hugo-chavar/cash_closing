@@ -93,3 +93,10 @@ class Config:
     
     def tx_path(self):
         return f"{self.base_path()}\\r\\tx_report.csv"
+    
+    def cash_closing_options(self):
+        return {
+            "last_cash_point_closing_export_id": self.last_cc_export_id,
+            "cash_register": self.cash_register,
+            "last_receipt_number": self.last_receipt_number,
+        }

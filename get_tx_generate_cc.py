@@ -21,19 +21,12 @@ fiskaly_service = FiskalyService()
 
 
 def process_closing(config: Config, transactions):
-    options = {
-        "last_cash_point_closing_export_id": config.last_cc_export_id,
-        "cash_register": config.cash_register,
-        "last_receipt_number": config.last_receipt_number,
-    }
 
-    print(
-        f"WARNING: check last_cash_point_closing_export_id {options['last_cash_point_closing_export_id']} | last_receipt_number {options['last_receipt_number']} "
+    cash_closing_obj = build_cash_closing(
+        transactions,
+        config.cash_closing_options(),
+        ProductProvider()
     )
-
-    print("")
-
-    cash_closing_obj = build_cash_closing(transactions, options, ProductProvider())
     config.last_receipt_number = cash_closing_obj.transactions[-1].head.number
 
     with open(config.cash_closing_filename(), encoding="utf-8", mode="w") as res:
@@ -122,6 +115,7 @@ def split_json_files_by_bussiness_date(tx_iterator, config):
                 ) as f:
                     json.dump(daily_transactions, f, indent=4)
 
+                print("")
                 process_closing(config, parse(daily_transactions))
 
                 config.last_processed_tx_number = daily_txn_list[-1]["number"]
