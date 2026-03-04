@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from cash_closing import CashClosingException, build_cash_closing
 from cash_closing_config import Config
 from fiskaly_service import FiskalyService
@@ -6,12 +7,14 @@ from product_provider import ProductProvider
 from transaction_fetcher import TransactionFetcher
 from transaction_fixer import TransactionFixer
 from types import SimpleNamespace
+from constants import SECONDS_PER_DAY
 
-from date_tests import get_timestamp_from_german_date, get_yesterday_end_timestamp
+from date_tests import get_timestamp_from_german_date, get_yesterday_end_timestamp, get_midnight_timestamp
 from restaurant_picker import get_config
 
-DATE_THRESHOLD = "2026-01-01 23:59:59+02:00"  # YYYY-MM-DDTHH:MM:SSZ
-NUMBER_OF_CASH_CLOSINGS_TO_PROCESS = 12
+# The written date will be taken, including the time 23:59:59
+TIMESTAMP_THRESHOLD = get_midnight_timestamp(datetime(2025, 12, 23)) + (SECONDS_PER_DAY - 1)
+NUMBER_OF_CASH_CLOSINGS_TO_PROCESS = 1
 fiskaly_service = FiskalyService()
 
 
@@ -68,13 +71,20 @@ def split_json_files_by_bussiness_date(tx_iterator, config):
     total_count = 0
 
     # step 1: get all new transactions in batches
-    threshold = get_timestamp_from_german_date(DATE_THRESHOLD)
+    threshold = TIMESTAMP_THRESHOLD
 
     for tx_batch in tx_iterator:
         print("MERGING")
+        threshold_exceeded = False
+        for tx in tx_batch["data"]:
+            tx.pop("qr_code_data", None)
+            tx.pop("tss_serial_number", None)
+            tx.pop("tss_id", None)
+            if not threshold_exceeded:
+                threshold_exceeded = (tx["time_start"] >= threshold)
         all_transactions.extend(tx_batch["data"])
         total_count += len(tx_batch["data"])
-        if tx_batch["data"][-1]["time_start"] >= threshold:
+        if threshold_exceeded:
             print("BREAK")
             break
         # if tx_batch["data"][-1]["number"] >= 29400:
@@ -100,6 +110,12 @@ def split_json_files_by_bussiness_date(tx_iterator, config):
 
     print(f"LAST_PROCESSED_TX_NUMBER (update env): {config.last_processed_tx_number}")
 
+    config_timestamp_low = config.timestamp_low()
+    config_timestamp_high = config.timestamp_high()
+    
+    print(f"config_timestamp_low: {config_timestamp_low}")
+    print(f"config_timestamp_high: {config_timestamp_high}")
+    
     daily_txn_list = [
         transaction
         for transaction in all_transactions
