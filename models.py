@@ -28,6 +28,7 @@ ENV_TOKEN = "TOKEN"
 ENV_TSS_ID = "TSS_ID"
 ENV_CASH_REGISTER_ID = "CASH_REGISTER_ID"
 ENV_BASE_TIMESTAMP = "BASE_TIMESTAMP"
+ENV_SKIPPED_DAYS = "SKIPPED_DAYS"
 
 # LAST_CASH_POINT_CLOSING_EXPORT_ID = int(os.getenv(ENV_LAST_CC_EXPORT_ID))
 # LAST_RECEIPT_NUMBER = int(os.getenv(ENV_LAST_RECEIPT_NUMBER))
@@ -87,11 +88,6 @@ def get(self, id):
     )
     
     cash_register_id = os.getenv(ENV_CASH_REGISTER_ID)
-    api_key = os.getenv(ENV_API_KEY)
-    print(api_key)
-    
-    base_timestamp = os.getenv(ENV_BASE_TIMESTAMP)
-    print(base_timestamp)
     
     mock_obj = Mock(
         id=id,
@@ -119,11 +115,12 @@ def get(self, id):
         last_receipt_number = int(os.getenv(ENV_LAST_RECEIPT_NUMBER)), # default = 0
         base_timestamp = int(os.getenv(ENV_BASE_TIMESTAMP)), # put better name to the field => 02/01/2025 better, calculate the related from c.closings
         # base_date_time = BASE_DATE_TIME, # put better name to the field => 02/01/2025 better, calculate the related from c.closings
+        skipped_days = int(os.getenv(ENV_SKIPPED_DAYS)),
         cash_register = cash_register_id # TODO: add this to the model
         # get_credentials=get_credentials.__get__(self, type(self))
         # get_credentials= lambda self: {
         #     "api_key": self.api_key,
-        #     "api_secret": self.api_secret                
+        #     "api_secret": self.api_secret
         # }
     )
     mock_obj.get_credentials = lambda: {
