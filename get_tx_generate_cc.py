@@ -30,7 +30,7 @@ def process_closing(config: Config, transactions):
         res.write(cash_closing_obj.toJSON())
 
     cc_uuid = fiskaly_service.new_guid()
-    # fiskaly_service.create_cash_closing(cc_uuid, cash_closing_obj.get_dict())
+    fiskaly_service.create_cash_closing(cc_uuid, cash_closing_obj.get_dict())
 
     print(f"Transactions: {config.transactions_filename()}")
     print(f"Cash Closing: {config.cash_closing_filename()}")
