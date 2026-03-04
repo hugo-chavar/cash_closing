@@ -59,9 +59,7 @@ def process_closing(config: Config, transactions):
 
     print(f"Transactions: {config.transactions_filename()}")
     print(f"Cash Closing: {config.cash_closing_filename()}")
-    # save this value
     print(f"last_receipt_number (update env): {config.last_receipt_number}")
-    # save this value
     print(f"last_cash_point_closing_export_id: {config.last_cc_export_id}")
 
 
@@ -87,14 +85,8 @@ def split_json_files_by_bussiness_date(tx_iterator, config):
         if threshold_exceeded:
             print("BREAK")
             break
-        # if tx_batch["data"][-1]["number"] >= 29400:
-        #     break
 
     print(f"Total count: {total_count}")
-    # with open(
-    #     f"merged8\\all_{threshold}_1.json", mode="w", encoding="utf8"
-    # ) as ft:
-    #     json.dump(all_transactions, ft, indent=4)
 
     # step 2: Sort the merged data by the "number" field
     all_transactions.sort(key=lambda x: x["number"])
@@ -135,7 +127,6 @@ def split_json_files_by_bussiness_date(tx_iterator, config):
 
     try:
         while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
-            # if 1 == 1:
             if daily_txn_count > 0:
 
                 daily_transactions = {"data": daily_txn_list, "count": daily_txn_count}
@@ -176,7 +167,6 @@ client = config.client
 
 fiskaly_service.credentials = client.get_credentials()
 fiskaly_service.token = client.get_token()
-# print(f"Token: {fiskaly_service.token}")
 transaction_fetcher = TransactionFetcher(fiskaly_service, client)
 transaction_fetcher.update_last_tx_pending()
 
