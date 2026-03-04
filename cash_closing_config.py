@@ -14,18 +14,19 @@ class Config:
         self.last_receipt_number = fiskaly_client.last_receipt_number
         self.cash_register = fiskaly_client.cash_register
         self.last_processed_tx_number = fiskaly_client.last_processed_tx_number
-        self._skipped_days = 0  # Track skipped days separately
+        # Add skipped_days to the client model or initialize to 0
+        self.skipped_days = fiskaly_client.skipped_days
     
     def skipped_days_count(self):
         """Returns the number of skipped days (days with no transactions)"""
-        return self._skipped_days
+        return self.skipped_days
     
     def business_day_offset(self):
         """
         Returns the total number of business days to offset from base_timestamp.
         This includes both processed closings AND skipped days.
         """
-        return self.last_cc_export_id + self._skipped_days
+        return self.last_cc_export_id + self.skipped_days
     
     def timestamp_low(self):
         """Lower bound timestamp for current business day"""
@@ -46,8 +47,8 @@ class Config:
         Advance to next business day WITHOUT incrementing the cash closing number.
         Use this for days with no transactions.
         """
-        self._skipped_days += 1
-        print(f"Advanced to next day (skipped days: {self._skipped_days})")
+        self.skipped_days += 1
+        print(f"Advanced to next day (skipped days: {self.skipped_days})")
 
     def next(self):
         """
@@ -55,8 +56,6 @@ class Config:
         Use this when a cash closing was actually created.
         """
         self.last_cc_export_id = self.last_cc_export_id + 1
-        # Reset skipped days counter for the new day
-        # Note: We don't reset because skipped days are cumulative from the start
         print(f"Advanced to next closing (closing number: {self.last_cc_export_id})")
 
     def save_vars(self):
@@ -64,19 +63,13 @@ class Config:
         self.client.last_processed_tx_number = self.last_processed_tx_number
         self.client.last_receipt_number = self.last_receipt_number
         self.client.last_cash_point_closing_export_id = self.last_cc_export_id
-        # Note: skipped_days doesn't need to be persisted as it's derived
-        # from the relationship between base_timestamp and current date
+        # Persist skipped_days as well
+        self.client.skipped_days = self.skipped_days
         self.client.save()
 
     def cc_number(self):
         """Get the next cash closing number"""
         return self.last_cc_export_id + 1
-
-    def reset_skipped_days(self):
-        """
-        Optional: Reset skipped days counter if you need to recalculate from a specific point
-        """
-        self._skipped_days = 0
     
     def base_path(self):
         return f"closings\\{self.client.id}"
