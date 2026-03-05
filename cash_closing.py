@@ -206,12 +206,14 @@ class TransactionData(JsonSerializable):
         if Decimal(str(total_incl_vat_normal)) != Decimal(str(acum_incl_vat_normal)):
             # print(f"Vat NORMAL - Total {total_incl_vat_normal} not equal to Acumulated {acum_incl_vat_normal}")
             raise TransactionValidationException(
-                f"Vat NORMAL - Total {total_incl_vat_normal} not equal to Acumulated {acum_incl_vat_normal}\nLines:{self.toJSON()}"
+                f"Vat NORMAL - Total {total_incl_vat_normal} not equal to Acumulated {acum_incl_vat_normal}"
+                # f"Vat NORMAL - Total {total_incl_vat_normal} not equal to Acumulated {acum_incl_vat_normal}\nLines:{self.toJSON()}"
             )
         if Decimal(str(total_incl_vat_reduced)) != Decimal(str(acum_incl_vat_reduced)):
             # print(f"Vat 2 - Total {total_incl_vat_reduced} not equal to Acumulated {acum_incl_vat_reduced}")
             raise TransactionValidationException(
-                f"Vat REDUCED - Total {total_incl_vat_reduced} not equal to Acumulated {acum_incl_vat_reduced}\nLines:{self.toJSON()}"
+                f"Vat REDUCED - Total {total_incl_vat_reduced} not equal to Acumulated {acum_incl_vat_reduced}"
+                # f"Vat REDUCED - Total {total_incl_vat_reduced} not equal to Acumulated {acum_incl_vat_reduced}\nLines:{self.toJSON()}"
             )
         return True
 
@@ -228,6 +230,17 @@ class TransactionSecurity(JsonSerializable):
 class Line(JsonSerializable):
     # TODO: Fix duplicated code
     def vat_totals_per_id(self, vat_id):
+        """
+        Searches through VAT amounts: It looks through self.business_case.amounts_per_vat_id, which is a collection of AmountPerVat objects.
+
+        Filters by VAT ID: It finds the first AmountPerVat object where vat_definition_export_id matches the provided vat_id parameter.
+
+        Returns either:
+
+        The matching AmountPerVat object if found
+
+        A new empty AmountPerVat() object if no match is found (default value)
+        """
         return next(
             (
                 a
@@ -491,13 +504,13 @@ def get_transactions(receipts, last_receipt_number):
         receipt_number = last_receipt_number + tx_export_number
         t = Transaction(receipt, receipt_number, tx_export_number)
         if not t.validate():
-            print(f"{tx_export_number} tx error", flush=True)
+            print(f"Tx No. {tx_export_number} has errors", flush=True)
             errors += 1
 
         transactions.append(t)
     if errors:
         # Flush error to output
-        print(f"{errors} errors found", flush=True)
+        print(f"TOTAL: {errors} errors found", flush=True)
         raise CashClosingException("")
 
     return transactions
