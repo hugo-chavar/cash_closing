@@ -732,7 +732,7 @@ class ProductProvider:
             (20273, Product(20273, "Weissbier Alh. 0,5 l", 4.1, 19)),
             (20274, Product(20274, "Pils Ahf.", 4.1, 19)),
             (20275, Product(20275, "Weissweinschorle 0,3l süss", 5.5, 19)),
-            (20276, Product(20276, "Mango Sticky Reis", 9.5, 19)),
+            (20276, Product(20276, "Mango Sticky Reis", 9.5, 7)),
             (20281, Product(20281, "extra Semmelkloß", 3.5, 14)),
             (20312, Product(20312, "Ramazzotti 2cl", 3.9, 19)),
         ]
