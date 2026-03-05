@@ -174,6 +174,7 @@ for file_name in sorted(os.listdir(folder_path)):
         with open(os.path.join(folder_path, file_name), "r", encoding="utf-8") as file:
             cash_closing = json.load(file)
             id = cash_closing["cash_point_closing_export_id"]
+            business_date = cash_closing["head"]["business_date"]
 
             if id >= 0:
                 (
@@ -194,6 +195,7 @@ for file_name in sorted(os.listdir(folder_path)):
                 data.append(
                     [
                         id,
+                        business_date,
                         full_amount,
                         incl_vat_1,
                         excl_vat_1,
@@ -219,6 +221,7 @@ with open(csv_file_path, "w", newline="", encoding="utf-8") as csv_file:
     writer.writerow(
         [
             "id",
+            "business_date",
             "full_amount",
             "incl_vat_1",
             "excl_vat_1",
