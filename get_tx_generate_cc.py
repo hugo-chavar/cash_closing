@@ -13,7 +13,7 @@ from date_tests import get_timestamp_from_german_date, get_yesterday_end_timesta
 from restaurant_picker import get_config
 
 # The written date will be taken, including the time 23:59:59
-TIMESTAMP_THRESHOLD = get_midnight_timestamp(datetime(2026, 1, 3)) + (SECONDS_PER_DAY - 1)
+TIMESTAMP_THRESHOLD = get_midnight_timestamp(datetime(2026, 3, 4)) + (SECONDS_PER_DAY - 1)
 fiskaly_service = FiskalyService()
 
 
@@ -75,6 +75,9 @@ def split_json_files_by_bussiness_date(tx_iterator, config: Config):
     limit_timestamp = get_yesterday_end_timestamp()
     transaction_fixer.cancel_active_txn(all_transactions, limit_timestamp)
 
+    print("")
+    print("="*50)
+    print(f"Date {config.bussiness_date()}")
     print(f"LAST_PROCESSED_TX_NUMBER (update env): {config.last_processed_tx_number}")
 
     config_timestamp_low = config.timestamp_low()
@@ -94,7 +97,6 @@ def split_json_files_by_bussiness_date(tx_iterator, config: Config):
     print(
         f"filtered_count: {daily_txn_count}. From {config.timestamp_low()} to {config.timestamp_high()}"
     )
-    print(f"Date {config.bussiness_date()}")
 
     try:
         while config.timestamp_low() <= TIMESTAMP_THRESHOLD:
@@ -131,13 +133,15 @@ def split_json_files_by_bussiness_date(tx_iterator, config: Config):
             ]
 
             daily_txn_count = len(daily_txn_list)
-            
+
+            print("")
+            print("="*50)
+            print(f"Date {config.bussiness_date()}")
             print(
                 f"filtered_count: {daily_txn_count}. From {config.timestamp_low()} to {config.timestamp_high()}"
             )
-            print(f"Date {config.bussiness_date()}")
             
-    except CashClosingException as e:
+    except Exception as e:
         print(f"Process cancelled due to error: {str(e)}")
 
 config = get_config()
