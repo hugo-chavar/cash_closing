@@ -28,7 +28,7 @@ client = config.client
 # fs = FiskalyService()
 # fs.credentials = client.get_credentials()
 
-config.last_cc_export_id = 1
+# config.last_cc_export_id = 1
 
 # while config.last_cc_export_id < LAST_CASH_CLOSING_TO_PROCESS:
 if 1 == 1:
@@ -41,7 +41,11 @@ if 1 == 1:
     # if config.last_cc_export_id not in [16, 22, 29]:
     #    config.next()
     #    continue
+    print("")
+    print("="*50)
     print(f"Date {config.bussiness_date()}")
+    print(f"Opening {config.transactions_filename()}")
+    
     with open(config.transactions_filename(), encoding="utf-8", mode="r") as f:
         # transactions = json.load(f, object_hook=lambda d: SimpleNamespace(**d))
         transactions_dict = json.load(f)
