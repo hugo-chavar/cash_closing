@@ -639,7 +639,7 @@ class ProductProvider:
             (19753, Product(19753, "Simon Dunkel vom Fass (0,5 l)", 3.9, 19)),
             (19754, Product(19754, "Veldensteiner Weißbier (0,5 l)", 4.2, 19)),
             (19755, Product(19755, "Weißbier leicht (0,5 l)", 4.2, 19)),
-            (19756, Product(19756, "Veldensteiner Pils (0,5 l)", 4.2, 7)), # Fixed in the database
+            (19756, Product(19756, "Veldensteiner Pils (0,5 l)", 4.2, 19)),
             (19757, Product(19757, "Cola Weißbier (0,5 l)", 4.4, 19)),
             (19758, Product(19758, "Limo Weizen (0,5 l)", 4.4, 19)),
             (19759, Product(19759, "Radler (0,5 l)", 4.4, 19)),
