@@ -13,12 +13,13 @@ from date_tests import get_timestamp_from_german_date, get_yesterday_end_timesta
 from restaurant_picker import get_config
 
 # The written date will be taken, including the time 23:59:59
-TIMESTAMP_THRESHOLD = get_midnight_timestamp(datetime(2026, 3, 4)) + (SECONDS_PER_DAY - 1)
+TIMESTAMP_THRESHOLD = get_midnight_timestamp(datetime(2026, 3, 8)) + (SECONDS_PER_DAY - 1)
 fiskaly_service = FiskalyService()
 
 
 def process_closing(config: Config, transactions):
 
+    print(f"Transactions: {config.transactions_filename()}")
     cash_closing_obj = build_cash_closing(
         transactions,
         config.cash_closing_options(),
@@ -32,7 +33,6 @@ def process_closing(config: Config, transactions):
     cc_uuid = fiskaly_service.new_guid()
     fiskaly_service.create_cash_closing(cc_uuid, cash_closing_obj.get_dict())
 
-    print(f"Transactions: {config.transactions_filename()}")
     print(f"Cash Closing: {config.cash_closing_filename()}")
     print(f"last_receipt_number (update env): {config.last_receipt_number}")
     print(f"last_cash_point_closing_export_id: {config.last_cc_export_id}")

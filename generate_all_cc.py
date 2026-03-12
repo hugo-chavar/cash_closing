@@ -9,6 +9,7 @@ from simple_ns_parser import parse
 
 def process_closing(config: Config, transactions):
 
+    print(f"Transactions: {config.transactions_filename()}")
     cash_closing_obj = cash_closing.build_cash_closing(
         transactions, config.cash_closing_options(), ProductProvider()
     )
@@ -17,7 +18,7 @@ def process_closing(config: Config, transactions):
         res.write(cash_closing_obj.toJSON())
 
     config.last_receipt_number = cash_closing_obj.transactions[-1].head.number
-    print(f"Transactions: {config.transactions_filename()}")
+    
     print(f"Cash Closing: {config.cash_closing_filename()}")
     # print(f"last_receipt_number (update env): {config.last_receipt_number}")
     # print(f"last_cash_point_closing_export_id: {config.last_cc_export_id}")
