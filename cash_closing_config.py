@@ -1,6 +1,7 @@
 import datetime
-from constants import SECONDS_PER_DAY
 from date_tests import get_german_date
+
+SECONDS_PER_DAY = 86400
 
 def format_shortdate(date_time):
     return f"{date_time.strftime('%Y%m%d')}"

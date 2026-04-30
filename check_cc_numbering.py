@@ -1,6 +1,6 @@
 import json
 import os
-from date_tests import truncate_timestamp_to_date, get_formatted_shortdate
+# from date_tests import truncate_timestamp_to_date, get_formatted_shortdate
 from restaurant_picker import get_config
 
 
