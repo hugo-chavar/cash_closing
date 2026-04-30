@@ -1,6 +1,7 @@
-import datetime
 import json
+import pytz
 import time
+from datetime import datetime, timezone
 from decimal import Decimal, ROUND_HALF_UP, getcontext
 from functools import reduce
 from itertools import chain, groupby
@@ -280,9 +281,24 @@ def get_client_id(transactions):
 
 
 def get_formatted_date(timestamp):
-    date_time = datetime.datetime.fromtimestamp(timestamp)
+    date_time = get_german_date(timestamp)
     return date_time.strftime("%Y-%m-%d")
 
+def get_german_date(original_timestamp):
+    """
+    Convert timestamp back to datetime with appropriate German timezone offset
+    (+01:00 for CET, +02:00 for CEST) while preserving the original time.
+    """
+    # Get UTC time
+    utc_dt = datetime.fromtimestamp(original_timestamp, tz=timezone.utc)
+    
+    # Use pytz for accurate German timezone handling
+    german_tz = pytz.timezone('Europe/Berlin')
+    
+    # Convert to German timezone
+    target_time = utc_dt.astimezone(german_tz)
+    
+    return target_time
 
 def format_date_number(timestamp, number):
     formatted_date = get_formatted_date(timestamp)
