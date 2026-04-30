@@ -13,8 +13,9 @@ class Product:
         return f"{self.id} - {self.title}"
 
 
-class ProductProvider:
 
+class ProductProvider:
+    # flag_test = 0 # hack to change vat in the middle of a transaction
     prod_dict_by_title = dict(
         [
             ("ESPRESSI", Product(13472, "ESPRESSI", 2.1, 7)),
@@ -767,6 +768,11 @@ class ProductProvider:
 
     def get_by_id(self, id):
         try:
+            # # hack to change vat in the middle of a transaction
+            # if id == 20473:
+            #     if self.flag_test == 1:
+            #         self.prod_dict_by_id[id].vat = 19
+            #     self.flag_test += 1
             return self.prod_dict_by_id[id]
         except KeyError:
             raise ProductProviderException(f"Product ID {id} doesn't exist")
