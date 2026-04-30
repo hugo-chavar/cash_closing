@@ -1,6 +1,7 @@
 import json
 import pytz
 import time
+from copy import copy
 from datetime import datetime, timezone
 from decimal import Decimal, ROUND_HALF_UP, getcontext
 from functools import reduce
@@ -610,7 +611,6 @@ def get_line_data(line):
 
 def get_line_business_case(line):
     bc = BusinessCase()
-    # TODO: check discounts
     bc.type = "Rabatt" if line.is_discount else "Umsatz"
 
     bc.amounts_per_vat_id = [AmountPerVat(line)]
@@ -628,12 +628,10 @@ def add_order_to_receipt(transactions, products_provider):
             order_count += 1
             order = tx.schema.standard_v1.order
             line_items = order.line_items
-            line_number = 0
-
+            
             for l in line_items:
-                line_number += 1
-                l.line_number = line_number
-                l.amount = float(Decimal(l.price_per_unit) * Decimal(l.quantity))
+                
+                l.amount = float(Decimal(str(l.price_per_unit)) * Decimal(l.quantity))
                 l.is_discount = l.amount < 0
 
                 if not l.is_discount:
@@ -646,7 +644,7 @@ def add_order_to_receipt(transactions, products_provider):
             first_vat = next(l.vat for l in line_items if not l.is_discount)
             total_vat_19 = reduce(
                 lambda a, b: a + b,
-                [l.amount for l in line_items if not l.is_discount and l.vat == 19],
+                [Decimal(str(l.amount)) for l in line_items if not l.is_discount and l.vat == 19],
                 0,
             )
 
@@ -655,34 +653,61 @@ def add_order_to_receipt(transactions, products_provider):
                 [x.vat == first_vat for x in line_items if not x.is_discount],
                 True,
             )
+
+            line_number = 0
+            new_line_items = []
             for l in line_items:
-                if l.is_discount:
+                line_number += 1
+                l.line_number = line_number
+                if not l.is_discount:
+                    l.business_case = get_line_business_case(l)
+                    new_line_items.append(l)
+                    continue
 
-                    if (
-                        all_same_vat
-                    ):  # there are many lines but all have the same VAT rate
-                        l.vat = first_vat
-                        l.description = l.text
-                    else:  # TODO: treat all cases
-                        if (total_vat_19 + l.amount) > 0:
-                            l.vat = 19
-                            l.description = l.text
-                        else:
-                            raise Exception(
-                                f"Discount causes bad calculation. Tx ID: {tx._id}"
-                            )
-                            # tx_exep = [
-                            #     'd5c549be-8c89-47ca-bcc3-1778e4870b95',
-                            #     '500e7916-8ed9-414d-ab65-382c8d8f2137'
-                            # ]
-                            # if tx._id in tx_exep: #'c0bf998e-1faf-4097-9b60-ac64a5604908':
-                            #     l.vat = 19
-                            #     l.description = l.text
-                            # else:
-                            #     raise Exception(f"Discount causes bad calculation. Tx ID: {tx._id}")
+                if all_same_vat:  # there are many lines but all have the same VAT rate
+                    l.vat = first_vat
+                    l.description = l.text
+                    l.business_case = get_line_business_case(l)
+                    new_line_items.append(l)
+                    continue
 
-                l.business_case = get_line_business_case(l)
+                line_amount = Decimal(str(l.amount))
+                if (total_vat_19 + line_amount) > 0:
+                    # We apply the entire discount to vat 19 items, works most of the cases
+                    l.vat = 19
+                    l.description = l.text
+                    l.business_case = get_line_business_case(l)
+                    new_line_items.append(l)
+                    continue
 
+                # cuanto se usa para cancelar VAT 19
+                discount_19 = -total_vat_19
+
+                # resto del descuento
+                remaining_discount = line_amount - discount_19  # l.amount es negativo
+
+                # línea descuento VAT 19
+                if total_vat_19 > 0:
+                    new_19 = copy(l)
+                    new_19.amount = float(discount_19)
+                    new_19.vat = 19
+                    new_19.description = f"{l.text} (19%)"
+                    new_19.business_case = get_line_business_case(new_19)
+                    new_line_items.append(new_19)
+
+                # línea descuento VAT 7
+                if remaining_discount != 0:
+                    new_7 = copy(l)
+                    line_number += 1
+                    new_7.line_number = line_number
+                    new_7.amount = float(remaining_discount)
+                    new_7.vat = 7
+                    new_7.description = f"{l.text} (7%)"
+                    new_7.business_case = get_line_business_case(new_7)
+                    new_line_items.append(new_7)
+
+
+            order.line_items = new_line_items
             orders[tx._id] = order
 
             # if order_count == 27:
