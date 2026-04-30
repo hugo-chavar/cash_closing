@@ -1,6 +1,6 @@
 import json
 from datetime import datetime
-from cash_closing import CashClosingException, build_cash_closing
+from cash_closing import build_cash_closing
 from cash_closing_config import Config
 from fiskaly_service import FiskalyService
 from product_provider import ProductProvider
@@ -9,11 +9,11 @@ from transaction_fixer import TransactionFixer
 from constants import SECONDS_PER_DAY
 from simple_ns_parser import parse
 
-from date_tests import get_timestamp_from_german_date, get_yesterday_end_timestamp, get_midnight_timestamp
+from date_tests import get_yesterday_end_timestamp, get_midnight_timestamp
 from restaurant_picker import get_config
 
 # The written date will be taken, including the time 23:59:59
-TIMESTAMP_THRESHOLD = get_midnight_timestamp(datetime(2026, 3, 8)) + (SECONDS_PER_DAY - 1)
+TIMESTAMP_THRESHOLD = get_midnight_timestamp(datetime(2026, 4, 29)) + (SECONDS_PER_DAY - 1)
 fiskaly_service = FiskalyService()
 
 
