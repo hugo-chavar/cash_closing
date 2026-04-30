@@ -11,7 +11,7 @@ def process_closing(config: Config, transactions):
 
     print(f"Transactions: {config.transactions_filename()}")
     cash_closing_obj = cc_builder.build(
-        transactions, config, ProductProvider()
+        config, transactions, ProductProvider()
     )
 
     with open(config.cash_closing_filename(), encoding="utf-8", mode="w") as res:
